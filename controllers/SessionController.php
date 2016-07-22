@@ -8,6 +8,7 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use pistol88\worksess\widgets\ControlButton;
 use pistol88\worksess\widgets\Info;
+use yii\filters\AccessControl;
 
 class SessionController extends Controller
 {

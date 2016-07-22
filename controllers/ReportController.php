@@ -6,6 +6,7 @@ use pistol88\order\models\Order;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 class ReportController extends Controller
 {
