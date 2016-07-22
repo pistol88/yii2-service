@@ -1,0 +1,55 @@
+.service-menu {
+    margin-bottom: 30px;
+    height: 50px;
+}
+
+.service-menu .menu-container {
+    float: right;
+}
+
+.service-prices-table {
+    font-size: 13px;
+}
+
+.service-prices-table th {
+    word-break: normal;
+}
+
+.service-prices-table td:hover, .service-prices-table td.betterhover, .service-prices-table td.hover {
+    background-color:#c0e2ff;  
+    box-shadow:0 0 1px #006fcd;
+}
+
+.service-prices-table td.price {
+    width: 100px;
+    text-align: center;
+    border: 1px solid #ccc;
+}
+
+.service-prices-table td.price .btn:hover {
+    color: red;
+}
+
+.service-prices-table td.price .btn {
+    padding: 3px;
+    margin: 1px;
+}
+
+.service-prices-table td.price input {
+    width: 40px;
+}
+
+.service-order .total {
+    font-size: 300%;
+}
+
+.service-order .promocode .promo-code-enter {
+    width: 170px;
+}
+
+.service_tocart_point {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #cc4b5d;
+}

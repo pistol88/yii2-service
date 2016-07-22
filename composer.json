@@ -1,0 +1,41 @@
+{
+    "name": "pistol88/yii2-service",
+    "description": "Управление услугами и ценами этих услуг",
+    "keywords": ["yii2", "yii 2", "application", "backend", "crud", "service", "catalog", "module", "pistol88"],
+    "homepage": "https://github.com/pistol88/yii2-service",
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "support": {
+        "source": "https://github.com/pistol88/yii2-service"
+    },
+    "authors": [
+        {
+            "name": "Ilya Pistol",
+            "email": "pistol88@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.4.0",
+        "yiisoft/yii2": "*",
+        "yiisoft/yii2-bootstrap": "*",
+        "2amigos/yii2-grid-view-library": "*",
+        "kartik-v/yii2-grid": "*",
+        "pistol88/yii2-gallery": "*",
+        "pistol88/yii2-order": "*",
+        "pistol88/yii2-work-session": "*",
+        "pistol88/yii2-cart": "*",
+        "pistol88/yii2-promocode": "*"
+    },
+    "config": {
+        "process-timeout": 1800
+    },
+    "autoload": {
+        "psr-4": {
+            "pistol88\\service\\": ""
+        }
+    },
+    "extra": {
+        "bootstrap": "pistol88\\service\\Bootstrap"
+    }
+}
