@@ -9,6 +9,22 @@ use yii\filters\VerbFilter;
 
 class ReportController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+				'only' => ['index'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => $this->module->adminRoles,
+                    ]
+                ]
+            ],
+        ];
+    }
+    
     public function actionIndex()
     {
         $total = Order::getStatByDate(date('Y-m-d'))['total'];

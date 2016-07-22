@@ -23,6 +23,16 @@ class ServiceController extends Controller
                     'delete' => ['post'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::className(),
+				'only' => ['create', 'update', 'index', 'delete', 'order'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => $this->module->adminRoles,
+                    ]
+                ]
+            ],
         ];
     }
 

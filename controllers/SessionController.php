@@ -14,21 +14,21 @@ class SessionController extends Controller
     public function behaviors()
     {
         return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['post'],
+                ],
+            ],
             'access' => [
                 'class' => AccessControl::className(),
+				'only' => ['current', 'start', 'stop'],
                 'rules' => [
                     [
                         'allow' => true,
                         'roles' => $this->module->adminRoles,
                     ]
                 ]
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                    'edittable' => ['post'],
-                ],
             ],
         ];
     }
