@@ -16,7 +16,11 @@ $services = ArrayHelper::map($services, 'id', 'name');
     <?php echo $form->errorSummary($model); ?>
 
     <?php echo $form->field($model, 'name')->textInput() ?>
+    
+    <?php echo $form->field($model, 'sort')->textInput(['maxlength' => true]) ?>
 
+    <p><small>Чем выше приоритет, тем выше элемент среди других в общем списке.</small></p>
+    
     <?= $form->field($model, 'service_ids')
             ->widget(Select2::classname(), [
                 'data' => $services,

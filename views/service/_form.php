@@ -17,6 +17,9 @@ $parentServices = array_merge(['0' => 'Нет'], $services);
 
     <?php echo $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
+    <?php echo $form->field($model, 'sort')->textInput(['maxlength' => true]) ?>
+    <p><small>Чем выше приоритет, тем выше элемент среди других в общем списке.</small></p>
+    
     <?= $form->field($model, 'parent_id')->dropdownList($parentServices);?>
 
     <div class="form-group">

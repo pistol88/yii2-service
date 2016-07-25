@@ -26,6 +26,7 @@ class Complex extends \yii\db\ActiveRecord implements \pistol88\service\interfac
     {
         return [
             [['name'], 'string', 'max' => 255],
+            [['sort'], 'integer'],
             [['service_ids'], 'each', 'rule' => ['integer']],
         ];
     }
@@ -35,6 +36,7 @@ class Complex extends \yii\db\ActiveRecord implements \pistol88\service\interfac
         return [
             'id' => 'ID',
             'name' => 'Название',
+            'sort' => 'Приоритет',
             'service_ids' => 'Услуги',
         ];
     }

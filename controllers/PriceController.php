@@ -64,9 +64,9 @@ class PriceController extends Controller
             }
         }
         
-        $services = Service::find()->all();
-        $complexes = Complex::find()->all();
-        $categories = Category::find()->all();
+        $services = Service::find()->orderBy('sort DESC, id ASC')->all();
+        $complexes = Complex::find()->orderBy('sort DESC, id ASC')->all();
+        $categories = Category::find()->orderBy('sort DESC, id ASC')->all();
         $priceModel = new Price;
         
         return $this->render('index', [
@@ -81,9 +81,9 @@ class PriceController extends Controller
     
     public function actionOrder()
     {
-        $services = Service::find()->all();
-        $categories = Category::find()->all();
-        $complexes = Complex::find()->all();
+        $services = Service::find()->orderBy('sort DESC, id ASC')->all();
+        $categories = Category::find()->orderBy('sort DESC, id ASC')->all();
+        $complexes = Complex::find()->orderBy('sort DESC, id ASC')->all();
         
         $priceModel = new Price;
         $orderModel = new Order;
