@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['attribute' => 'id', 'filter' => false, 'options' => ['style' => 'width: 49px;']],
             'name',
-
+            'category.name',
             ['class' => 'yii\grid\ActionColumn', 'template' => '{update} {delete}',  'buttonOptions' => ['class' => 'btn btn-default'], 'options' => ['style' => 'width: 100px;']],
         ],
     ]); ?>

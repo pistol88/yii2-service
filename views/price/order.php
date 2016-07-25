@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
 use pistol88\cart\widgets\BuyButton;
 use pistol88\cart\widgets\ElementsList;
@@ -29,13 +30,31 @@ $this->params['breadcrumbs'][] = $this->title;
                         <td><strong><?=$category->name;?></strong></td>
                     <?php } ?>
                 </tr>
+                <?php foreach($complexes as $complex) { ?>
+                    <tr>
+                        <td><strong>Комплекс «<?=$complex->name;?>»</strong> <small>(<?=implode(', ', ArrayHelper::map($complex->services, 'id', 'name'));?>)</small></td>
+                        <?php foreach($categories as $category) { ?>
+                            <?php if($price = $priceModel::find()->tariff($category->id, $complex)->one()) { ?>
+                                <td class="price" title="<?=$price->description;?>">
+                                    <input  <?php if(!empty($price->description)) echo ' style="border: 1px solid yellow;"'; ?> data-base-price="<?=$price->price;?>" type="text" name="text" value="<?=$price->price;?>" />
+                                    <?= BuyButton::widget([
+                                        'model' => $price,
+                                        'text' => '<i class="glyphicon glyphicon-shopping-cart"></i>',
+                                        'htmlTag' => 'a',
+                                        'cssClass' => 'btn btn-default'
+                                    ]) ?>
+                                </td>
+                            <?php } ?>
+                        <?php } ?>
+                    </tr>
+                <?php } ?>
                 <?php foreach($services as $service) { ?>
                     <tr>
                         <td><?=$service->name;?></td>
                         <?php foreach($categories as $category) { ?>
-                            <?php if($price = $priceModel::find()->tariff($category->id, $service->id)->one()) { ?>
-                                <td class="price">
-                                    <input data-base-price="<?=$price->price;?>" type="text" name="text" value="<?=$price->price;?>" />
+                            <?php if($price = $priceModel::find()->tariff($category->id, $service)->one()) { ?>
+                                <td class="price" title="<?=$price->description;?>">
+                                    <input <?php if(!empty($price->description)) echo ' style="border: 1px solid yellow;"'; ?> data-base-price="<?=$price->price;?>" type="text" name="text" value="<?=$price->price;?>" />
                                     <?= BuyButton::widget([
                                         'model' => $price,
                                         'text' => '<i class="glyphicon glyphicon-shopping-cart"></i>',

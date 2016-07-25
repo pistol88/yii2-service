@@ -1,7 +1,12 @@
 <?php
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
+use pistol88\service\models\Service;
 
+$services = Service::find()->where("id != :id AND parent_id = 0 OR parent_id IS NULL", [':id' => $model->id])->all();
+$services = ArrayHelper::map($services, 'id', 'name');
+$parentServices = array_merge(['0' => 'Нет'], $services);
 ?>
 
 <div class="service-form">
@@ -11,6 +16,8 @@ use yii\bootstrap\ActiveForm;
     <?php echo $form->errorSummary($model); ?>
 
     <?php echo $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'parent_id')->dropdownList($parentServices);?>
 
     <div class="form-group">
         <?php echo Html::submitButton($model->isNewRecord ? 'Добавить' : 'Редактировать', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

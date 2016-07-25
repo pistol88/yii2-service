@@ -13,8 +13,9 @@ class Price extends \yii\db\ActiveRecord implements \pistol88\cart\interfaces\Ca
     public function rules()
     {
         return [
-            [['service_id', 'category_id'], 'required'],
+            [['service_id', 'category_id', 'service_type'], 'required'],
             [['service_id', 'category_id'], 'integer'],
+            [['service_type', 'description'], 'string'],
             [['price'], 'number'],
         ];
     }
@@ -25,6 +26,7 @@ class Price extends \yii\db\ActiveRecord implements \pistol88\cart\interfaces\Ca
             'id' => 'ID',
             'service_id' => 'Услуга',
             'price' => 'Цена',
+            'description' => 'Описание',
             'category_id' => 'Категории',
         ];
     }
@@ -54,30 +56,18 @@ class Price extends \yii\db\ActiveRecord implements \pistol88\cart\interfaces\Ca
         return [];
     }
     
+    public function getService()
+    {
+        $service_type = $this->service_type;
+        
+        return $this->hasOne($service_type::className(), ['id' => 'service_id']);
+    }
+    
     public function getCategory()
     {
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 
-    public function getService()
-    {
-        return $this->hasOne(Service::className(), ['id' => 'service_id']);
-    }
-    
-    public static function find()
-    {
-        return new price\PriceQuery(get_called_class());
-    }
-    
-    public function getTafiff(Category $category, Service $service)
-    {
-        if($price = static::find()->tariff($category->id, $service->id)->one()) {
-            return $price->price;
-        } else {
-            return null;
-        }
-    }
-    
     public function minusAmount($count)
     {
         return true;
@@ -106,5 +96,19 @@ class Price extends \yii\db\ActiveRecord implements \pistol88\cart\interfaces\Ca
     function getSellModel()
     {
         return $this;
+    }
+
+    public static function find()
+    {
+        return new price\PriceQuery(get_called_class());
+    }
+    
+    public function getTariff(Category $category, \pistol88\service\interfaces\Service $service)
+    {
+        if($price = static::find()->tariff($category->id, $service)->one()) {
+            return $price;
+        } else {
+            return new Price;
+        }
     }
 }

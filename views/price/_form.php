@@ -2,6 +2,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
+$this->title = 'Цена для '.strip_tags($model->getCartName());
 ?>
 
 <div class="price-form">
@@ -10,11 +11,9 @@ use yii\bootstrap\ActiveForm;
 
     <?php echo $form->errorSummary($model); ?>
 
-    <?php echo $form->field($model, 'service_id')->textInput() ?>
+    <?php echo $form->field($model, 'price')->textInput() ?>
 
-    <?php echo $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
-
-    <?php echo $form->field($model, 'item_id')->textInput() ?>
+    <?php echo $form->field($model, 'description')->textArea() ?>
 
     <div class="form-group">
         <?php echo Html::submitButton($model->isNewRecord ? 'Добавить' : 'Редактировать', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

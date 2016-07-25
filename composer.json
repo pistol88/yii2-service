@@ -25,7 +25,10 @@
         "pistol88/yii2-order": "*",
         "pistol88/yii2-work-session": "*",
         "pistol88/yii2-cart": "*",
-        "pistol88/yii2-promocode": "*"
+        "pistol88/yii2-gallery": "*",
+        "pistol88/yii2-promocode": "*",
+        "voskobovich/yii2-many-to-many-behavior": "*",
+        "kartik-v/yii2-widget-select2": "*"
     },
     "config": {
         "process-timeout": 1800

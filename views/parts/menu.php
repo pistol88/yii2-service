@@ -28,6 +28,10 @@ use yii\bootstrap\Nav;
                 'label' => 'Категории потребителей',
                 'url' => ['/service/category/index'],
             ],
+            [
+                'label' => 'Комплексы',
+                'url' => ['/service/complex/index'],
+            ],
         ],
         'options' => ['class' =>'nav-pills'],
     ]); ?>

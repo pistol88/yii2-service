@@ -3,8 +3,18 @@ namespace pistol88\service\models;
 
 use yii;
 
-class Category extends \yii\db\ActiveRecord
+class Category extends \yii\db\ActiveRecord 
 {
+    function behaviors()
+    {
+        return [
+            'images' => [
+                'class' => 'pistol88\gallery\behaviors\AttachImages',
+                'mode' => 'gallery',
+            ],
+        ];
+    }
+    
     public static function tableName()
     {
         return '{{%service_category}}';
@@ -14,6 +24,7 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
+            [['parent_id'], 'integer'],
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -23,6 +34,12 @@ class Category extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Наименование',
+            'parent_id' => 'Материнская категория',
         ];
+    }
+    
+    public function getCategory()
+    {
+        return $this->hasOne(self::className(), ['parent_id' => 'id']);
     }
 }

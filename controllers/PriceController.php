@@ -4,6 +4,7 @@ namespace pistol88\service\controllers;
 use Yii;
 use pistol88\service\models\Category;
 use pistol88\service\models\Service;
+use pistol88\service\models\Complex;
 use pistol88\service\models\Price;
 use pistol88\order\models\Order;
 use pistol88\order\models\PaymentType;
@@ -45,26 +46,33 @@ class PriceController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         if($prices = yii::$app->request->post('price')) {
-            foreach($prices as $categoryId => $services) {
-                foreach($services as $serviceId => $price) {
-                    if(!$priceModel = Price::find()->tariff($categoryId, $serviceId)->one()) {
-                        $priceModel = new Price;
-                        $priceModel->category_id = $categoryId;
-                        $priceModel->service_id = $serviceId;
+            foreach($prices as $categoryId => $types) {
+                foreach($types as $type => $services) {
+                    foreach($services as $serviceId => $price) {
+                        $service = $type::findOne($serviceId);
+
+                        if(!$priceModel = Price::find()->tariff($categoryId, $service)->one()) {
+                            $priceModel = new Price;
+                            $priceModel->category_id = $categoryId;
+                            $priceModel->service_id = $serviceId;
+                            $priceModel->service_type = $type;
+                        }
+                        $priceModel->price = $price;
+                        $priceModel->save();
                     }
-                    $priceModel->price = $price;
-                    $priceModel->save();
                 }
             }
         }
         
         $services = Service::find()->all();
+        $complexes = Complex::find()->all();
         $categories = Category::find()->all();
         $priceModel = new Price;
         
         return $this->render('index', [
             'services' => $services,
             'categories' => $categories,
+            'complexes' => $complexes,
             'priceModel' => $priceModel,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -75,13 +83,17 @@ class PriceController extends Controller
     {
         $services = Service::find()->all();
         $categories = Category::find()->all();
+        $complexes = Complex::find()->all();
+        
         $priceModel = new Price;
         $orderModel = new Order;
+        
         $paymentTypes = ArrayHelper::map(PaymentType::find()->orderBy('order DESC')->all(), 'id', 'name');
         $shippingTypes = ArrayHelper::map(ShippingType::find()->orderBy('order DESC')->all(), 'id', 'name');
 
         return $this->render('order', [
             'services' => $services,
+            'complexes' => $complexes,
             'categories' => $categories,
             'orderModel' => $orderModel,
             'priceModel' => $priceModel,
