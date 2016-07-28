@@ -93,8 +93,11 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php } ?>
                         </div>
                     <?php } ?>
-
-                    <?= $form->field($orderModel, 'comment')->textArea(['maxlength' => true]) ?>
+                    <div class="row">
+                        <div class="col-lg-12 col-xs-12">
+                            <?= $form->field($orderModel, 'comment')->textArea(['maxlength' => true]) ?>
+                        </div>
+                    </div>
                 
                     <div class="form-group offer">
                         <?= Html::submitButton($orderModel->isNewRecord ? Yii::t('order', 'Create order') : Yii::t('order', 'Update'), ['class' => $orderModel->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

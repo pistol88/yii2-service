@@ -60,7 +60,7 @@
 }
 
 .service-order .total {
-    font-size: 300%;
+    font-size: 221%;
 }
 
 .service-order .promocode .promo-code-enter {
@@ -81,6 +81,11 @@
 .price-index .row {
     margin-left: 1px;
     margin-right: 1px;
+}
+
+.price-index .row > div {
+    padding-left: 1px;
+    padding-left: 1px;
 }
 
 .service-order-net .header {
@@ -128,4 +133,9 @@
 .big-button .btn {
     font-size: 30px;
     padding: 7px !important;
+}
+
+#orderForm .offer .btn { 
+    font-size: 40px;
+    padding: 10px;
 }
