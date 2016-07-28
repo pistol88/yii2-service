@@ -18,7 +18,7 @@ use pistol88\cart\widgets\ChangeCount;
                         <?php $price = $priceModel::find()->tariff($categoryId, $complex)->one(); ?>
                         <div class="col-md-4 col-sm-6 col-lg-3 price" <?php if(!empty($price->description)) echo ' title="'.$price->description.'"'; ?>>
                             <input class="service-price"  <?php if(!empty($price->description)) echo ' style="border: 1px solid yellow;"'; ?> data-base-price="<?=$price->price;?>" type="text" name="text" value="<?=$price->price;?>" />
-                            <strong>Комплекс «<?=$complex->name;?>»</strong> <small>(<?=implode(', ', ArrayHelper::map($complex->services, 'id', 'name'));?>)</small>
+                            <strong>«<?=$complex->name;?>»</strong> <small>(<?=implode(', ', ArrayHelper::map($complex->services, 'id', 'name'));?>)</small>
                             <?php if($price) { ?>
                                 <?= BuyButton::widget([
                                     'model' => $price,

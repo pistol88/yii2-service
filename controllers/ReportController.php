@@ -3,6 +3,7 @@ namespace pistol88\service\controllers;
 
 use yii;
 use pistol88\order\models\Order;
+use yii\helpers\Html;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -26,9 +27,15 @@ class ReportController extends Controller
         ];
     }
     
-    public function actionIndex()
+    public function actionIndex($date = null)
     {
-        $total = Order::getStatByDate(date('Y-m-d'))['total'];
+        if(!$date) {
+            $date = date(date('Y-m-d'));
+        } else {
+            $date = Html::encode($date);
+        }
+        
+        $total = Order::getStatByDate($date)['total'];
         
         $workers = $this->module->getWorkersList();
 
@@ -47,7 +54,7 @@ class ReportController extends Controller
             
             $persent = '0.'.$this->module->workerPersent;
             
-            foreach($worker->getSessions() as $session) {
+            foreach($worker->getSessions($date) as $session) {
                 $stat = Order::getStatByDatePeriod($session->start, $session->stop);
                 $workerStat[$worker->id]['service_count'] += $stat['count_elements'];
                 $workerStat[$worker->id]['order_count'] += $stat['count_order'];
@@ -62,6 +69,7 @@ class ReportController extends Controller
         $workerPersent = $this->module->workerPersent;
         
         return $this->render('index', [
+            'date' => $date,
             'totalToday' => $total,
             'workerPersent' => $workerPersent,
             'workers' => $workers,

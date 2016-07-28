@@ -8,15 +8,36 @@ pistol88.service = {
         $(document).on('blur', '#service-ident', function() {
            $($(this).data('field-selector')).val($(this).val());
         });
+
+        $(document).on('click', '.pistol88-cart-truncate-button', function() {
+            $('.service-order-net .price, .pistol88-cart-buy-button').css('border', '2px solid #c0e2ff');
+        });
         
         $(document).on('click', 'input.service-price', function() {
             $(this).select();
         });
         
+        $(document).on('click', '.service-order-net .price, .pistol88-cart-buy-button', function() {
+            $(this).css('border', '2px solid red');
+        });
+            
+        
         $(document).on('click', '.service-order-net .price', function(e) {
-            console.log(e.target.tagName);
+            $(this).css('border', '2px solid red');
             if(e.target.tagName != 'INPUT' && e.target.tagName != 'input') {
                 $(this).find('.pistol88-cart-buy-button').click();
+            }
+        });
+
+        $(document).on('keypress', '#service-ident', function(e) {
+            if(e.which == 13) {
+                $('#orderForm').submit();
+            }
+        });
+        
+        $(document).on('keypress', function(event) {
+            if((event.ctrlKey) && ((event.keyCode == 0xA)||(event.keyCode == 0xD))) {
+                $("#orderForm").submit();
             }
         });
 

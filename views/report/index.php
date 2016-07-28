@@ -15,6 +15,20 @@ $this->params['breadcrumbs'][] = $this->title;
     
     <br style="clear: both;" />
     
+    <form action="" method="get" style="width: 200px; float: right;">
+        <p>Показать за день:</p>
+        <div class="input-group">
+            <input class="form-control" type="date" name="date" value="<?=$date;?>" />
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-success promo-code-enter-btn">
+                    <i class="glyphicon glyphicon-ok"></i>
+                </button>
+            </span>
+        </div>
+    </form>
+    
+    <br style="clear: both;" />
+    
     <table class="table table-hover table-responsive">
         <tr>
             <td><strong>Сотрудник</strong></td>
@@ -38,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php if($name = $worker->name) { ?>(<?=$name;?>)<?php } ?>
                     </p>
                     <?php
-                    if($worker->getSessions()) {
+                    if($worker->getSessions($date)) {
                         echo '<ul>';
                         foreach($worker->getSessions() as $session) {
                             if($session->stop_timestamp) {
@@ -77,9 +91,9 @@ $this->params['breadcrumbs'][] = $this->title;
         <tr>
             <td align="right">Итого:</td>
             <td><strong><?=$sum['orders'];?>/<?=$sum['services'];?></strong></td>
-            <td><strong><?=$sum['total'];?></strong></td>
+            <td><strong><?=$sum['total'];?> <?=$module->currency;?></strong></td>
             <td><strong>-</strong></td>
-            <td><strong><?=$sum['earnings'];?></strong></td>
+            <td><strong><?=$sum['earnings'];?> <?=$module->currency;?></strong></td>
         </tr>
     </table>
 

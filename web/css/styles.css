@@ -8,7 +8,6 @@
 }
 
 .service-ident {
-    padding-bottom: 20px;
     font-size: 30px;
 }
 
@@ -18,6 +17,10 @@
 
 .price-index .order-type {
     padding-bottom: 10px;
+}
+
+.price-index .control {
+    padding-left: 9px;
 }
 
 .service-prices-table {
@@ -75,8 +78,13 @@
     padding: 10px;
 }
 
+.price-index .row {
+    margin-left: 1px;
+    margin-right: 1px;
+}
+
 .service-order-net .header {
-    padding: 10px;
+    padding-bottom: 10px;
 }
 
 .service-order-net .category {

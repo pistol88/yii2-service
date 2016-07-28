@@ -18,17 +18,25 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <br class="clear" />
     
-    <div class="service-ident">
-        <input type="text" name="service-ident" value="" id="service-ident" autocomplete="off" data-field-selector="<?=yii::$app->getModule('service')->mainIdentFieldSelector;?>" placeholder="<?=yii::$app->getModule('service')->mainIdent;?>" />
-    </div>
-    
-    <div class="order-type">
-        <form action="" method="get" style="width: 200px;">
-            <select class="form-control" name="service-order-type" onchange="$(this).parent('form').submit();">
-                <option value="table">Таблицей</option>
-                <option value="net" <?php if($type == 'net') { echo ' selected="selected"'; }?>>Сеткой</option>
-            </select>
-        </form>
+    <div class="control row">
+        <div class="col-md-9">
+            <div class="service-ident">
+                <input type="text" name="service-ident" value="" id="service-ident" autocomplete="off" data-field-selector="<?=yii::$app->getModule('service')->mainIdentFieldSelector;?>" placeholder="<?=yii::$app->getModule('service')->mainIdent;?>" />
+            </div>
+            <p><small>Ctrl+enter - отправить заказ</small></p>
+        </div>
+        <div class="col-md-3">
+            <div class="order-type">
+                <form action="" method="get" style="width: 200px;">
+                    <select class="form-control" name="service-order-type" onchange="$(this).parent('form').submit();">
+                        <option value="table">Таблицей</option>
+                        <option value="net" <?php if($type == 'net') { echo ' selected="selected"'; }?>>Сеткой</option>
+                    </select>
+                    
+                </form>
+            </div>
+            
+        </div>
     </div>
     
     <div class="row">
