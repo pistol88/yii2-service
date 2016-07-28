@@ -9,6 +9,8 @@ class Module extends \yii\base\Module
     public $workers = null;
     public $workerPersent = 100;
     public $currency = 'руб.';
+    public $mainIdent = 'Номер и марка автомобиля';
+    public $mainIdentFieldSelector = '#fieldvalue-value-2';
     
     public function init()
     {

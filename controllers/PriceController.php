@@ -63,13 +63,21 @@ class PriceController extends Controller
                 }
             }
         }
+
+        $priceModel = new Price;
+        
+        $prices = [];
+        
+        foreach($priceModel::find()->all() as $price) {
+            $prices[$price->service_type][$price->category_id][$price->service_id] = $price;
+        }
         
         $services = Service::find()->orderBy('sort DESC, id ASC')->all();
         $complexes = Complex::find()->orderBy('sort DESC, id ASC')->all();
         $categories = Category::find()->orderBy('sort DESC, id ASC')->all();
-        $priceModel = new Price;
-        
+
         return $this->render('index', [
+            'prices' => $prices,
             'services' => $services,
             'categories' => $categories,
             'complexes' => $complexes,
@@ -81,6 +89,23 @@ class PriceController extends Controller
     
     public function actionOrder()
     {
+        if($type = yii::$app->request->get('service-order-type')) {
+            if(!in_array($type, ['net', 'table'])) {
+                return $this->redirect('404');
+            }
+            
+            yii::$app->response->cookies->add(new \yii\web\Cookie([
+                'name' => 'service-order-type',
+                'value' => $type
+            ]));
+        } else {
+            $type = yii::$app->request->cookies->get('service-order-type');
+
+            if(!$type) {
+                $type = 'table';
+            }
+        }
+        
         $services = Service::find()->orderBy('sort DESC, id ASC')->all();
         $categories = Category::find()->orderBy('sort DESC, id ASC')->all();
         $complexes = Complex::find()->orderBy('sort DESC, id ASC')->all();
@@ -91,7 +116,15 @@ class PriceController extends Controller
         $paymentTypes = ArrayHelper::map(PaymentType::find()->orderBy('order DESC')->all(), 'id', 'name');
         $shippingTypes = ArrayHelper::map(ShippingType::find()->orderBy('order DESC')->all(), 'id', 'name');
 
+        $prices = [];
+        
+        foreach($priceModel::find()->all() as $price) {
+            $prices[$price->service_type][$price->category_id][$price->service_id] = $price;
+        }
+        
         return $this->render('order', [
+            'type' => $type,
+            'prices' => $prices,
             'services' => $services,
             'complexes' => $complexes,
             'categories' => $categories,
@@ -102,6 +135,30 @@ class PriceController extends Controller
         ]);
     }
 
+    public function actionGetPrices()
+    {
+        $categoryId = (int)yii::$app->request->post('id');
+        
+        $categoryModel = Category::findOne($categoryId);
+        
+        $services = Service::find()->orderBy('sort DESC, id ASC')->all();
+        $complexes = Complex::find()->orderBy('sort DESC, id ASC')->all();
+        
+        $priceModel = new Price;
+        
+        $json = [];
+        
+        $json['HtmlBlock'] = $this->renderPartial('order-type/net/services', [
+            'priceModel' => $priceModel,
+            'categoryId' => $categoryId,
+            'services' => $services,
+            'complexes' => $complexes,
+            'categoryModel' => $categoryModel,
+        ]);
+    
+        die(json_encode($json));
+    }
+    
     public function actionCreate()
     {
         $model = new Price();

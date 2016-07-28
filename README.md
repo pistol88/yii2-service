@@ -57,6 +57,9 @@ php yii migrate --migrationPath=vendor/pistol88/yii2-service/migrations
             'workers' => function() {
                 return \common\models\User::findAll(['status' => 2, 'id' => Yii::$app->authManager->getUserIdsByRole(['washer'])]);
             },
+            'currency' => 'руб.', //
+            'mainIdent' => 'Номер и марка автомобиля', //Наименование основного идентификатора услуги
+            'mainIdentFieldSelector' => '#fieldvalue-value-2', //Селектор поля, куда будет вставляться mainIdent после ввода
         ],
         //..
     ]

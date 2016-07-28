@@ -31,16 +31,21 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p><?=ControlButton::widget();?></p>
     
-    <h2>Рабочие</h2>
+    <h2>Сотрудники</h2>
     
     <ul class="session-workers">
         <?php foreach($workers as $worker) { ?>
             <li class="row">
+                <div class="col-md-3">
+                    <?php if($worker->image) { ?>
+                        <img src="<?=$worker->image->getUrl('100x100');?>" />
+                    <?php } ?>
+                </div>
                 <div class="col-md-4">
-                    <p><strong><?=$worker->username;?></strong> <?php if($name = $worker->name) { ?>(<?=$name;?>)<?php } ?></p>
+                    <p><strong><?=$worker->name;?></strong></p>
                     <?=Info::widget(['for' => $worker]);?>
                 </div>
-                <div class="col-md-2"><?=ControlButton::widget(['for' => $worker]);?></div>
+                <div class="col-md-2"><div class="big-button"><?=ControlButton::widget(['for' => $worker]);?></div></div>
             </li>
         <?php } ?>
     </ul>

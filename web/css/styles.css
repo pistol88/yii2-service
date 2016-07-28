@@ -7,6 +7,19 @@
     float: right;
 }
 
+.service-ident {
+    padding-bottom: 20px;
+    font-size: 30px;
+}
+
+.service-ident input {
+    width: 100%;
+}
+
+.price-index .order-type {
+    padding-bottom: 10px;
+}
+
 .service-prices-table {
     font-size: 13px;
 }
@@ -39,6 +52,10 @@
     width: 40px;
 }
 
+.service-price {
+    float: right;
+}
+
 .service-order .total {
     font-size: 300%;
 }
@@ -52,4 +69,55 @@
     height: 20px;
     border-radius: 50%;
     background-color: #cc4b5d;
+}
+
+.service-order-net {
+    padding: 10px;
+}
+
+.service-order-net .header {
+    padding: 10px;
+}
+
+.service-order-net .category {
+    height: 200px;
+    font-size: 20px;
+    text-align: center;
+    border: 2px solid #c0e2ff;
+    overflow: hidden;
+}
+
+.service-order-net .category:hover {
+    border: 2px solid #c0e2ff;  
+    box-shadow:0 0 1px #006fcd;
+    background-color: #c0e2ff;
+}
+
+.service-order-net .price {
+    
+    cursor: pointer;
+    padding: 4px;
+    text-align: center;
+    border: 2px solid #c0e2ff;
+    height: 100px;
+    overflow: hidden;
+}
+
+.service-order-net .price .pistol88-cart-buy-button {
+    display: none;
+}
+
+.service-order-net .price input {
+    width: 60px;
+}
+
+.service-order-net .price:hover {
+    border: 2px solid #c0e2ff;  
+    box-shadow:0 0 1px #006fcd;
+    background-color: #c0e2ff;
+}
+
+.big-button .btn {
+    font-size: 30px;
+    padding: 7px !important;
 }

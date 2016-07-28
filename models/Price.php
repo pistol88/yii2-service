@@ -41,6 +41,11 @@ class Price extends \yii\db\ActiveRecord implements \pistol88\cart\interfaces\Ca
         return '<strong>'.$this->service->name.'</strong> <br /><small>'.$this->category->name.'</small>';
     }
 
+    public function getShortName()
+    {
+        return $this->service->name;
+    }
+    
     public function getName()
     {
         return $this->service->name.' - '.$this->category->name;

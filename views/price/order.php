@@ -2,11 +2,8 @@
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
-use pistol88\cart\widgets\BuyButton;
 use pistol88\cart\widgets\ElementsList;
-use pistol88\cart\widgets\ChangeCount;
 use pistol88\cart\widgets\CartInformer;
-use pistol88\order\models\FieldValue;
 
 $this->title = 'Заказ услуги';
 $this->params['breadcrumbs'][] = $this->title;
@@ -21,63 +18,27 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <br class="clear" />
     
+    <div class="service-ident">
+        <input type="text" name="service-ident" value="" id="service-ident" autocomplete="off" data-field-selector="<?=yii::$app->getModule('service')->mainIdentFieldSelector;?>" placeholder="<?=yii::$app->getModule('service')->mainIdent;?>" />
+    </div>
+    
+    <div class="order-type">
+        <form action="" method="get" style="width: 200px;">
+            <select class="form-control" name="service-order-type" onchange="$(this).parent('form').submit();">
+                <option value="table">Таблицей</option>
+                <option value="net" <?php if($type == 'net') { echo ' selected="selected"'; }?>>Сеткой</option>
+            </select>
+        </form>
+    </div>
+    
     <div class="row">
-        <div class="col-lg-8">
-            <table class="table table-hover table-responsive service-prices-table">
-                <tr>
-                    <td width="200">Вид услуги</td>
-                    <?php foreach($categories as $category) { ?>
-                        <td><strong><?=$category->name;?></strong></td>
-                    <?php } ?>
-                </tr>
-                <?php foreach($complexes as $complex) { ?>
-                    <tr>
-                        <td><strong>Комплекс «<?=$complex->name;?>»</strong> <small>(<?=implode(', ', ArrayHelper::map($complex->services, 'id', 'name'));?>)</small></td>
-                        <?php foreach($categories as $category) { ?>
-                            <?php if($price = $priceModel::find()->tariff($category->id, $complex)->one()) { ?>
-                                <td class="price" title="<?=$price->description;?>">
-                                    <input  <?php if(!empty($price->description)) echo ' style="border: 1px solid yellow;"'; ?> data-base-price="<?=$price->price;?>" type="text" name="text" value="<?=$price->price;?>" />
-                                    <?= BuyButton::widget([
-                                        'model' => $price,
-                                        'text' => '<i class="glyphicon glyphicon-shopping-cart"></i>',
-                                        'htmlTag' => 'a',
-                                        'cssClass' => 'btn btn-default'
-                                    ]) ?>
-                                </td>
-                            <?php } ?>
-                        <?php } ?>
-                    </tr>
-                <?php } ?>
-                <?php foreach($services as $service) { ?>
-                    <tr>
-                        <td><?=$service->name;?></td>
-                        <?php foreach($categories as $category) { ?>
-                            <?php if($price = $priceModel::find()->tariff($category->id, $service)->one()) { ?>
-                                <td class="price" title="<?=$price->description;?>">
-                                    <input <?php if(!empty($price->description)) echo ' style="border: 1px solid yellow;"'; ?> data-base-price="<?=$price->price;?>" type="text" name="text" value="<?=$price->price;?>" />
-                                    <?= BuyButton::widget([
-                                        'model' => $price,
-                                        'text' => '<i class="glyphicon glyphicon-shopping-cart"></i>',
-                                        'htmlTag' => 'a',
-                                        'cssClass' => 'btn btn-default'
-                                    ]) ?>
-                                </td>
-                            <?php } ?>
-                        <?php } ?>
-                    </tr>
-                <?php } ?>
-                <tr>
-                    <td width="200">Вид услуги</td>
-                    <?php foreach($categories as $category) { ?>
-                        <td><strong><?=$category->name;?></strong></td>
-                    <?php } ?>
-                </tr>
-            </table>
+        <div class="col-lg-8 col-md-8  col-sm-12">
+            <?=$this->render('order-type/'.$type, ['categories' => $categories, 'services' => $services, 'complexes' => $complexes, 'prices' => $prices]);?>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-4  col-md-4 col-sm-12">
             <div class="service-order">
                 <h2>Корзина</h2>
-                <?=ElementsList::widget(['type' => ElementsList::TYPE_FULL]);?>
+                <?=ElementsList::widget(['showCountArrows' => false, 'type' => ElementsList::TYPE_FULL]);?>
 
                 <div class="row">
                     <div class="col-lg-6">

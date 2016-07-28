@@ -32,11 +32,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td>K<?=$complex->id;?></td>
                     <td><strong>Комплекс «<?=$complex->name;?>»</strong></td>
                     <?php foreach($categories as $category) { ?>
-                        <?php $priceModel = $priceModel->getTariff($category, $complex); ?>
+                        <?php $price = $prices[$complex::className()][$category->id][$complex->id]; ?>
                         <td>
-                            <input style="width: 70%;" type="text" name="price[<?=$category->id;?>][<?=$complex::className();?>][<?=$complex->id;?>]" value="<?=$priceModel->price;?>" />
-                            <?php if($priceModel->id) { ?>
-                                <a href="<?=Url::toRoute(['update', 'id' => $priceModel->id]);?>"><i class="glyphicon glyphicon-pencil"></i></a>
+                            <input style="width: 70%;" type="text" name="price[<?=$category->id;?>][<?=$complex::className();?>][<?=$complex->id;?>]" value="<?=$price->price;?>" />
+                            <?php if($price->id) { ?>
+                                <a href="<?=Url::toRoute(['update', 'id' => $price->id]);?>"><i class="glyphicon glyphicon-pencil"></i></a>
                             <?php } ?>
                         </td>
                     <?php } ?>
@@ -47,11 +47,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?=$service->id;?></td>
                     <td><?=$service->name;?></td>
                     <?php foreach($categories as $category) { ?>
-                        <?php $priceModel = $priceModel->getTariff($category, $service); ?>
+                        <?php $price = $prices[$service::className()][$category->id][$service->id]; ?>
                         <td>
-                            <input style="width: 70%;" type="text" name="price[<?=$category->id;?>][<?=$service::className();?>][<?=$service->id;?>]" value="<?=$priceModel->price;?>" />
-                            <?php if($priceModel->id) { ?>
-                                <a href="<?=Url::toRoute(['update', 'id' => $priceModel->id]);?>"><i class="glyphicon glyphicon-pencil"></i></a>
+                            <input style="width: 70%;" type="text" name="price[<?=$category->id;?>][<?=$service::className();?>][<?=$service->id;?>]" value="<?=$price->price;?>" />
+                            <?php if($price->id) { ?>
+                                <a href="<?=Url::toRoute(['update', 'id' => $price->id]);?>"><i class="glyphicon glyphicon-pencil"></i></a>
                             <?php } ?>
                         </td>
                     <?php } ?>

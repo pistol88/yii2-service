@@ -1,14 +1,26 @@
 if (typeof pistol88 == "undefined" || !pistol88) {
     var pistol88 = {};
 }
+$('#service-ident').focus();
 
 pistol88.service = {
     init: function() {
-        $(document).on('click', '.service-prices-table td.price input', function() {
+        $(document).on('blur', '#service-ident', function() {
+           $($(this).data('field-selector')).val($(this).val());
+        });
+        
+        $(document).on('click', 'input.service-price', function() {
             $(this).select();
         });
         
-        $(document).on('keypress', '.service-prices-table td.price input', function(e) {
+        $(document).on('click', '.service-order-net .price', function(e) {
+            console.log(e.target.tagName);
+            if(e.target.tagName != 'INPUT' && e.target.tagName != 'input') {
+                $(this).find('.pistol88-cart-buy-button').click();
+            }
+        });
+
+        $(document).on('keypress', 'input.service-price', function(e) {
             if(e.which == 13) {
                 $(this).siblings('.pistol88-cart-buy-button').click();
             }
@@ -21,6 +33,16 @@ pistol88.service = {
             $('.service-prices-table td').removeClass('hover');
         });
         
+        $('.service-order-net .category a').on('click', this.getServicesByCategory);
+    },
+    getServicesByCategory: function() {
+        $.post($(this).attr('href'), {id: $(this).data('id')},
+            function(answer) {
+                json = answer;
+                $('.service-order-net').replaceWith(json.HtmlBlock);
+            }, "json");
+  
+        return false;
     },
     renderCross: function () {
         console.log('renderCross');
