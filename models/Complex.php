@@ -8,8 +8,8 @@ class Complex extends \yii\db\ActiveRecord implements \pistol88\service\interfac
     public function behaviors()
     {
         return [
-            [
-                'class' => \voskobovich\behaviors\ManyToManyBehavior::className(),
+            'category' => [
+                'class' => \voskobovich\manytomany\ManyToManyBehavior::className(),
                 'relations' => [
                     'service_ids' => 'services',
                 ],
