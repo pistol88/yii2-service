@@ -21,9 +21,16 @@ $this->params['breadcrumbs'][] = $this->title;
             <td><strong>Заказов/Услуг</strong></td>
             <td><strong>Выручка</strong></td>
             <td><strong>Время работы</strong></td>
-            <td><strong>Доля выручки</strong></td>
+            <td><strong>Зарплата</strong></td>
         </tr>
-        <?php foreach($workers as $worker) { ?>
+        <?php
+        $sum = ['orders' => 0, 'services' => 0, 'total' => 0, 'earnings' => '0'];
+        foreach($workers as $worker) {
+            $sum['orders'] += $workerStat[$worker->id]['order_count'];
+            $sum['services'] += $workerStat[$worker->id]['service_count'];
+            $sum['total'] += $workerStat[$worker->id]['service_total'];
+            $sum['earnings'] += $workerStat[$worker->id]['earnings'];
+            ?>
             <tr>
                 <td class="worker-name">
                     <p>
@@ -67,6 +74,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 </td>
             </tr>
         <?php } ?>
+        <tr>
+            <td align="right">Итого:</td>
+            <td><strong><?=$sum['orders'];?>/<?=$sum['services'];?></strong></td>
+            <td><strong><?=$sum['total'];?></strong></td>
+            <td><strong>-</strong></td>
+            <td><strong><?=$sum['earnings'];?></strong></td>
+        </tr>
     </table>
 
 </div>
