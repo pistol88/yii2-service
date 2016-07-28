@@ -15,8 +15,22 @@
     width: 100%;
 }
 
+.service-order h2 .pistol88-cart-count {
+    background-color: #333;
+    color: white;
+    border-radius: 30px;
+    padding: 5px;
+    display: inline;
+}
+
 .price-index .order-type {
     padding-bottom: 10px;
+}
+
+.price-index .pistol88-cart-truncate-button {
+    float: right;
+    font-size: 13px;
+    padding: 2px;
 }
 
 .price-index .control {
@@ -138,4 +152,8 @@
 #orderForm .offer .btn { 
     font-size: 40px;
     padding: 10px;
+}
+
+#orderForm .promocode p {
+    margin: 0 0 4px;
 }

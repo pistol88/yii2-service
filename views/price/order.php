@@ -45,20 +45,17 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <div class="col-lg-4  col-md-4 col-sm-12">
             <div class="service-order">
-                <h2>Корзина</h2>
+                <h2>Корзина <span class="pistol88-cart-count"><?=yii::$app->cart->count;?></span></h2>
                 <?=ElementsList::widget(['showCountArrows' => false, 'type' => ElementsList::TYPE_FULL]);?>
 
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-8">
                         <div class="total">
                             <?= CartInformer::widget(['htmlTag' => 'span', 'offerUrl' => '/?r=cart', 'text' => '{c} на {p}']); ?>
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="promocode">
-                            <p>Скидочный код</p>
-                            <?=\pistol88\promocode\widgets\Enter::widget();?>
-                        </div>
+                    <div class="col-lg-4">
+                        
                     </div>
                 </div>
 
@@ -67,10 +64,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php $form = ActiveForm::begin(['action' => ['/order/order/create'], 'id' => 'orderForm']); ?>
                     <div class="row">
                         <div class="col-lg-6">
+                            <?= $form->field($orderModel, 'status')->textInput(['value' => 'new', 'type' => 'hidden', 'maxlength' => true]) ?>
                             <?= $form->field($orderModel, 'payment_type_id')->dropDownList($paymentTypes) ?>
                         </div>
                         <div class="col-lg-6">
-                            <?= $form->field($orderModel, 'status')->dropDownList(Yii::$app->getModule('order')->orderStatuses) ?>
+                            <div class="promocode">
+                                <p>Скидочный код</p>
+                                <?=\pistol88\promocode\widgets\Enter::widget();?>
+                            </div>
                         </div>
                     </div>
 

@@ -48,13 +48,23 @@ pistol88.service = {
         });
         
         $(document).on('mouseenter','.service-prices-table td', this.renderCross);
-        $(document).on('click', '.pistol88-cart-buy-button', this.addToCart);
+        $(document).on('click', '.pistol88-cart-buy-button, .service-order-net .price', this.addToCart);
         
         $(document).on('mouseleave','.service-prices-table td',function () {
             $('.service-prices-table td').removeClass('hover');
         });
         
-        $('.service-order-net .category a').on('click', this.getServicesByCategory);
+        $(document).on('click', '.service-order-net .category a', this.getServicesByCategory);
+        $(document).on('click', '.service-order-net a.back', this.getCategories);
+    },
+    getCategories: function() {
+        $.post($(this).attr('href'), {},
+            function(answer) {
+                json = answer;
+                $('.service-order-net').replaceWith(json.HtmlBlock);
+            }, "json");
+  
+        return false;
     },
     getServicesByCategory: function() {
         $.post($(this).attr('href'), {id: $(this).data('id')},
@@ -74,7 +84,6 @@ pistol88.service = {
         $('.service-prices-table tr').find('td:eq(' + Col + ')').addClass('hover');
     },
     addToCart: function(e) {
-        console.log('addToCart');
         $(this).data('price', $(this).siblings('input').val());
         
         $(this).siblings('input').val($(this).siblings('input').data('base-price'));
@@ -84,7 +93,7 @@ pistol88.service = {
         if(x) {
             var y = e.pageY;
 
-            var cart_pos = $('.pistol88-cart-informer').offset();
+            var cart_pos = $('.service-order h2 .pistol88-cart-count').offset();
 
             $('.pistol88-cart-informer').css('opacity','0.3');
 
@@ -94,7 +103,7 @@ pistol88.service = {
                     {
                         'position': 'absolute',
                         'display': 'block',
-                        'margin-top': '-20px',
+                        'margin-top': '-35px',
                         'z-index': '1500',
                         'left': x,
                         'top': y,
@@ -103,7 +112,7 @@ pistol88.service = {
                 .animate(
                     {
                         'top': cart_pos.top+52,
-                        'left': cart_pos.left+3,
+                        'left': cart_pos.left,
                         'opacity': '0.5'
                     },
                     1100,

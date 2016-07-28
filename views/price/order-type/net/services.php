@@ -7,7 +7,7 @@ use pistol88\cart\widgets\ChangeCount;
 ?>
 <div class="service-order-net">
     <div class="header">
-        <a href="<?=Url::toRoute(['/service/price/order']);?>">Выбор категории</a> / <?=$categoryModel->name;?> / Выбор услуги
+        <a href="<?=Url::toRoute(['/service/price/get-categories']);?>" class="back"> <i class="glyphicon glyphicon-chevron-left"></i> Выбор категории</a> / <strong><?=$categoryModel->name;?></strong> / Выбор услуги
     </div>
     <div class="body">
         <div class="services">

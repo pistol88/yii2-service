@@ -29,7 +29,6 @@ class PriceController extends Controller
             ],
             'access' => [
                 'class' => AccessControl::className(),
-				'only' => ['create', 'update', 'index', 'delete', 'order'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -102,7 +101,7 @@ class PriceController extends Controller
             $type = yii::$app->request->cookies->get('service-order-type');
 
             if(!$type) {
-                $type = 'table';
+                $type = 'net';
             }
         }
         
@@ -154,6 +153,19 @@ class PriceController extends Controller
             'services' => $services,
             'complexes' => $complexes,
             'categoryModel' => $categoryModel,
+        ]);
+    
+        die(json_encode($json));
+    }
+    
+    public function actionGetCategories()
+    {
+        $categories = Category::find()->orderBy('sort DESC, id ASC')->all();
+        
+        $json = [];
+        
+        $json['HtmlBlock'] = $this->renderPartial('order-type/net/categories', [
+            'categories' => $categories,
         ]);
     
         die(json_encode($json));
