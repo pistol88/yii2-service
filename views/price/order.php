@@ -21,14 +21,14 @@ $this->params['breadcrumbs'][] = $this->title;
     <p align="center"><small>Enter - отправить заказ</small></p>
     
     <div class="control row">
-        <div class="col-md-9">
+        <div class="col-md-9 ident">
             <div class="service-ident">
                 <input type="text" name="service-ident" value="" id="service-ident" autocomplete="off" data-field-selector="<?=yii::$app->getModule('service')->mainIdentFieldSelector;?>" placeholder="<?=yii::$app->getModule('service')->mainIdent;?>" />
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 types">
             <div class="order-type">
-                <form action="" method="get" style="width: 200px;">
+                <form action="" method="get">
                     <select class="form-control" name="service-order-type" onchange="$(this).parent('form').submit();">
                         <option value="table">Таблицей</option>
                         <option value="net" <?php if($type == 'net') { echo ' selected="selected"'; }?>>Сеткой</option>

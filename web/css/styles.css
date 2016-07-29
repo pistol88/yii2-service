@@ -37,6 +37,19 @@
     padding-left: 9px;
 }
 
+.price-index .control .order-type {
+    float: right;
+    font-size: 12px;
+}
+
+
+.price-index .control .order-type select {
+    font-size: 12px;
+    padding: 2px;
+    height: auto;
+    width: 100px;
+}
+
 .service-prices-table {
     font-size: 13px;
 }
