@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <br class="clear" />
     
-    <p><small>Enter - отправить заказ</small></p>
+    <p align="center"><small>Enter - отправить заказ</small></p>
     
     <div class="control row">
         <div class="col-md-9">
@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
                 
-                <?=ElementsList::widget(['showCountArrows' => false, 'type' => ElementsList::TYPE_FULL]);?>
+                <?=ElementsList::widget(['columns' => '3', 'showCountArrows' => false, 'type' => ElementsList::TYPE_FULL]);?>
 
                 <div class="row">
                     <div class="col-lg-8">

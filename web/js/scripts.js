@@ -52,6 +52,7 @@ pistol88.service = {
         });
         
         $(document).on('mouseenter','.service-prices-table td', this.renderCross);
+        
         $(document).on('click', '.pistol88-cart-buy-button, .service-order-net .price', this.addToCart);
         
         $(document).on('mouseleave','.service-prices-table td',function () {
@@ -88,6 +89,12 @@ pistol88.service = {
         $('.service-prices-table tr').find('td:eq(' + Col + ')').addClass('hover');
     },
     addToCart: function(e) {
+        $('.service-order').css('opacity', '0.3');
+        
+        setTimeout(function() { $('.service-order').css('opacity', '1') }, 300);
+        
+        return true;
+        
         $(this).data('price', $(this).siblings('input').val());
         
         $(this).siblings('input').val($(this).siblings('input').data('base-price'));
