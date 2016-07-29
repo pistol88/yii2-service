@@ -5,6 +5,15 @@ $('#service-ident').focus();
 
 pistol88.service = {
     init: function() {
+        $(document).on('submit', '#orderForm', function() {
+            $('#orderForm').css('css', '0.5');
+            setTimeout(function() {
+                $('.service-order .pistol88-cart-truncate-button').click();
+                $('.service-order-net .header .back').click();
+                $('#orderForm').css('css', '1');
+            }, 600);
+        });
+        
         $(document).on('blur', '#service-ident', function() {
            $($(this).data('field-selector')).val($(this).val());
         });
@@ -18,26 +27,21 @@ pistol88.service = {
         });
         
         $(document).on('click', '.service-order-net .price, .pistol88-cart-buy-button', function() {
-            $(this).css('border', '2px solid red');
+            $(this).css('border', '2px solid #3F5696');
         });
-            
-        
+
         $(document).on('click', '.service-order-net .price', function(e) {
-            $(this).css('border', '2px solid red');
+            $(this).css('border', '2px solid #3F5696');
             if(e.target.tagName != 'INPUT' && e.target.tagName != 'input') {
                 $(this).find('.pistol88-cart-buy-button').click();
             }
         });
 
-        $(document).on('keypress', '#service-ident', function(e) {
+        $(document).on('keypress', function(e) {
             if(e.which == 13) {
-                $('#orderForm').submit();
-            }
-        });
-        
-        $(document).on('keypress', function(event) {
-            if((event.ctrlKey) && ((event.keyCode == 0xA)||(event.keyCode == 0xD))) {
-                $("#orderForm").submit();
+                if(e.target.tagName != 'TEXTAREA' && e.target.tagName != 'textarea') {
+                    $('#orderForm').submit();
+                }
             }
         });
 
@@ -93,7 +97,7 @@ pistol88.service = {
         if(x) {
             var y = e.pageY;
 
-            var cart_pos = $('.service-order h2 .pistol88-cart-count').offset();
+            var cart_pos = $('.service-order h3 .pistol88-cart-count').offset();
 
             $('.pistol88-cart-informer').css('opacity','0.3');
 

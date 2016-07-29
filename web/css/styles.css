@@ -15,7 +15,7 @@
     width: 100%;
 }
 
-.service-order h2 .pistol88-cart-count {
+.service-order h3 .pistol88-cart-count {
     background-color: #333;
     color: white;
     border-radius: 30px;
@@ -57,7 +57,7 @@
 }
 
 .service-prices-table td.price .btn:hover {
-    color: red;
+    color: #3F5696;
 }
 
 .service-prices-table td.price .btn {
@@ -121,7 +121,6 @@
 }
 
 .service-order-net .price {
-    
     cursor: pointer;
     padding: 4px;
     text-align: center;
@@ -150,6 +149,7 @@
 }
 
 #orderForm .offer .btn { 
+    width: 96%;
     font-size: 40px;
     padding: 10px;
 }

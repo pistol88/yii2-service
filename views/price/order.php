@@ -18,12 +18,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <br class="clear" />
     
+    <p><small>Enter - отправить заказ</small></p>
+    
     <div class="control row">
         <div class="col-md-9">
             <div class="service-ident">
                 <input type="text" name="service-ident" value="" id="service-ident" autocomplete="off" data-field-selector="<?=yii::$app->getModule('service')->mainIdentFieldSelector;?>" placeholder="<?=yii::$app->getModule('service')->mainIdent;?>" />
             </div>
-            <p><small>Ctrl+enter - отправить заказ</small></p>
         </div>
         <div class="col-md-3">
             <div class="order-type">
@@ -40,12 +41,22 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     
     <div class="row">
-        <div class="col-lg-8 col-md-8  col-sm-12">
+        <div class="col-lg-9 col-md-8  col-sm-12">
             <?=$this->render('order-type/'.$type, ['categories' => $categories, 'services' => $services, 'complexes' => $complexes, 'prices' => $prices]);?>
         </div>
-        <div class="col-lg-4  col-md-4 col-sm-12">
+        <div class="col-lg-3 col-md-3 col-sm-12">
             <div class="service-order">
-                <h2>Корзина <span class="pistol88-cart-count"><?=yii::$app->cart->count;?></span></h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>Чек <span class="pistol88-cart-count"><?=yii::$app->cart->count;?></span></h3>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="promocode">
+                            <?=\pistol88\promocode\widgets\Enter::widget();?>
+                        </div>
+                    </div>
+                </div>
+                
                 <?=ElementsList::widget(['showCountArrows' => false, 'type' => ElementsList::TYPE_FULL]);?>
 
                 <div class="row">
@@ -59,19 +70,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 </div>
 
-                <h2>Заказ</h2>
-                
-                <?php $form = ActiveForm::begin(['action' => ['/order/order/create'], 'id' => 'orderForm']); ?>
+                <h3>Заказ</h3>
+                <iframe src="about:blank" id="orderSubmitter" name="orderSubmitter" style="display:none;"></iframe>
+                <?php $form = ActiveForm::begin(['options' => ['target' => 'orderSubmitter'], 'action' => ['/order/order/create'], 'id' => 'orderForm']); ?>
                     <div class="row">
-                        <div class="col-lg-6">
-                            <?= $form->field($orderModel, 'status')->textInput(['value' => 'new', 'type' => 'hidden', 'maxlength' => true]) ?>
-                            <?= $form->field($orderModel, 'payment_type_id')->dropDownList($paymentTypes) ?>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="promocode">
-                                <p>Скидочный код</p>
-                                <?=\pistol88\promocode\widgets\Enter::widget();?>
+                        <div class="col-lg-12">
+                            <div style="display: none;">
+                                <?= $form->field($orderModel, 'status')->label(false)->textInput(['value' => 'new', 'type' => 'hidden', 'maxlength' => true]) ?>
                             </div>
+                            <?= $form->field($orderModel, 'payment_type_id')->dropDownList($paymentTypes) ?>
                         </div>
                     </div>
 
