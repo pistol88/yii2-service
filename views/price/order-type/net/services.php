@@ -30,7 +30,6 @@ use pistol88\cart\widgets\ChangeCount;
                         </div>
                     <?php } ?>
                 </div>
-                <hr />
             <?php } ?>
             <h3>Услуги</h3>
             <div class="row">

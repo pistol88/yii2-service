@@ -11,6 +11,8 @@ class Module extends \yii\base\Module
     public $currency = 'руб.';
     public $mainIdent = 'Номер и марка автомобиля';
     public $mainIdentFieldSelector = '#fieldvalue-value-2';
+    public $cache = true;
+    public $cachePeriod = 7000;
     
     public function init()
     {

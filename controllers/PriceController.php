@@ -20,7 +20,7 @@ class PriceController extends Controller
 {
     public function behaviors()
     {
-        return [
+        $behaviors = [
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -35,8 +35,42 @@ class PriceController extends Controller
                         'roles' => $this->module->adminRoles,
                     ]
                 ]
-            ],
+            ]
         ];
+        
+        if($this->module->cache) {
+            $caches = [
+                'pageCache' => [
+                    'class' => 'yii\filters\PageCache',
+                    'only' => ['order'],
+                    'duration' => $this->module->cachePeriod,
+                    'dependency' => [
+                        'class' => 'yii\caching\DbDependency',
+                        'sql' => 'SELECT COUNT(*) FROM service_price',
+                    ],
+                    'variations' => [
+                        yii::$app->request->get(),
+                        yii::$app->request->post(),
+                        yii::$app->user->id,
+                        yii::$app->request->cookies->get('service-order-type'),
+                        yii::$app->cart->hash,
+                    ]
+                ],
+                'pageCache2' => [
+                    'class' => 'yii\filters\PageCache',
+                    'only' => ['get-prices', 'get-categories'],
+                    'duration' => $this->module->cachePeriod,
+                    'variations' => [
+                        yii::$app->request->get(),
+                        yii::$app->request->post(),
+                    ]
+                ],
+            ];
+            
+            $behaviors = array_merge($behaviors, $caches);
+        }
+        
+        return $behaviors;
     }
 
     public function actionIndex()
