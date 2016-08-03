@@ -170,3 +170,9 @@
 #orderForm .promocode p {
     margin: 0 0 4px;
 }
+
+.administrator-place {
+    width: 300px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
