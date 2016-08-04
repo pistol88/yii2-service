@@ -39,6 +39,7 @@ class SessionController extends Controller
         
         return $this->render('current', [
             'workers' => $workers,
+            'module' => $this->module,
         ]);
     }
 }

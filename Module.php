@@ -13,6 +13,7 @@ class Module extends \yii\base\Module
     public $mainIdentFieldSelector = '#fieldvalue-value-2';
     public $cache = true;
     public $cachePeriod = 7000;
+    public $shiftDuration = 12; //in hours
     
     public function init()
     {

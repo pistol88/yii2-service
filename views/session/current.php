@@ -15,27 +15,25 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="service-menu">
         <?=$this->render('../parts/menu');?>
     </div>
-    
-    
-        <?php if(Yii::$app->session->hasFlash('success')) { ?>
-            <div class="alert alert-success" role="alert">
-                <?= Yii::$app->session->getFlash('success') ?>
-            </div>
-        <?php } ?>
-        <?php if(Yii::$app->session->hasFlash('fail')) { ?>
-            <div class="alert alert-danger" role="alert">
-                <?= Yii::$app->session->getFlash('fail') ?>
-            </div>
-        <?php } ?>
-    
-    
+
+    <?php if(Yii::$app->session->hasFlash('success')) { ?>
+        <div class="alert alert-success" role="alert">
+            <?= Yii::$app->session->getFlash('success') ?>
+        </div>
+    <?php } ?>
+    <?php if(Yii::$app->session->hasFlash('fail')) { ?>
+        <div class="alert alert-danger" role="alert">
+            <?= Yii::$app->session->getFlash('fail') ?>
+        </div>
+    <?php } ?>
+
     <h2>Смена</h2>
     <div class="administrator-place">
         <?=Info::widget();?>
 
         <?=ControlButton::widget();?>
     </div>
-    
-    <?=SessionGraph::widget();?>
 
+    <h2>Сотрудники</h2>
+    <?=SessionGraph::widget(['hoursCount' => $module->shiftDuration]);?>
 </div>

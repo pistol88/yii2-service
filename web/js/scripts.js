@@ -5,6 +5,8 @@ $('#service-ident').focus();
 
 pistol88.service = {
     init: function() {
+        $(document).on('change', '.get-sessions-by-date', this.getSessions);
+        
         $(document).on('submit', '#orderForm', function() {
             $('#orderForm').css('css', '0.5');
             setTimeout(function() {
@@ -67,6 +69,16 @@ pistol88.service = {
             function(answer) {
                 json = answer;
                 $('.service-order-net').replaceWith(json.HtmlBlock);
+            }, "json");
+  
+        return false;
+    },
+    getSessions: function() {
+        var input = $(this);
+        $.post($(this).attr('href'), {date: $(this).val()},
+            function(answer) {
+                json = answer;
+                $(input).siblings('ul').replaceWith(json.HtmlList);
             }, "json");
   
         return false;
