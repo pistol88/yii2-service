@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ?>
                 <tr>
                     <td class="worker-name">
-                        <p>
+                        <p class="staffername">
                             <strong><?=$worker->name;?></strong>
                         </p>
                         <?php if($cat = $worker->category) { ?>
