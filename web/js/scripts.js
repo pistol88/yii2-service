@@ -12,6 +12,7 @@ pistol88.service = {
             setTimeout(function() {
                 $('.service-order .pistol88-cart-truncate-button').click();
                 $('.service-order-net .header .back').click();
+                $('#service-ident').val('').focus().select();
                 $('#orderForm').css('css', '1');
             }, 600);
         });

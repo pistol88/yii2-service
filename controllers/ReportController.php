@@ -36,43 +36,61 @@ class ReportController extends Controller
             $session = Session::findOne($sessionId);
         }
 
-        $total = 0;
+        $stat = null;
         
         $workers = $this->module->getWorkersList();
 
         $workerStat = [];
-        
-        //Считаем количество заказов и выручку за каждую смену каждого сотрудника
-        $washersCount = yii::$app->worksess->getWorkersCount();
 
         $workers = [];
         $workerStat = [];
         
         if($session) {
             $workers = $session->users;
-            $total = Order::getStatByDatePeriod($session->start, $session->stop)['total'];
+            $stat = Order::getStatByDatePeriod($session->start, $session->stop);
+
+            $workersCount = 0;
             
             foreach($workers as $worker) {
+                if($worker->pay_type == 'base' | empty($worker->pay_type)) {
+                    $workersCount++;
+                }
+            }
+
+            foreach($workers as $worker) {
+                if(empty($worker->persent)) {
+                    $basePersent = $this->module->workerPersent;
+                    $persent = '0.'.$this->module->workerPersent;
+                } else {
+                    $basePersent = $worker->persent;
+                    $persent = '0.'.$worker->persent;
+                }
+                
                 if(!isset($workerStat[$worker->id]['service_count'])) {
                     $workerStat[$worker->id]['service_count'] = 0; //Выполнено услуг
                     $workerStat[$worker->id]['order_count'] = 0; //Кол-во заказов
                     $workerStat[$worker->id]['service_total'] = 0; //Общая сумма выручки
                     $workerStat[$worker->id]['earnings'] = 0;
+                    $workerStat[$worker->id]['persent'] = $basePersent;
                 }
-
-                $persent = '0.'.$this->module->workerPersent;
 
                 $workerSessions = $worker->getSessionsBySessions($session);
 
                 $workerStat[$worker->id]['sessions'] = $workerSessions;
 
                 foreach($workerSessions as $workSession) {
+                    
                     $stat = Order::getStatByDatePeriod($workSession->start, $workSession->stop);
                     $workerStat[$worker->id]['service_count'] += $stat['count_elements'];
                     $workerStat[$worker->id]['order_count'] += $stat['count_order'];
                     $workerStat[$worker->id]['service_total'] += $stat['total'];
+
                     //Заработок равен общей выручке за смену / кол-во работников в эту смену
-                    $workerStat[$worker->id]['earnings'] += ($stat['total']*$persent)/$washersCount;
+                    if($workersCount) {
+                        $workerStat[$worker->id]['earnings'] += ($stat['total']*$persent)/$workersCount;
+                    } else {
+                        $workerStat[$worker->id]['earnings'] += ($stat['total']*$persent);
+                    }
                 }
             }
         }
@@ -91,11 +109,10 @@ class ReportController extends Controller
             'date' => $date,
             'session' => $session,
             'sessions' => $sessions,
-            'totalToday' => $total,
+            'stat' => $stat,
             'workerPersent' => $workerPersent,
             'workers' => $workers,
             'workerStat' => $workerStat,
-            'secondCost' => $total/86400,
             'module' => $this->module,
         ]);
     }
