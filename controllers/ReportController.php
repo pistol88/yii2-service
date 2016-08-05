@@ -2,6 +2,7 @@
 namespace pistol88\service\controllers;
 
 use yii;
+use pistol88\service\events\Earnings;
 use pistol88\order\models\Order;
 use pistol88\worksess\models\Session;
 use yii\helpers\Html;
@@ -71,6 +72,8 @@ class ReportController extends Controller
                     $workerStat[$worker->id]['order_count'] = 0; //Кол-во заказов
                     $workerStat[$worker->id]['service_total'] = 0; //Общая сумма выручки
                     $workerStat[$worker->id]['earnings'] = 0;
+                    $workerStat[$worker->id]['bonus'] = 0;
+                    $workerStat[$worker->id]['fine'] = 0;
                     $workerStat[$worker->id]['persent'] = $basePersent;
                 }
 
@@ -80,16 +83,41 @@ class ReportController extends Controller
 
                 foreach($workerSessions as $workSession) {
                     
-                    $stat = Order::getStatByDatePeriod($workSession->start, $workSession->stop);
+                    $userStat = Order::getStatByDatePeriod($workSession->start, $workSession->stop);
                     $workerStat[$worker->id]['service_count'] += $stat['count_elements'];
                     $workerStat[$worker->id]['order_count'] += $stat['count_order'];
                     $workerStat[$worker->id]['service_total'] += $stat['total'];
 
-                    //Заработок равен общей выручке за смену / кол-во работников в эту смену
                     if($workersCount) {
-                        $workerStat[$worker->id]['earnings'] += ($stat['total']*$persent)/$workersCount;
+                        $earning = ($stat['total']*$persent)/$workersCount;
                     } else {
-                        $workerStat[$worker->id]['earnings'] += ($stat['total']*$persent);
+                        $earning = ($stat['total']*$persent);
+                    }
+
+                    $earningsEvent = new Earnings(
+                        [
+                            'worker' => $worker,
+                            'persent' => $persent,
+                            'total' => $stat['total'],
+                            'userTotal' => $userStat['total'],
+                            'workersCount' => $workersCount,
+                            'earning' => $earning,
+                        ]
+                    );
+                    
+                    $module = $this->module;
+                    $module->trigger($module::EVENT_EARNINGS, $earningsEvent);
+                    
+                    $earning = $earningsEvent->earning;
+                    
+                    $workerStat[$worker->id]['earnings'] += $earning;
+                    
+                    if($earningsEvent->bonus) {
+                        $workerStat[$worker->id]['bonus'] = $earningsEvent->bonus;
+                    }
+                    
+                    if($earningsEvent->fine) {
+                        $workerStat[$worker->id]['fine'] = $earningsEvent->fine;
                     }
                 }
             }
@@ -120,18 +148,17 @@ class ReportController extends Controller
     public function actionGetSessions()
     {
         $session = yii::$app->worksess->getSessions(null, yii::$app->request->post('date'));
-        
+
         $json = [];
-        
+
         if(empty($session)) {
             $json['HtmlList'] = '<ul><li>Сессии не были открыты.</li></ul>';
         } else {
-        
             $json['HtmlList'] = Html::ul($session, ['item' => function($item, $index) {
-                return html::tag('li', Html::a($item->start.' ('.$item->user->name.')', ['/service/report/index', 'sessionId' => $item->id]));
+                return html::tag('li', Html::a(date('d.m.Y H:i:s', $item->start_timestamp).' ('.$item->user->name.')', ['/service/report/index', 'sessionId' => $item->id]));
             }]);
         }
-        
+
         die(json_encode($json));
     }
 }

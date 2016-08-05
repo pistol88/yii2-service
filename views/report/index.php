@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <input href="<?=Url::toRoute(['/service/report/get-sessions']);?>" class="get-sessions-by-date form-control" type="date" name="date" value="<?=$date;?>" />
                 <ul>
                     <?php foreach($sessions as $sessionList) { ?>
-                    <li><a <?php if($session && $sessionList->id == $session->id) echo 'style="font-weight: bold;"'; ?> href="<?=Url::toRoute(['/service/report/index', 'sessionId' => $sessionList->id]);?>"><?=$sessionList->start;?> <?php if(isset($sessionList->user)) { ?> (<?=$sessionList->user->name;?>)<?php } ?></a></li>
+                    <li><a <?php if($session && $sessionList->id == $session->id) echo 'style="font-weight: bold;"'; ?> href="<?=Url::toRoute(['/service/report/index', 'sessionId' => $sessionList->id]);?>"><?=date('d.m.Y H:i:s', $sessionList->start_timestamp);?> <?php if(isset($sessionList->user)) { ?> (<?=$sessionList->user->name;?>)<?php } ?></a></li>
                     <?php } ?>
                 </ul>
             </form>
@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <p>Выберите сессию.</p>
     <?php } else { ?>
 
-        <h1><?=$session->start;?> <?php if(isset($session->user)) { ?>(<?=$session->user->name;?>)<?php } ?> </h1>
+        <h1><?=date('d.m.Y H:i:s', $session->start_timestamp);?> <?php if(isset($session->user)) { ?>(<?=$session->user->name;?>)<?php } ?> </h1>
 
         <hr style="clear: both;" />
 
@@ -98,9 +98,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="worker-session-time">
                         <?=$worker->getSessionTime();?>
                     </td>
-                    <td>
+                    <td class="earnings">
                         <?=$workerStat[$worker->id]['earnings'];?>
                         <?=$module->currency;?>
+                        <?php if($bonus = $workerStat[$worker->id]['bonus']) { ?>
+                            <span class="bonus" title="Бонус">+<?=$bonus;?> <?=$module->currency;?></span>
+                        <?php } ?>
+                        <?php if($fine = $workerStat[$worker->id]['fine']) { ?>
+                            <span class="fine" title="Штраф">-<?=$fine;?> <?=$module->currency;?></span>
+                        <?php } ?>
                     </td>
                 </tr>
             <?php } ?>

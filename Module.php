@@ -15,6 +15,8 @@ class Module extends \yii\base\Module
     public $cachePeriod = 7000;
     public $shiftDuration = 12; //in hours
     
+    const EVENT_EARNINGS = 'earnings';
+    
     public function init()
     {
         parent::init();

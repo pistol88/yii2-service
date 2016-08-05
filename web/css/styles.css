@@ -180,3 +180,13 @@
 .worker-name p.staffername {
     color: #2929a7;
 }
+
+.report-index .earnings .bonus {
+    font-size: 12px;
+    color: green;
+}
+
+.report-index .earnings .fine {
+    font-size: 12px;
+    color: red;
+}
