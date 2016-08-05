@@ -51,6 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><strong>Выручка</strong></td>
                 <td><strong>Время работы</strong></td>
                 <td><strong>Зарплата</strong></td>
+                <td><strong>Выплата</strong></td>
             </tr>
             <?php
             $sum = ['earnings' => '0'];
@@ -108,14 +109,44 @@ $this->params['breadcrumbs'][] = $this->title;
                             <span class="fine" title="Штраф">-<?=$fine;?> <?=$module->currency;?></span>
                         <?php } ?>
                     </td>
+                    <td>
+                        <div class="<?php if($payment = $workerStat[$worker->id]['payment']) echo 'payment_yes'; else echo 'payment_no'; ?>">
+                            <input
+                                <?php if($payment) { ?>checked="checked"<?php } ?>
+                                data-set-href="<?=Url::toRoute(['/service/payment/set']);?>"
+                                data-unset-href="<?=Url::toRoute(['/service/payment/unset']);?>"
+                                data-session-id="<?=$session->id;?>"
+                                data-worker-id="<?=$worker->id;?>"
+                                data-sum="<?=$workerStat[$worker->id]['earnings'];?>"
+                                class="service-worker-payment"
+                                type="checkbox"
+                                id="earnings-done-<?=$worker->id;?>"
+                                name="done"
+                                value="1" />
+                            <label for="earnings-done-<?=$worker->id;?>">Выплачено</label>
+                            <?php if($payment) { ?>
+                                <p><small><?=date('d.m.Y H:i:s', $payment->date_timestamp);?></small></p>
+                            <?php } ?>
+                        </div>
+                    </td>
                 </tr>
             <?php } ?>
             <tr>
                 <td align="right">Итого:</td>
                 <td><strong><?=$stat['count_order'];?>/<?=$stat['count_elements'];?></strong></td>
-                <td><strong><?=$stat['total'];?> <?=$module->currency;?></strong></td>
-                <td><strong>-</strong></td>
+                <td>
+                    <strong><?=$stat['total'];?> <?=$module->currency;?></strong>
+                    <ul class="payment-types">
+                        <?php foreach($paymentsInfo as $name => $psum) { ?>
+                            <li><?=$name;?>: <?=$psum;?> <?=$module->currency;?></li>
+                        <?php } ?>
+                    </ul>
+                </td>
+                <td>-</td>
                 <td><strong><?=$sum['earnings'];?> <?=$module->currency;?></strong></td>
+                <td>
+                    -
+                </td>
             </tr>
         </table>
 

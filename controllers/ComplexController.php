@@ -19,6 +19,16 @@ class ComplexController extends Controller
                     'delete' => ['post'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::className(),
+				'only' => ['create', 'update', 'index', 'delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => $this->module->adminRoles,
+                    ]
+                ]
+            ],
         ];
     }
 

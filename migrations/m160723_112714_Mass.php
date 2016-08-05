@@ -30,6 +30,16 @@ class m160723_112714_Mass extends Migration {
                 'description' => Schema::TYPE_TEXT . "",
                 ], $tableOptions);
 
+            $this->createTable('{{%service_payment}}', [
+                'id' => Schema::TYPE_PK . "",
+                'user_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+                'worker_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+                'session_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+                'date' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+                'date_timestamp' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+                'sum' => Schema::TYPE_DECIMAL . "(11,2)",
+                ], $tableOptions);
+
             $this->createTable('{{%service_service}}', [
                 'id' => Schema::TYPE_PK . "",
                 'name' => Schema::TYPE_STRING . "(255) NOT NULL",

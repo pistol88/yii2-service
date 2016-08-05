@@ -190,3 +190,13 @@
     font-size: 12px;
     color: red;
 }
+
+.report-index .payment_yes {
+    padding: 3px;
+    background-color: #d6e2d6;
+}
+
+.report-index .payment_no {
+    padding: 3px;
+    background-color: #ccc;
+}

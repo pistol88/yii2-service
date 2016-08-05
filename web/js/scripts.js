@@ -13,6 +13,8 @@ pistol88.service = {
                 $('.service-order .pistol88-cart-truncate-button').click();
                 $('.service-order-net .header .back').click();
                 $('#service-ident').val('').focus().select();
+                $('#order-payment_type_id').val(1);
+                $('#orderForm input, #orderForm textarea').val('');
                 $('#orderForm').css('css', '1');
             }, 600);
         });
@@ -43,6 +45,11 @@ pistol88.service = {
         $(document).on('keypress', function(e) {
             if(e.which == 13) {
                 if(e.target.tagName != 'TEXTAREA' && e.target.tagName != 'textarea') {
+                    if(parseInt($('.pistol88-cart-count').val()) == 0) {
+                        //if(!confirm('Создать пустой заказ?')) {
+                            return false;
+                        //}
+                    }
                     $('#orderForm').submit();
                 }
             }
@@ -64,6 +71,25 @@ pistol88.service = {
         
         $(document).on('click', '.service-order-net .category a', this.getServicesByCategory);
         $(document).on('click', '.service-order-net a.back', this.getCategories);
+        
+        $('.service-worker-payment').on('change', this.setPayment);
+    },
+    setPayment: function() {
+        if($(this).prop('checked')) {
+            $(this).parent('div').removeClass('payment_no').addClass('payment_yes');
+            var url = $(this).attr('data-set-href');
+        } else {
+            $(this).parent('div').removeClass('payment_yes').addClass('payment_no');
+            $(this).parent('div').find('p').remove();
+            var url = $(this).attr('data-unset-href');
+        }
+        
+        $.post(url, {'worker_id': $(this).data('worker-id'), 'session_id': $(this).data('session-id'), 'sum': $(this).data('sum')},
+            function(answer) {
+                json = answer;
+            }, "json");
+  
+        return false;
     },
     getCategories: function() {
         $.post($(this).attr('href'), {},

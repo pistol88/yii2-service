@@ -3,8 +3,11 @@ namespace pistol88\service\controllers;
 
 use yii;
 use pistol88\service\events\Earnings;
+use pistol88\service\models\Payment;
 use pistol88\order\models\Order;
+use pistol88\order\models\PaymentType;
 use pistol88\worksess\models\Session;
+use yii\db\Query;
 use yii\helpers\Html;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -46,6 +49,10 @@ class ReportController extends Controller
         $workers = [];
         $workerStat = [];
         
+        $paymentsInfo = [];
+        
+        $paymentTypes = PaymentType::find()->all();
+        
         if($session) {
             $workers = $session->users;
             $stat = Order::getStatByDatePeriod($session->start, $session->stop);
@@ -71,7 +78,8 @@ class ReportController extends Controller
                     $workerStat[$worker->id]['service_count'] = 0; //Выполнено услуг
                     $workerStat[$worker->id]['order_count'] = 0; //Кол-во заказов
                     $workerStat[$worker->id]['service_total'] = 0; //Общая сумма выручки
-                    $workerStat[$worker->id]['earnings'] = 0;
+                    $workerStat[$worker->id]['earnings'] = 0; //
+                    $workerStat[$worker->id]['payment'] = Payment::findOne(['session_id' => $session->id, 'worker_id' => $worker->id]);
                     $workerStat[$worker->id]['bonus'] = 0;
                     $workerStat[$worker->id]['fine'] = 0;
                     $workerStat[$worker->id]['persent'] = $basePersent;
@@ -121,6 +129,22 @@ class ReportController extends Controller
                     }
                 }
             }
+            
+            $stop = $session->stop;
+            if(!$stop) {
+                $stop = date('Y-m-d H:i:s');
+            }
+            
+            foreach($paymentTypes as $pt) {
+                $query = new Query();
+                $sum = $query->from([Order::tableName()])
+                        ->where('date >= :dateStart', [':dateStart' => $session->start])
+                        ->andWhere('date <= :dateStop', [':dateStop' => $stop])
+                        ->andWhere(['payment_type_id' => $pt->id])
+                        ->sum('cost');
+
+                $paymentsInfo[$pt->name] = (int)$sum;
+            }
         }
 
         $workerPersent = $this->module->workerPersent;
@@ -132,13 +156,15 @@ class ReportController extends Controller
         }
         
         $sessions = yii::$app->worksess->getSessions(null, $date);
-        
+
         return $this->render('index', [
             'date' => $date,
             'session' => $session,
             'sessions' => $sessions,
             'stat' => $stat,
             'workerPersent' => $workerPersent,
+            'paymentTypes' => $paymentTypes,
+            'paymentsInfo' => $paymentsInfo,
             'workers' => $workers,
             'workerStat' => $workerStat,
             'module' => $this->module,
