@@ -4,19 +4,19 @@ namespace pistol88\service\models;
 use yii;
 use pistol88\worksess\models\Session;
 
-class Payment extends \yii\db\ActiveRecord
+class Cost extends \yii\db\ActiveRecord
 {
     public static function tableName()
     {
-        return '{{%service_payment}}';
+        return '{{%service_cost}}';
     }
 
     public function rules()
     {
         return [
-            [['worker_id', 'session_id', 'sum'], 'required'],
-            [['user_id', 'worker_id', 'session_id', 'date_timestamp'], 'integer'],
-            [['date'], 'string'],
+            [['name', 'sum'], 'required'],
+            [['user_id', 'session_id'], 'integer'],
+            [['date', 'name'], 'string'],
             [['sum'], 'double'],
         ];
     }
@@ -26,10 +26,9 @@ class Payment extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'user_id' => 'Администратор',
-            'worker_id' => 'Сотрудник',
+            'name' => 'На что',
             'session_id' => 'Сессия',
             'date' => 'Дата',
-            'date_timestamp' => 'Дата (таймстамп)',
             'sum' => 'Сумма',
         ];
     }
@@ -44,13 +43,13 @@ class Payment extends \yii\db\ActiveRecord
         if(empty($this->user_id)) {
             $this->user_id = yii::$app->user->id;
         }
-        
+
         if(empty($this->date)) {
             $this->date = date('Y-m-d H:i:s');
         }
-        
-        if(empty($this->date_timestamp)) {
-            $this->date_timestamp = time();
+
+        if(empty($this->session_id) && $session = yii::$app->worksess->soon()) {
+            $this->session_id = $session->id;
         }
         
         return parent::beforeSave($insert);

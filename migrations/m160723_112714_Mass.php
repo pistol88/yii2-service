@@ -23,13 +23,22 @@ class m160723_112714_Mass extends Migration {
 
             $this->createTable('{{%service_price}}', [
                 'id' => Schema::TYPE_PK . "",
+                'name' => Schema::TYPE_STRING . "(255) NOT NULL",
+                'sum' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+                'date' => Schema::TYPE_DECIMAL . "(11,2)",
+                'user_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+                'session_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+                ], $tableOptions);
+
+            $this->createTable('{{%service_cost}}', [
+                'id' => Schema::TYPE_PK . "",
                 'service_type' => Schema::TYPE_STRING . "(255) NOT NULL",
                 'service_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'price' => Schema::TYPE_DECIMAL . "(11,2)",
                 'category_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'description' => Schema::TYPE_TEXT . "",
                 ], $tableOptions);
-
+            
             $this->createTable('{{%service_payment}}', [
                 'id' => Schema::TYPE_PK . "",
                 'user_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",

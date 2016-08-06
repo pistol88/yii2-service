@@ -32,6 +32,10 @@ use yii\bootstrap\Nav;
                 'label' => 'Комплексы',
                 'url' => ['/service/complex/index'],
             ],
+            [
+                'label' => 'Затраты',
+                'url' => ['/service/cost/index'],
+            ],
         ],
         'options' => ['class' =>'nav-pills'],
     ]); ?>

@@ -3,6 +3,7 @@ namespace pistol88\service\controllers;
 
 use yii;
 use pistol88\service\events\Earnings;
+use pistol88\service\models\Cost;
 use pistol88\service\models\Payment;
 use pistol88\order\models\Order;
 use pistol88\order\models\PaymentType;
@@ -157,8 +158,11 @@ class ReportController extends Controller
         
         $sessions = yii::$app->worksess->getSessions(null, $date);
 
+        $costs = Cost::findAll(['session_id' => $session->id]);
+        
         return $this->render('index', [
             'date' => $date,
+            'costs' => $costs,
             'session' => $session,
             'sessions' => $sessions,
             'stat' => $stat,

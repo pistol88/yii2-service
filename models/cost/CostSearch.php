@@ -1,12 +1,12 @@
 <?php
-namespace pistol88\service\models\payment;
+namespace pistol88\service\models\cost;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use pistol88\service\models\Payment;
+use pistol88\service\models\Cost;
 
-class PaymentSearch extends Payment
+class CostSearch extends Cost
 {
     /**
      * @inheritdoc
@@ -14,8 +14,8 @@ class PaymentSearch extends Payment
     public function rules()
     {
         return [
-            [['id', 'user_id', 'session_id', 'worker_id'], 'integer'],
-            [['sum'], 'safe'],
+            [['id', 'user_id', 'session_id'], 'integer'],
+            [['sum', 'date', 'name'], 'safe'],
         ];
     }
 
@@ -30,7 +30,7 @@ class PaymentSearch extends Payment
 
     public function search($params)
     {
-        $query = Payment::find();
+        $query = Cost::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -42,12 +42,13 @@ class PaymentSearch extends Payment
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'worker_id' => $this->worker_id,
             'user_id' => $this->user_id,
+            'sum' => $this->sum,
             'session_id' => $this->session_id,
         ]);
 
-        $query->andFilterWhere(['like', 'sum', $this->sum]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'date', $this->date]);
 
         return $dataProvider;
     }
