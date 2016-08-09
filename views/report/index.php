@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <input href="<?=Url::toRoute(['/service/report/get-sessions']);?>" class="get-sessions-by-date form-control" type="date" name="date" value="<?=$date;?>" style="width: 200px;" />
                 <ul>
                     <?php foreach($sessions as $sessionList) { ?>
-                    <li><a <?php if($session && $sessionList->id == $session->id) echo 'style="font-weight: bold;"'; ?> href="<?=Url::toRoute(['/service/report/index', 'sessionId' => $sessionList->id]);?>"><?=date('d.m.Y H:i:s', $sessionList->start_timestamp);?> <?php if(isset($sessionList->user)) { ?> (<?=$sessionList->user->name;?>)<?php } ?></a></li>
+                    <li><a <?php if($session && $sessionList->id == $session->id) echo 'style="font-weight: bold;"'; ?> href="<?=Url::toRoute(['/service/report/index', 'sessionId' => $sessionList->id]);?>"><?=date('d.m.Y H:i:s', $sessionList->start_timestamp);?> <?=$sessionList->shiftName;?> <?php if(isset($sessionList->user)) { ?> (<?=$sessionList->user->name;?>)<?php } ?></a></li>
                     <?php } ?>
                 </ul>
             </form>
@@ -40,6 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php } else { ?>
 
         <h1> <?php if(isset($session->user)) { ?>Администратор <?=$session->user->name;?><?php } ?> </h1>
+        <p>Смена: <?=$session->shiftName;?></p>
         <p>Старт: <?=date('d.m.Y H:i:s', $session->start_timestamp);?></p>
         <p>Стоп: <?php if($session->stop_timestamp) echo date('d.m.Y H:i:s', $session->stop_timestamp); else echo '-';?></p>
         <hr style="clear: both;" />

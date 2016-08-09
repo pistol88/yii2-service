@@ -9,10 +9,6 @@ use yii\bootstrap\Nav;
                 'url' => ['/service/price/order'],
             ],
             [
-                'label' => 'Смена',
-                'url' => ['/service/session/current'],
-            ],
-            [
                 'label' => 'Отчеты',
                 'url' => ['/service/report/index'],
             ],

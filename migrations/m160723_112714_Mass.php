@@ -96,6 +96,10 @@ class m160723_112714_Mass extends Migration {
             $this->dropTable('{{%service_category}}');
             $this->dropTable('{{%service_price}}');
             $this->dropTable('{{%service_service}}');
+            $this->dropTable('{{%service_complex}}');
+            $this->dropTable('{{%service_to_complex}}');
+            $this->dropTable('{{%service_cost}}');
+            
         } catch (Exception $e) {
             echo 'Catch Exception ' . $e->getMessage() . ' ';
         }

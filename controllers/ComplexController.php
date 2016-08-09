@@ -7,6 +7,7 @@ use pistol88\service\models\complex\ComplexSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 class ComplexController extends Controller
 {
