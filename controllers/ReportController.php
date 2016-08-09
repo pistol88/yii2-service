@@ -185,7 +185,7 @@ class ReportController extends Controller
             $json['HtmlList'] = '<ul><li>Сессии не были открыты.</li></ul>';
         } else {
             $json['HtmlList'] = Html::ul($session, ['item' => function($item, $index) {
-                return html::tag('li', Html::a(date('d.m.Y H:i:s', $item->start_timestamp).' ('.$item->user->name.')', ['/service/report/index', 'sessionId' => $item->id]));
+                return html::tag('li', Html::a(date('d.m.Y H:i:s', $item->start_timestamp) . ' ' . $item->shiftName . ' ('.$item->user->name.')', ['/service/report/index', 'sessionId' => $item->id]));
             }]);
         }
 
