@@ -6,7 +6,7 @@ use yii\bootstrap\ActiveForm;
 
 <div class="category-form">
 
-    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+    <?php $form = ActiveForm::begin(['action' => ['/service/cost/create'], 'options' => ['enctype' => 'multipart/form-data']]); ?>
         <?php echo $form->errorSummary($model); ?>
 
         <?php echo $form->field($model, 'name')->textInput() ?>

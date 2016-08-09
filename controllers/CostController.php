@@ -38,7 +38,10 @@ class CostController extends Controller
         $searchModel = new CostSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $model = new Cost();
+        
         return $this->render('index', [
+            'model' => $model,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -49,7 +52,7 @@ class CostController extends Controller
         $model = new Cost();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['update', 'id' => $model->id]);
+            return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                 'model' => $model,

@@ -14,9 +14,14 @@ $this->params['breadcrumbs'][] = $this->title;
         <?=$this->render('../parts/menu');?>
     </div>
     
-    <p>
-        <?php echo Html::a('Добавить трату', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <div class="row">
+        <div class="col-lg-4">
+            <?php echo $this->render('_form', [
+                'model' => $model,
+            ]) ?>
+        </div>
+    </div>
+
 
     <?php echo GridView::widget([
         'dataProvider' => $dataProvider,
