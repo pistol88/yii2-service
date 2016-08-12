@@ -51,9 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <h3>Чек <span class="pistol88-cart-count"><?=yii::$app->cart->count;?></span></h3>
                     </div>
                     <div class="col-md-6">
-                        <div class="promocode">
-                            <?=\pistol88\promocode\widgets\Enter::widget();?>
-                        </div>
+
                     </div>
                 </div>
                 
@@ -66,7 +64,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        
+                        <div class="promocode">
+                            <?=\pistol88\promocode\widgets\Enter::widget();?>
+                        </div>
                     </div>
                 </div>
 

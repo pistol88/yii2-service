@@ -41,8 +41,11 @@ class m160723_112714_Mass extends Migration {
             
             $this->createTable('{{%service_payment}}', [
                 'id' => Schema::TYPE_PK . "",
+                'type' => "ENUM('in', 'out') NULL",
+                'order_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'user_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'worker_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+                'client_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'session_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'date' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'date_timestamp' => Schema::TYPE_INTEGER . "(11) NOT NULL",

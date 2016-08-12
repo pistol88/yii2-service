@@ -14,7 +14,7 @@ class PaymentSearch extends Payment
     public function rules()
     {
         return [
-            [['id', 'user_id', 'session_id', 'worker_id'], 'integer'],
+            [['id', 'user_id', 'session_id', 'worker_id', 'client_id'], 'integer'],
             [['sum'], 'safe'],
         ];
     }
@@ -43,6 +43,7 @@ class PaymentSearch extends Payment
         $query->andFilterWhere([
             'id' => $this->id,
             'worker_id' => $this->worker_id,
+            'client_id' => $this->client_id,
             'user_id' => $this->user_id,
             'session_id' => $this->session_id,
         ]);

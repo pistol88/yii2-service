@@ -91,7 +91,13 @@
 }
 
 .service-order .promocode .promo-code-enter {
-    width: 159px;
+    margin-top: 4px;
+    width: 119px;
+}
+
+.service-order .promocode .promo-code-enter input, .service-order .promocode .promo-code-enter button {
+    padding: 3px;
+    height: auto;
 }
 
 .service_tocart_point {
@@ -163,7 +169,7 @@
 
 #orderForm .offer .btn { 
     width: 96%;
-    font-size: 40px;
+    font-size: 25px;
     padding: 10px;
 }
 
