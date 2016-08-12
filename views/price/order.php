@@ -1,9 +1,11 @@
 <?php
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
 use pistol88\cart\widgets\ElementsList;
 use pistol88\cart\widgets\CartInformer;
+use pistol88\order\widgets\ChooseClient;
 
 $this->title = 'Заказ услуги';
 $this->params['breadcrumbs'][] = $this->title;
@@ -58,55 +60,77 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?=ElementsList::widget(['columns' => '3', 'showCountArrows' => false, 'type' => ElementsList::TYPE_FULL]);?>
 
                 <div class="row">
-                    <div class="col-lg-8">
+                    <div class="col-md-7">
                         <div class="total">
                             <?= CartInformer::widget(['htmlTag' => 'span', 'offerUrl' => '/?r=cart', 'text' => '{c} на {p}']); ?>
                         </div>
                     </div>
-                    <div class="col-lg-4">
+                    <div class="col-md-5">
                         <div class="promocode">
                             <?=\pistol88\promocode\widgets\Enter::widget();?>
                         </div>
                     </div>
                 </div>
 
-                <h3>Заказ</h3>
                 <iframe src="about:blank" id="orderSubmitter" name="orderSubmitter" style="display:none;"></iframe>
-                <?php $form = ActiveForm::begin(['options' => ['target' => 'orderSubmitter'], 'action' => ['/order/order/create'], 'id' => 'orderForm']); ?>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div style="display: none;">
-                                <?= $form->field($orderModel, 'status')->label(false)->textInput(['value' => 'new', 'type' => 'hidden', 'maxlength' => true]) ?>
+                <?php $form = ActiveForm::begin(['options' => ['target' => 'orderSubmitter', 'class' => 'panel-group-none'], 'action' => ['/order/order/create'], 'id' => 'orderForm']); ?>
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a class="heading collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseTwo">
+                                    Клиент
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo" aria-expanded="false">
+                            <div class="panel-body">
+                                <?=ChooseClient::widget(['form' => $form, 'model' => $orderModel]);?>
                             </div>
-                            <?= $form->field($orderModel, 'payment_type_id')->dropDownList($paymentTypes) ?>
                         </div>
                     </div>
-
-                    <?php if($fields = $orderModel->allfields) { ?>
-                        <div class="row">
-                            <?php foreach($fields as $fieldModel) { ?>
-                                <div class="col-lg-12 col-xs-12">
-                                    <?php
-                                    if($widget = $fieldModel->type->widget) {
-                                        echo $widget::widget(['form' => $form, 'fieldModel' => $fieldModel]);
-                                    }
-                                    else {
-                                        echo $form->field(new FieldValue, 'value['.$fieldModel->id.']')->label($fieldModel->name)->textInput(['required' => ($fieldModel->required == 'yes')]);
-                                    }
-                                    ?>
-                                    <?php if($fieldModel->description) { ?>
-                                        <p><small><?=$fieldModel->description;?></small></p>
-                                    <?php } ?>
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingTwo">
+                            <h4 class="panel-title">
+                                <a class="heading" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    Заказ
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse" role="tabpanel" aria-labelledby="headingTwo" aria-expanded="false">
+                            <div class="row panel-body">
+                                <div class="col-lg-12">
+                                    <div style="display: none;">
+                                        <?= $form->field($orderModel, 'status')->label(false)->textInput(['value' => 'new', 'type' => 'hidden', 'maxlength' => true]) ?>
+                                    </div>
+                                    <?= $form->field($orderModel, 'payment_type_id')->dropDownList($paymentTypes) ?>
                                 </div>
-                            <?php } ?>
-                        </div>
-                    <?php } ?>
-                    <div class="row">
-                        <div class="col-lg-12 col-xs-12">
-                            <?= $form->field($orderModel, 'comment')->textArea(['maxlength' => true]) ?>
+                                <?php if($fields = $orderModel->allfields) { ?>
+                                    <div class="row">
+                                        <?php foreach($fields as $fieldModel) { ?>
+                                            <div class="col-lg-12 col-xs-12">
+                                                <?php
+                                                if($widget = $fieldModel->type->widget) {
+                                                    echo $widget::widget(['form' => $form, 'fieldModel' => $fieldModel]);
+                                                }
+                                                else {
+                                                    echo $form->field(new FieldValue, 'value['.$fieldModel->id.']')->label($fieldModel->name)->textInput(['required' => ($fieldModel->required == 'yes')]);
+                                                }
+                                                ?>
+                                                <?php if($fieldModel->description) { ?>
+                                                    <p><small><?=$fieldModel->description;?></small></p>
+                                                <?php } ?>
+                                            </div>
+                                        <?php } ?>
+                                    </div>
+                                <?php } ?>
+                                <div class="row">
+                                    <div class="col-lg-12 col-xs-12">
+                                        <?= $form->field($orderModel, 'comment')->textArea(['maxlength' => true]) ?>
+                                    </div>
+                                </div>
+                                </div>
                         </div>
                     </div>
-                
                     <div class="form-group offer">
                         <?= Html::submitButton($orderModel->isNewRecord ? Yii::t('order', 'Create order') : Yii::t('order', 'Update'), ['class' => $orderModel->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
                     </div>

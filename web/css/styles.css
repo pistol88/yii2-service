@@ -27,8 +27,8 @@
     padding-bottom: 10px;
 }
 
-.price-index .pistol88-cart-truncate-button {
-    float: right;
+.price-index .pistol88-cart-bottom-panel {
+    text-align: right;
     font-size: 13px;
     padding: 2px;
 }
@@ -93,6 +93,7 @@
 .service-order .promocode .promo-code-enter {
     margin-top: 4px;
     width: 119px;
+    margin-bottom: 4px;
 }
 
 .service-order .promocode .promo-code-enter input, .service-order .promocode .promo-code-enter button {
