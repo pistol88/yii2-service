@@ -47,7 +47,7 @@ class m160723_112714_Mass extends Migration {
                 'worker_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'client_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'session_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
-                'date' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+                'date' => Schema::TYPE_DATE . " NOT NULL",
                 'date_timestamp' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'sum' => Schema::TYPE_DECIMAL . "(11,2)",
                 ], $tableOptions);
@@ -60,6 +60,15 @@ class m160723_112714_Mass extends Migration {
                 'description' => Schema::TYPE_TEXT . "",
                 ], $tableOptions);
 
+            $this->createTable('{{%service_custom_service}}', [
+                'id' => Schema::TYPE_PK . "",
+                'name' => Schema::TYPE_STRING . "(255) NOT NULL",
+                'price' => Schema::TYPE_DECIMAL . "(11,2)",
+                'date' => Schema::TYPE_DATE . " NOT NULL",
+                'user_id' => Schema::TYPE_INTEGER . "(11)",
+                ], $tableOptions);
+
+            
             $this->createTable('{{%service_complex}}', [
                 'id' => Schema::TYPE_PK . "",
                 'sort' => Schema::TYPE_INTEGER . "(11) NOT NULL",
