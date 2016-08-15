@@ -51,6 +51,7 @@
 }
 
 .service-prices-table {
+    margin-top: 15px;
     font-size: 13px;
 }
 
@@ -109,6 +110,7 @@
 }
 
 .service-order-net {
+    margin-top: 10px;
     padding: 10px;
 }
 
@@ -206,4 +208,8 @@
 .report-index .payment_no {
     padding: 3px;
     background-color: #ccc;
+}
+
+.custom-service {
+    text-align: right;
 }

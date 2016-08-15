@@ -60,18 +60,6 @@ class Price extends \yii\db\ActiveRecord implements \pistol88\cart\interfaces\Ca
     {
         return [];
     }
-    
-    public function getService()
-    {
-        $service_type = $this->service_type;
-        
-        return $this->hasOne($service_type::className(), ['id' => 'service_id']);
-    }
-    
-    public function getCategory()
-    {
-        return $this->hasOne(Category::className(), ['id' => 'category_id']);
-    }
 
     public function minusAmount($count)
     {
@@ -97,12 +85,26 @@ class Price extends \yii\db\ActiveRecord implements \pistol88\cart\interfaces\Ca
     {
         return 1;
     }
-    
+
     function getSellModel()
     {
         return $this;
     }
 
+    
+    public function getService()
+    {
+        $service_type = $this->service_type;
+        
+        return $this->hasOne($service_type::className(), ['id' => 'service_id']);
+    }
+    
+    public function getCategory()
+    {
+        return $this->hasOne(Category::className(), ['id' => 'category_id']);
+    }
+
+    
     public static function find()
     {
         return new price\PriceQuery(get_called_class());

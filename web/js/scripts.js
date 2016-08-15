@@ -44,7 +44,7 @@ pistol88.service = {
 
         $(document).on('keypress', function(e) {
             if(e.which == 13) {
-                if(e.target.tagName != 'TEXTAREA' && e.target.tagName != 'textarea') {
+                if(e.target.tagName != 'TEXTAREA' && e.target.tagName != 'textarea' && e.target.tagName != 'INPUT' && e.target.tagName != 'input') {
                     if(parseInt($('.pistol88-cart-count').val()) == 0) {
                         //if(!confirm('Создать пустой заказ?')) {
                             return false;
@@ -55,11 +55,9 @@ pistol88.service = {
             }
         });
 
-        $(document).on('keypress', 'input.service-price', function(e) {
-            if(e.which == 13) {
-                $(this).siblings('.pistol88-cart-buy-button').click();
-            }
-        });
+//        $(document).on('blur', 'input.service-price', function(e) {
+//            $(this).siblings('.pistol88-cart-buy-button').click();
+//        });
         
         $(document).on('mouseenter','.service-prices-table td', this.renderCross);
         
@@ -132,12 +130,11 @@ pistol88.service = {
         
         setTimeout(function() { $('.service-order').css('opacity', '1') }, 300);
         
-        return true;
-        
         $(this).data('price', $(this).siblings('input').val());
-        
         $(this).siblings('input').val($(this).siblings('input').data('base-price'));
         
+        return true;
+
         var x = e.pageX;
         
         if(x) {

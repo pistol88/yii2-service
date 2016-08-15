@@ -3,6 +3,7 @@ namespace pistol88\service\controllers;
 
 use Yii;
 use pistol88\service\models\Category;
+use pistol88\service\models\CustomService;
 use pistol88\service\models\Service;
 use pistol88\service\models\Complex;
 use pistol88\service\models\Price;
@@ -155,8 +156,16 @@ class PriceController extends Controller
             $prices[$price->service_type][$price->category_id][$price->service_id] = $price;
         }
         
+        $customServiceModel = new CustomService;
+        
+        if ($customServiceModel->load(Yii::$app->request->post()) && $customServiceModel->save()) {
+            yii::$app->cart->put($customServiceModel);
+            \Yii::$app->session->setFlash('customServiceBuy', 'В корзине!');
+        }
+        
         return $this->render('order', [
             'type' => $type,
+            'customServiceModel' => $customServiceModel,
             'prices' => $prices,
             'services' => $services,
             'complexes' => $complexes,

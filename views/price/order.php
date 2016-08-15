@@ -6,11 +6,14 @@ use yii\bootstrap\ActiveForm;
 use pistol88\cart\widgets\ElementsList;
 use pistol88\cart\widgets\CartInformer;
 use pistol88\order\widgets\ChooseClient;
+use yii\widgets\Pjax;
 
 $this->title = 'Заказ услуги';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pistol88\service\assets\BackendAsset::register($this);
+
+$this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/cart-info'])."';");
 ?>
 <div class="price-index">
 
@@ -52,8 +55,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="col-md-6">
                         <h3>Чек <span class="pistol88-cart-count"><?=yii::$app->cart->count;?></span></h3>
                     </div>
-                    <div class="col-md-6">
-
+                    <div class="col-md-6 custom-service">
+                        <a data-toggle="modal" data-target="#custom-service" href="#custom-service" class="btn btn-success" title="Другое"> <i class="glyphicon glyphicon-plus"></i> </a>
                     </div>
                 </div>
                 
@@ -139,5 +142,35 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
     </div>
+</div>
 
+<div class="modal fade" id="custom-service" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Уникальная услуга</h4>
+            </div>
+            <div class="modal-body">
+                <?php Pjax::begin(['enablePushState' => false,'timeout' => 5000,'id' => 'pjax_form']); ?>
+                    <?php $form = ActiveForm::begin(['options' => ['data-pjax' => true,'enctype' => 'multipart/form-data'],'id' => 'dynamic-form']); ?>
+                        <?php if(Yii::$app->session->hasFlash('customServiceBuy')) { ?>
+                            <div class="alert alert-success" role="alert">
+                                <?= Yii::$app->session->getFlash('customServiceBuy') ?>
+                            </div>
+                            <script type="text/javascript">pistol88.createorder.updateCart();</script>
+                        <?php } ?>
+                        <div class="row">
+                            <div class="col-md-8"><?php echo $form->field($customServiceModel, 'name')->textInput() ?></div>
+                            <div class="col-md-4"><?php echo $form->field($customServiceModel, 'price')->textInput() ?></div>
+                        </div>
+                        <?php echo Html::submitButton('В корзину', ['class' => 'btn btn-success']) ?>
+                    <?php ActiveForm::end(); ?>
+                <?php Pjax::end(); ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><?=yii::t('order', 'Close');?></button>
+            </div>
+        </div>
+    </div>
 </div>
