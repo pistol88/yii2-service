@@ -33,6 +33,10 @@
     padding: 2px;
 }
 
+.price-index .pistol88-cart-bottom-panel a {
+    padding: 2px;
+}
+
 .price-index .control {
     padding-left: 9px;
 }
@@ -212,4 +216,8 @@
 
 .custom-service {
     text-align: right;
+}
+
+.custom-service a {
+    padding: 1px;
 }

@@ -12,6 +12,7 @@ $this->title = 'Заказ услуги';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pistol88\service\assets\BackendAsset::register($this);
+\pistol88\order\assets\CreateOrderAsset::register($this);
 
 $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/cart-info'])."';");
 ?>
@@ -158,7 +159,7 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                             <div class="alert alert-success" role="alert">
                                 <?= Yii::$app->session->getFlash('customServiceBuy') ?>
                             </div>
-                            <script type="text/javascript">pistol88.createorder.updateCart();</script>
+                            <script type="text/javascript">if (typeof pistol88 != "undefined" && pistol88) { pistol88.createorder.updateCart(); }</script>
                         <?php } ?>
                         <div class="row">
                             <div class="col-md-8"><?php echo $form->field($customServiceModel, 'name')->textInput() ?></div>

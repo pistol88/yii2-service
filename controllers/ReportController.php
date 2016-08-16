@@ -69,12 +69,17 @@ class ReportController extends Controller
             foreach($workers as $worker) {
                 if(empty($worker->persent)) {
                     $basePersent = $this->module->workerPersent;
-                    $persent = '0.'.$this->module->workerPersent;
                 } else {
                     $basePersent = $worker->persent;
-                    $persent = '0.'.$worker->persent;
+                    
                 }
                 
+                if($basePersent > 9) {
+                    $persent = '0.'.$basePersent;
+                } else {
+                    $persent = '0.0'.$basePersent;
+                }
+
                 if(!isset($workerStat[$worker->id]['service_count'])) {
                     $workerStat[$worker->id]['service_count'] = 0; //Выполнено услуг
                     $workerStat[$worker->id]['order_count'] = 0; //Кол-во заказов
