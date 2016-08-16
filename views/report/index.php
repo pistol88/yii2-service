@@ -31,15 +31,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
         </div>
         <div class="col-md-6">
-
+            
         </div>
     </div>
     
     <?php if(!$session) { ?>
         <p>Выберите сессию.</p>
     <?php } else { ?>
-
+    <div id="report-to-print">
         <h1> <?php if(isset($session->user)) { ?>Администратор <?=$session->user->name;?><?php } ?> </h1>
+        <a href="#" class="btn btn-submit" onclick="pistol88.service.callPrint('report-to-print'); return false;" style="float: right;"><i class="glyphicon glyphicon-print"></i></a>
         <p>Смена: <?=$session->shiftName;?></p>
         <p>Старт: <?=date('d.m.Y H:i:s', $session->start_timestamp);?></p>
         <p>Стоп: <?php if($session->stop_timestamp) echo date('d.m.Y H:i:s', $session->stop_timestamp); else echo '-';?></p>
@@ -160,7 +161,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php } ?>
             </ul>
         <?php } ?>
-        
+    </div>
         
         <h2>Рабочий день</h2>
         
