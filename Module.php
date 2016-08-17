@@ -32,4 +32,14 @@ class Module extends \yii\base\Module
         
         return [];
     }
+
+    public function getWorkerPersent($session)
+    {
+        if ( is_callable($this->workerPersent)) {
+            $workerPercent = $this->workerPersent;
+            return  $workerPercent($session);
+        } else {
+            return $this->workerPersent;
+        } 
+    }
 }

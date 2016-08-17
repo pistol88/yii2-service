@@ -68,7 +68,7 @@ class ReportController extends Controller
 
             foreach($workers as $worker) {
                 if(empty($worker->persent)) {
-                    $basePersent = $this->module->workerPersent;
+                    $basePersent = $this->module->getWorkerPersent($session);
                 } else {
                     $basePersent = $worker->persent;
                     
