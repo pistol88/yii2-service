@@ -6,6 +6,7 @@ use pistol88\service\events\Earnings;
 use pistol88\service\models\Cost;
 use pistol88\service\models\Payment;
 use pistol88\order\models\Order;
+use pistol88\order\models\Element;
 use pistol88\order\models\PaymentType;
 use pistol88\worksess\models\Session;
 use yii\db\Query;
@@ -42,13 +43,10 @@ class ReportController extends Controller
         }
 
         $stat = null;
-        
-        $workers = $this->module->getWorkersList();
 
         $workerStat = [];
 
         $workers = [];
-        $workerStat = [];
         
         $paymentsInfo = [];
         
@@ -56,7 +54,7 @@ class ReportController extends Controller
         
         if($session) {
             $workers = $session->users;
-            $stat = Order::getStatByDatePeriod($session->start, $session->stop);
+            $stat = Element::getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop);
 
             $workersCount = 0;
             
@@ -96,8 +94,7 @@ class ReportController extends Controller
                 $workerStat[$worker->id]['sessions'] = $workerSessions;
 
                 foreach($workerSessions as $workSession) {
-                    
-                    $userStat = Order::getStatByDatePeriod($workSession->start, $workSession->stop);
+                    $userStat = Element::getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $workSession->start, $workSession->stop);
                     $workerStat[$worker->id]['service_count'] += $stat['count_elements'];
                     $workerStat[$worker->id]['order_count'] += $stat['count_order'];
                     $workerStat[$worker->id]['service_total'] += $stat['total'];
