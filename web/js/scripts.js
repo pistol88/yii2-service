@@ -32,11 +32,11 @@ pistol88.service = {
         });
         
         $(document).on('click', '.service-order-net .price, .pistol88-cart-buy-button', function() {
-            $(this).css('border', '2px solid #3F5696');
+            $(this).css('border', '2px solid #3F5696').addClass('.checked');
         });
 
         $(document).on('click', '.service-order-net .price', function(e) {
-            $(this).css('border', '2px solid #3F5696');
+            $(this).css('border', '2px solid #3F5696').addClass('.checked');;
             if(e.target.tagName != 'INPUT' && e.target.tagName != 'input') {
                 $(this).find('.pistol88-cart-buy-button').click();
             }

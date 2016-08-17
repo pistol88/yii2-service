@@ -7,6 +7,7 @@ use pistol88\cart\widgets\ElementsList;
 use pistol88\cart\widgets\CartInformer;
 use pistol88\order\widgets\ChooseClient;
 use yii\widgets\Pjax;
+use pistol88\order\widgets\BuyByCode;
 
 $this->title = 'Заказ услуги';
 $this->params['breadcrumbs'][] = $this->title;
@@ -54,15 +55,26 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
             <div class="service-order">
                 <div class="row">
                     <div class="col-md-6">
+                        <?=BuyByCode::widget();?>
+                    </div>
+                    <div class="col-md-6">
+                        <small>
+                            <a href="#productsModal" data-toggle="modal" data-target="#productsModal" class="choice-product  ">Товар <span class="glyphicon glyphicon-plus add-option"></span></a>
+                            <a data-toggle="modal" data-target="#custom-service" href="#custom-service" class=" choice-service" title="Другое">Другое <i class="glyphicon glyphicon-plus"></i> </a>
+                        </small>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
                         <h3>Чек <span class="pistol88-cart-count"><?=yii::$app->cart->count;?></span></h3>
                     </div>
                     <div class="col-md-6 custom-service">
-                        <a data-toggle="modal" data-target="#custom-service" href="#custom-service" class="btn btn-success" title="Другое"> <i class="glyphicon glyphicon-plus"></i> </a>
                     </div>
                 </div>
                 
                 <?=ElementsList::widget(['columns' => '3', 'showCountArrows' => false, 'type' => ElementsList::TYPE_FULL]);?>
-
+                
                 <div class="row">
                     <div class="col-md-7">
                         <div class="total">
@@ -168,6 +180,23 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                         <?php echo Html::submitButton('В корзину', ['class' => 'btn btn-success']) ?>
                     <?php ActiveForm::end(); ?>
                 <?php Pjax::end(); ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><?=yii::t('order', 'Close');?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="productsModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><?=yii::t('order', 'Products');?></h4>
+            </div>
+            <div class="modal-body">
+                <iframe src="<?=Url::toRoute(['/order/tools/find-products-window']);?>" id="products-list-window"></iframe>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><?=yii::t('order', 'Close');?></button>
