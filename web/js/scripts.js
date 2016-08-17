@@ -5,6 +5,8 @@ $('#service-ident').focus();
 
 pistol88.service = {
     init: function() {
+        $(document).on('submit', '#add-custom-service-form', this.customServiceToCart)
+        
         $(document).on('change', '.get-sessions-by-date', this.getSessions);
         
         $(document).on('submit', '#orderForm', function() {
@@ -71,6 +73,27 @@ pistol88.service = {
         $(document).on('click', '.service-order-net a.back', this.getCategories);
         
         $('.service-worker-payment').on('change', this.setPayment);
+    },
+    customServiceToCart: function() {
+        var form = $(this);
+        var data = $(form).serialize();
+        data = data+'&ajax=1';
+
+        jQuery.post($(form).attr('action'), data,
+            function(json) {
+                if(json.result == 'success') {
+                    $('#custom-service').modal('hide');
+                    pistol88.createorder.updateCart();
+                }
+                else {
+                    console.log(json.errors);
+                }
+
+                return true;
+
+            }, "json");
+            
+        return false;
     },
     callPrint: function (strid) {
         var prtContent = document.getElementById(strid);

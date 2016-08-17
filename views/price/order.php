@@ -6,7 +6,6 @@ use yii\bootstrap\ActiveForm;
 use pistol88\cart\widgets\ElementsList;
 use pistol88\cart\widgets\CartInformer;
 use pistol88\order\widgets\ChooseClient;
-use yii\widgets\Pjax;
 use pistol88\order\widgets\BuyByCode;
 
 $this->title = 'Заказ услуги';
@@ -165,21 +164,19 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                 <h4 class="modal-title">Уникальная услуга</h4>
             </div>
             <div class="modal-body">
-                <?php Pjax::begin(['enablePushState' => false,'timeout' => 5000,'id' => 'pjax_form']); ?>
-                    <?php $form = ActiveForm::begin(['options' => ['data-pjax' => true,'enctype' => 'multipart/form-data'],'id' => 'dynamic-form']); ?>
-                        <?php if(Yii::$app->session->hasFlash('customServiceBuy')) { ?>
-                            <div class="alert alert-success" role="alert">
-                                <?= Yii::$app->session->getFlash('customServiceBuy') ?>
-                            </div>
-                            <script type="text/javascript">if (typeof pistol88 != "undefined" && pistol88) { pistol88.createorder.updateCart(); }</script>
-                        <?php } ?>
-                        <div class="row">
-                            <div class="col-md-8"><?php echo $form->field($customServiceModel, 'name')->textInput() ?></div>
-                            <div class="col-md-4"><?php echo $form->field($customServiceModel, 'price')->textInput() ?></div>
+                <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data'],'id' => 'add-custom-service-form']); ?>
+                    <?php if(Yii::$app->session->hasFlash('customServiceBuy')) { ?>
+                        <div class="alert alert-success" role="alert">
+                            <?= Yii::$app->session->getFlash('customServiceBuy') ?>
                         </div>
-                        <?php echo Html::submitButton('В корзину', ['class' => 'btn btn-success']) ?>
-                    <?php ActiveForm::end(); ?>
-                <?php Pjax::end(); ?>
+                        <script type="text/javascript">if (typeof pistol88 != "undefined" && pistol88) { pistol88.createorder.updateCart(); }</script>
+                    <?php } ?>
+                    <div class="row">
+                        <div class="col-md-8"><?php echo $form->field($customServiceModel, 'name')->textInput() ?></div>
+                        <div class="col-md-4"><?php echo $form->field($customServiceModel, 'price')->textInput() ?></div>
+                    </div>
+                    <?php echo Html::submitButton('В корзину', ['class' => 'btn btn-success']) ?>
+                <?php ActiveForm::end(); ?>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><?=yii::t('order', 'Close');?></button>

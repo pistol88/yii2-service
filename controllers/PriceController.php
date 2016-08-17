@@ -123,6 +123,18 @@ class PriceController extends Controller
     
     public function actionOrder()
     {
+        
+        $customServiceModel = new CustomService;
+        
+        if ($customServiceModel->load(Yii::$app->request->post()) && $customServiceModel->save()) {
+            yii::$app->cart->put($customServiceModel);
+            if(yii::$app->request->post('ajax')) {
+                die(json_encode(['result' => 'success']));
+            } else {
+                \Yii::$app->session->setFlash('customServiceBuy', 'В корзине!');
+            }
+        }
+        
         if($type = yii::$app->request->get('service-order-type')) {
             if(!in_array($type, ['net', 'table'])) {
                 return $this->redirect('404');
@@ -154,13 +166,6 @@ class PriceController extends Controller
         
         foreach($priceModel::find()->all() as $price) {
             $prices[$price->service_type][$price->category_id][$price->service_id] = $price;
-        }
-        
-        $customServiceModel = new CustomService;
-        
-        if ($customServiceModel->load(Yii::$app->request->post()) && $customServiceModel->save()) {
-            yii::$app->cart->put($customServiceModel);
-            \Yii::$app->session->setFlash('customServiceBuy', 'В корзине!');
         }
         
         return $this->render('order', [
