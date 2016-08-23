@@ -28,7 +28,8 @@
         "pistol88/yii2-gallery": "*",
         "pistol88/yii2-promocode": "*",
         "voskobovich/yii2-many-many-behavior": "^3.0",
-        "kartik-v/yii2-widget-select2": "*"
+        "kartik-v/yii2-widget-select2": "*",
+        "nex/yii2-datepicker": "*"
     },
     "config": {
         "process-timeout": 1800
