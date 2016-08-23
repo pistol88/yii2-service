@@ -50,7 +50,7 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
         <div class="col-lg-9 col-md-8  col-sm-12">
             <?=$this->render('order-type/'.$type, ['categories' => $categories, 'services' => $services, 'complexes' => $complexes, 'prices' => $prices]);?>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="col-lg-3 col-md-4 col-sm-12">
             <div class="service-order">
                 <div class="row">
                     <div class="col-md-6">

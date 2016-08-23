@@ -16,7 +16,7 @@ pistol88.service = {
                 $('.service-order-net .header .back').click();
                 $('#service-ident').val('').focus().select();
                 $('#order-payment_type_id').val(1);
-                $('#orderForm input, #orderForm textarea').val('');
+                $('#orderForm input[type=text], #orderForm textarea').val('');
                 $('#orderForm').css('css', '1');
             }, 600);
         });
