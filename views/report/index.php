@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr>
                     <td class="worker-name">
                         <p class="staffername">
-                            <strong><a href="<?=Url::toRoute([$module->userProfileUrl, 'id' => $worker->id]);?>"><?=$worker->name;?></a></strong>
+                            <strong><a href="<?=Url::toRoute([$module->stafferProfileUrl, 'id' => $worker->id]);?>"><?=$worker->name;?></a></strong>
                         </p>
                         <?php if($cat = $worker->category) { ?>
                             <p>
