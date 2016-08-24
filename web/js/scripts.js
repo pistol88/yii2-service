@@ -7,7 +7,7 @@ pistol88.service = {
     init: function() {
         $(document).on('submit', '#add-custom-service-form', this.customServiceToCart)
         
-        $(document).on('change', '.get-sessions-by-date', this.getSessions);
+        $(document).on('blur', '.get-sessions-by-date', this.getSessions);
         
         $(document).on('submit', '#orderForm', function() {
             $('#orderForm').css('css', '0.5');
@@ -135,6 +135,7 @@ pistol88.service = {
         return false;
     },
     getSessions: function() {
+        console.log(2);
         var input = $(this);
         $.post($(this).attr('href'), {date: $(this).val()},
             function(answer) {

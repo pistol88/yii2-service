@@ -3,6 +3,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\GridView;
 use pistol88\worksess\widgets\SessionGraph;
+use nex\datepicker\DatePicker;
 
 $this->title = 'Отчеты по услугам';
 $this->params['breadcrumbs'][] = $this->title;
@@ -21,7 +22,29 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-6">
             <form action="" method="get">
                 <p>Выберите сессию:</p>
-                <input href="<?=Url::toRoute(['/service/report/get-sessions']);?>" class="get-sessions-by-date form-control" type="date" name="date" value="<?=$date;?>" style="width: 200px;" />
+                <?= DatePicker::widget([
+                    'name' => 'date',
+                    'addon' => false,
+                    'value' => $date,
+                    'size' => 'sm',
+                    'language' => 'ru',
+                    'options' => [
+                        'class' => 'get-sessions-by-date',
+                        'href' => Url::toRoute(['/service/report/get-sessions']),
+                    ],
+                    'placeholder' => yii::t('order', 'Date from'),
+                    'clientOptions' => [
+                        'format' => 'L',
+                        'minDate' => '2015-01-01',
+                        'maxDate' => date('Y-m-d'),
+                    ],
+                    'dropdownItems' => [
+                        ['label' => 'Yesterday', 'url' => '#', 'value' => \Yii::$app->formatter->asDate('-1 day')],
+                        ['label' => 'Tomorrow', 'url' => '#', 'value' => \Yii::$app->formatter->asDate('+1 day')],
+                        ['label' => 'Some value', 'url' => '#', 'value' => 'Special value'],
+                    ],
+                ]);?>
+
                 <ul>
                     <?php foreach($sessions as $sessionList) { ?>
                     <li><a <?php if($session && $sessionList->id == $session->id) echo 'style="font-weight: bold;"'; ?> href="<?=Url::toRoute(['/service/report/index', 'sessionId' => $sessionList->id]);?>"><?=date('d.m.Y H:i:s', $sessionList->start_timestamp);?> <?=$sessionList->shiftName;?> <?php if(isset($sessionList->user)) { ?> (<?=$sessionList->user->name;?>)<?php } ?></a></li>

@@ -179,7 +179,9 @@ class ReportController extends Controller
     
     public function actionGetSessions()
     {
-        $session = yii::$app->worksess->getSessions(null, yii::$app->request->post('date'));
+        $date = date('Y-m-d', strtotime(yii::$app->request->post('date')));
+        
+        $session = yii::$app->worksess->getSessions(null, $date);
 
         $json = [];
 
