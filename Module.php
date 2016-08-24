@@ -14,6 +14,7 @@ class Module extends \yii\base\Module
     public $cache = true;
     public $cachePeriod = 7000;
     public $shiftDuration = 20; //in hours
+    public $stafferProfileUrl = '/staffer/staffer/view';
     
     const EVENT_EARNINGS = 'earnings';
     
