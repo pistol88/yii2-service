@@ -21,6 +21,17 @@ class m160723_112714_Mass extends Migration {
                 'name' => Schema::TYPE_STRING . "(255) NOT NULL",
                 ], $tableOptions);
 
+            $this->createTable('{{%service_property}}', [
+                'id' => Schema::TYPE_PK . "",
+                'name' => Schema::TYPE_STRING . "(55) NOT NULL",
+                'category_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+                'client_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+                'status' => Schema::TYPE_STRING . "(55)",
+                'comment' => Schema::TYPE_STRING . "(255)",
+                'created_at' => Schema::TYPE_DATETIME,
+                'updated_at' => Schema::TYPE_DATETIME,
+                ], $tableOptions);
+            
             $this->createTable('{{%service_price}}', [
                 'id' => Schema::TYPE_PK . "",
                 'name' => Schema::TYPE_STRING . "(255) NOT NULL",
