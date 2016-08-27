@@ -206,7 +206,7 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
 </div>
 
 
-<div class="display: none;">
+<div style="display: none;">
     <?php foreach($categories as $category) { ?>
         <div class="category">
             <a href="<?=Url::toRoute(['/service/price/get-prices']);?>" class="service-category service-category-<?=$category->id;?>" data-id="<?=$category->id;?>">

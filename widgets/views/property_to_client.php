@@ -104,8 +104,7 @@ use kartik\select2\Select2;
                     return @$module->propertyStatuses[$model->status];
                 }
             ],
-
-            ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {update} {delete}',  'buttonOptions' => ['class' => 'btn btn-default'], 'options' => ['style' => 'width: 155px;']],
+            ['class' => 'yii\grid\ActionColumn', 'controller' => '/service/property', 'template' => '{view} {update} {delete}',  'buttonOptions' => ['class' => 'btn btn-default'], 'options' => ['style' => 'width: 155px;']],
         ],
     ]); ?>
     <?php Pjax::end(); ?>

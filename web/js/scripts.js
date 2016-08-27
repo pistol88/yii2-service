@@ -17,6 +17,8 @@ pistol88.service = {
             $('#orderForm').css('css', '0.5');
             setTimeout(function() {
                 $('.service-order .pistol88-cart-truncate-button').click();
+                $('.pistol88-cart').html('Корзина пуста');
+                $('.pistol88-cart-count').html('0');
                 $('.service-order-net .header .back').click();
                 $('#service-ident').val('').focus().select();
                 $('#order-payment_type_id').val(1);
