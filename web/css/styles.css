@@ -184,8 +184,12 @@
     padding: 7px !important;
 }
 
+#orderForm .offer {
+    text-align: center;
+}
+
 #orderForm .offer .btn { 
-    width: 96%;
+    width: 100%;
     font-size: 25px;
     padding: 10px;
 }

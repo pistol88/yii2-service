@@ -15,6 +15,9 @@ class Module extends \yii\base\Module
     public $cachePeriod = 7000;
     public $shiftDuration = 20; //in hours
     public $stafferProfileUrl = '/staffer/staffer/view';
+    public $propertyStatuses = ['active' => 'Активно', 'unactive' => 'Неактивно'];
+    public $propertyName = 'Автомобили';
+    public $identName = 'Номер авто';
     
     const EVENT_EARNINGS = 'earnings';
     

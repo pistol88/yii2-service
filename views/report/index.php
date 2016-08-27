@@ -69,7 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <p>Стоп: <?php if($session->stop_timestamp) echo date('d.m.Y H:i:s', $session->stop_timestamp); else echo '-';?></p>
         <hr style="clear: both;" />
 
-        <h2>Выплаты</h2>
+        <h2>Услуги</h2>
         <table class="table table-hover table-responsive">
             <tr>
                 <td><strong>Сотрудник</strong></td>
@@ -176,6 +176,15 @@ $this->params['breadcrumbs'][] = $this->title;
             </tr>
         </table>
 
+        <?php if($shopStat['total']) { ?>
+            <h2>Витрина</h2>
+            <ul>
+                <li>Заказов: <?=$shopStat['count_order'];?></li>
+                <li>Товаров: <?=$shopStat['count_elements'];?></li>
+                <li>Сумма: <?=$shopStat['total'];?> <?=$module->currency;?></li>
+            </ul>
+        <?php } ?>
+        
         <?php if($costs) { ?>
             <h2>Расходы</h2>
             <ul>

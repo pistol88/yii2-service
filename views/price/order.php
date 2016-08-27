@@ -100,6 +100,9 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                         <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo" aria-expanded="false">
                             <div class="panel-body">
                                 <?=ChooseClient::widget(['form' => $form, 'model' => $orderModel]);?>
+                                <select class="form-control service-choose-property">
+                                    <option>Автомобиль...</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -200,4 +203,16 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
             </div>
         </div>
     </div>
+</div>
+
+
+<div class="display: none;">
+    <?php foreach($categories as $category) { ?>
+        <div class="category">
+            <a href="<?=Url::toRoute(['/service/price/get-prices']);?>" class="service-category service-category-<?=$category->id;?>" data-id="<?=$category->id;?>">
+               <?=$category->name;?>
+
+            </a>
+        </div>
+    <?php } ?>
 </div>

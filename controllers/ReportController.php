@@ -52,7 +52,11 @@ class ReportController extends Controller
         
         $paymentTypes = PaymentType::find()->all();
         
+        $shopStat = [];
+        
         if($session) {
+            $shopStat = Element::getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop);
+
             $workers = $session->users;
             $stat = Element::getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop);
 
@@ -163,6 +167,7 @@ class ReportController extends Controller
         $costs = Cost::findAll(['session_id' => $session->id]);
         
         return $this->render('index', [
+            'shopStat' => $shopStat,
             'date' => $date,
             'costs' => $costs,
             'session' => $session,

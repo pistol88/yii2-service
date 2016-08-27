@@ -16,6 +16,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\filters\AccessControl;
+use yii\helpers\Url;
 
 class PriceController extends Controller
 {
@@ -167,6 +168,8 @@ class PriceController extends Controller
         foreach($priceModel::find()->all() as $price) {
             $prices[$price->service_type][$price->category_id][$price->service_id] = $price;
         }
+        
+        $this->getView()->registerJs('pistol88.service.propertyListUrl = "'.Url::toRoute(['/service/property/get-ajax-list']).'";');
         
         return $this->render('order', [
             'type' => $type,

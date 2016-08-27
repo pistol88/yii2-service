@@ -16,6 +16,10 @@ use yii\bootstrap\Nav;
                 'label' => 'Услуги',
                 'url' => ['/service/service/index'],
             ],
+            /* [
+                'label' => yii::$app->getModule('service')->propertyName,
+                'url' => ['/service/property/index'],
+            ], */
             [
                 'label' => 'Тарифы',
                 'url' => ['/service/price/index'],

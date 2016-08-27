@@ -5,6 +5,10 @@ $('#service-ident').focus();
 
 pistol88.service = {
     init: function() {
+        $(document).on('change', '.service-choose-property', this.chooseProperty);
+        
+        $(document).on('chooseUserToOrder', function(event, id) { pistol88.service.getProperties(id); })
+        
         $(document).on('submit', '#add-custom-service-form', this.customServiceToCart)
         
         $(document).on('blur', '.get-sessions-by-date', this.getSessions);
@@ -40,7 +44,7 @@ pistol88.service = {
         });
 
         $(document).on('click', '.service-order-net .price', function(e) {
-            $(this).css('border', '2px solid #3F5696').addClass('checked');;
+            $(this).css('border', '2px solid #3F5696').addClass('checked');
             if(e.target.tagName != 'INPUT' && e.target.tagName != 'input') {
                 $(this).find('.pistol88-cart-buy-button').click();
             }
@@ -71,10 +75,47 @@ pistol88.service = {
             $('.service-prices-table td').removeClass('hover');
         });
         
-        $(document).on('click', '.service-order-net .category a', this.getServicesByCategory);
+        $(document).on('click', '.service-order-net .category a, .service-category', this.getServicesByCategory);
         $(document).on('click', '.service-order-net a.back', this.getCategories);
         
         $('.service-worker-payment').on('change', this.setPayment);
+    },
+    propertyListUrl: null,
+    chooseProperty: function() {
+        var category_id = $(this).find('option:selected').attr('data-category');
+
+        $('#service-ident').val($(this).val());
+        $('.service-category-'+category_id).click();
+        
+        return true;
+    },
+    getProperties: function(clientId) {
+        var select = $('.service-choose-property');
+
+        $(select).html('<option>Автомобиль...</option>');
+
+        jQuery.get(pistol88.service.propertyListUrl, {clientId: clientId},
+            function(json) {
+                if(json.result == 'success') {
+                    $(json.list).each(function(i, el) {
+                        selected = '';
+                        if(i == 0) {
+                            selected = "selected";
+                        }
+                        $(select).html($(select).html()+'<option '+selected+' value="'+el.name+'" data-category="'+el.category_id+'">'+el.name+'</option>');
+                    });
+                    
+                    $('.service-choose-property').change();
+                }
+                else {
+                    console.log(json.errors);
+                }
+
+                return true;
+
+            }, "json");
+            
+        return false;
     },
     customServiceToCart: function() {
         var form = $(this);
