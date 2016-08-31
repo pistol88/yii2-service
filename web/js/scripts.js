@@ -31,6 +31,7 @@ pistol88.service = {
         
         $(document).on('blur', '#service-ident', function() {
            $($(this).data('field-selector')).val($(this).val());
+           pistol88.service.searchClientByIdent($(this).val());
         });
 
         $(document).on('click', '.pistol88-cart-truncate-button', function() {
@@ -82,7 +83,24 @@ pistol88.service = {
         
         $('.service-worker-payment').on('change', this.setPayment);
     },
+    searchClientByIdentUrl: null,
     propertyListUrl: null,
+    searchClientByIdent: function(ident) {
+        jQuery.post(pistol88.service.searchClientByIdentUrl, {ident: ident},
+            function(json) {
+                if(json.result == 'success') {
+                    pistol88.createorder.chooseUser(json.client_id);
+                }
+                else {
+                    console.log(json.errors);
+                }
+
+                return true;
+
+            }, "json");
+            
+        return false;
+    },
     chooseProperty: function() {
         var category_id = $(this).find('option:selected').attr('data-category');
 
@@ -94,24 +112,26 @@ pistol88.service = {
     getProperties: function(clientId) {
         var select = $('.service-choose-property');
 
-        $(select).html('<option>Автомобиль...</option>');
+        $(select).html('<option value="" selected=selected>Автомобиль...</option>');
 
         jQuery.get(pistol88.service.propertyListUrl, {clientId: clientId},
             function(json) {
                 if(json.result == 'success') {
                     $(json.list).each(function(i, el) {
                         selected = '';
-                        if(i == 0) {
-                            selected = "selected";
-                        }
+                        //if(i == 0) {
+                        //    selected = "selected";
+                        //}
                         $(select).html($(select).html()+'<option '+selected+' value="'+el.name+'" data-category="'+el.category_id+'">'+el.name+'</option>');
                     });
                     
-                    $('.service-choose-property').change();
+                    //$('.service-choose-property').change();
                 }
                 else {
                     console.log(json.errors);
                 }
+
+                $('.service-choose-property').val($('#service-ident').val());
 
                 return true;
 

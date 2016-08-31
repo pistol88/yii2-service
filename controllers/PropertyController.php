@@ -135,6 +135,26 @@ class PropertyController extends Controller
         return json_encode($json);
     }
     
+    public function actionGetClientByProperty()
+    {
+        $ident = yii::$app->request->post('ident');
+        
+        $property = Property::find()->where(['name' => $ident])->one();
+        
+        if($client = $property->client) {
+            $json = [
+                'result' => 'success',
+                'client_id' => $client->id,
+            ];
+        } else {
+            $json = [
+                'result' => 'fail',
+            ];
+        }
+
+        return json_encode($json);
+    }
+    
     protected function findModel($id)
     {
         $model = new Property;

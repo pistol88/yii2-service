@@ -170,6 +170,7 @@ class PriceController extends Controller
         }
         
         $this->getView()->registerJs('pistol88.service.propertyListUrl = "'.Url::toRoute(['/service/property/get-ajax-list']).'";');
+        $this->getView()->registerJs('pistol88.service.searchClientByIdentUrl = "'.Url::toRoute(['/service/property/get-client-by-property']).'";');
         
         return $this->render('order', [
             'type' => $type,

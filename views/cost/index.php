@@ -30,6 +30,7 @@ if($dateStop = yii::$app->request->get('date_stop')) {
             <div class="col-lg-4">
                 <?php echo $this->render('_form', [
                     'model' => $model,
+                    'module' => $module,
                 ]) ?>
             </div>
         </div>
