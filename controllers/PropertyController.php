@@ -139,6 +139,13 @@ class PropertyController extends Controller
     {
         $ident = yii::$app->request->post('ident');
         
+        if(!$ident) {
+            return json_encode([
+                'result' => 'fail',
+                'client_id' => $client->id,
+            ]);
+        }
+        
         $property = Property::find()->where(['name' => $ident])->one();
         
         if($client = $property->client) {

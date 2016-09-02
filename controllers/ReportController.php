@@ -5,6 +5,7 @@ use yii;
 use pistol88\service\events\Earnings;
 use pistol88\service\models\Cost;
 use pistol88\service\models\Payment;
+use pistol88\staffer\models\Fine;
 use pistol88\order\models\Order;
 use pistol88\order\models\Element;
 use pistol88\order\models\PaymentType;
@@ -41,7 +42,7 @@ class ReportController extends Controller
         } else {
             $session = Session::findOne($sessionId);
         }
-
+        
         $stat = null;
 
         $workerStat = [];
@@ -54,7 +55,15 @@ class ReportController extends Controller
         
         $shopStat = [];
         
+        $sessionId = 0;
+        
+        $costs = [];
+        
         if($session) {
+            $costs = Cost::findAll(['session_id' => $session->id]);
+            
+            $sessionId = $session->id;
+            
             $shopStat = Element::getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop);
 
             $workers = $session->users;
@@ -87,6 +96,7 @@ class ReportController extends Controller
                     $workerStat[$worker->id]['order_count'] = 0; //Кол-во заказов
                     $workerStat[$worker->id]['service_total'] = 0; //Общая сумма выручки
                     $workerStat[$worker->id]['earnings'] = 0; //
+                    $workerStat[$worker->id]['fines'] = 0; //штрафы
                     $workerStat[$worker->id]['payment'] = Payment::findOne(['session_id' => $session->id, 'worker_id' => $worker->id]);
                     $workerStat[$worker->id]['bonus'] = 0;
                     $workerStat[$worker->id]['fine'] = 0;
@@ -125,7 +135,12 @@ class ReportController extends Controller
                     
                     $earning = $earningsEvent->earning;
                     
+                    $fines = $worker->getFinesByDatePeriod($workSession->start, $workSession->stop)->sum('sum');
+                    
+                    $workerStat[$worker->id]['fines'] += $fines;
+                    
                     $workerStat[$worker->id]['earnings'] += $earning;
+                    $workerStat[$worker->id]['earnings'] -= $fines;
                     
                     if($earningsEvent->bonus) {
                         $workerStat[$worker->id]['bonus'] = $earningsEvent->bonus;
@@ -164,14 +179,13 @@ class ReportController extends Controller
         
         $sessions = yii::$app->worksess->getSessions(null, $date);
 
-        $costs = Cost::findAll(['session_id' => $session->id]);
-        
         return $this->render('index', [
             'shopStat' => $shopStat,
             'date' => $date,
             'costs' => $costs,
             'session' => $session,
             'sessions' => $sessions,
+            'sessionId' => $sessionId,
             'stat' => $stat,
             'workerPersent' => $workerPersent,
             'paymentTypes' => $paymentTypes,

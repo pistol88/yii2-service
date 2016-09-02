@@ -25,6 +25,7 @@
         "pistol88/yii2-order": "*",
         "pistol88/yii2-work-session": "*",
         "pistol88/yii2-cart": "*",
+        "pistol88/yii2-staffer": "*",
         "pistol88/yii2-gallery": "*",
         "pistol88/yii2-promocode": "*",
         "voskobovich/yii2-many-many-behavior": "^3.0",
