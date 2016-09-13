@@ -113,7 +113,7 @@ class ReportController extends Controller
                     $workerStat[$worker->id]['order_count'] += $stat['count_order'];
                     $workerStat[$worker->id]['service_total'] += $stat['total'];
 
-                    if($workersCount) {
+                    if($workersCount && !$worker->persent) {
                         $earning = ($stat['total']*$persent)/$workersCount;
                     } else {
                         $earning = ($stat['total']*$persent);
