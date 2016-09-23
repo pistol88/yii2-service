@@ -63,10 +63,13 @@ class ReportController extends Controller
             
             $sessionId = $session->id;
             
-            $shopStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop);
-
             $workers = $session->users;
+            
+            $shopStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop);
             $stat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop);
+
+            $shopStatPromocode = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop, "`promocode` != ''");
+            $statPromocode = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop, "`promocode` != ''");
 
             $workersCount = 0;
             
@@ -94,7 +97,7 @@ class ReportController extends Controller
                     $workerStat[$worker->id]['service_count'] = 0; //Выполнено услуг
                     $workerStat[$worker->id]['order_count'] = 0; //Кол-во заказов
                     $workerStat[$worker->id]['service_total'] = 0; //Общая сумма выручки
-                    $workerStat[$worker->id]['earnings'] = 0; //
+                    $workerStat[$worker->id]['earnings'] = (int)$worker->fix; //
                     $workerStat[$worker->id]['fines'] = 0; //штрафы
                     $workerStat[$worker->id]['payment'] = Payment::findOne(['session_id' => $session->id, 'worker_id' => $worker->id]);
                     $workerStat[$worker->id]['bonus'] = 0;

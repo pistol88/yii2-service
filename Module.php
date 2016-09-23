@@ -8,6 +8,7 @@ class Module extends \yii\base\Module
     public $adminRoles = ['admin', 'superadmin'];
     public $workers = null;
     public $workerPersent = 30;
+    public $persentOdPromocode = 100; //Процент выплат сотрудникам от заказов с промокодом
     public $currency = 'руб.';
     public $mainIdent = 'Номер и марка автомобиля';
     public $mainIdentFieldSelector = '#fieldvalue-value-2';
