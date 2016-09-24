@@ -149,6 +149,7 @@ pistol88.service = {
             function(json) {
                 if(json.result == 'success') {
                     $('#custom-service').modal('hide');
+                    $('#custom-service input[type=text]').val('');
                     pistol88.createorder.updateCart();
                 }
                 else {

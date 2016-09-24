@@ -33,7 +33,7 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Наименование',
+            'name' => 'Название категории',
             'sort' => 'Приоритет',
             'parent_id' => 'Материнская категория',
         ];
