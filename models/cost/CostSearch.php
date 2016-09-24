@@ -53,7 +53,7 @@ class CostSearch extends Cost
             if(!yii::$app->request->get('date_stop')) {
                 $query->andWhere('DATE_FORMAT(date, "%Y-%m-%d") = :dateStart', [':dateStart' => $dateStart]);
             } else {
-                $query->andWhere('date > :dateStart', [':dateStart' => $dateStart]);
+                $query->andWhere('date >= :dateStart', [':dateStart' => $dateStart]);
             }
         }
         
@@ -63,7 +63,7 @@ class CostSearch extends Cost
                 $dateStop = date('Y-m-d');
             }
         
-            $query->andWhere('date < :dateStop', [':dateStop' => $dateStop]);
+            $query->andWhere('date <= :dateStop', [':dateStop' => $dateStop]);
         }
 
         $query->andFilterWhere(['like', 'name', $this->name]);
