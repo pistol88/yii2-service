@@ -15,19 +15,7 @@ pistol88.service = {
         
         $(document).on('submit', '#orderForm', function() {
             $('#orderForm').css('css', '0.5');
-            setTimeout(function() {
-                $('.service-order .pistol88-cart-truncate-button').click();
-                $('.pistol88-cart').html('Корзина пуста');
-                $('.pistol88-cart-count').html('0');
-                $('.pistol88-cart-informer').html('-')
-                $('.service-order-net .header .back').click();
-                $('#service-ident').val('').focus().select();
-                $('#order-payment_type_id').val(1);
-                $('.promo-code-enter input[type=text]').val('');
-                $('.promo-code-discount').hide();
-                $('#orderForm input[type=text], #orderForm textarea').val('');
-                $('#orderForm').css('css', '1');
-            }, 600);
+            pistol88.srcive.clearServiceOrder();
         });
         
         $(document).on('blur', '#service-ident', function() {
@@ -86,6 +74,20 @@ pistol88.service = {
     },
     searchClientByIdentUrl: null,
     propertyListUrl: null,
+    clearServiceOrder : function() {
+        $('#orderForm').css('css', '0.5');
+        $('.service-order .pistol88-cart-truncate-button').click();
+        $('.pistol88-cart').html('Корзина пуста');
+        $('.pistol88-cart-count').html('0');
+        $('.pistol88-cart-informer').html('-')
+        $('.service-order-net .header .back').click();
+        $('#service-ident').val('').focus().select();
+        $('#order-payment_type_id').val(1);
+        $('.promo-code-enter input[type=text]').val('');
+        $('.promo-code-discount').hide();
+        $('#orderForm input[type=text], #orderForm textarea').val('');
+        $('#orderForm').css('css', '1');
+    },
     searchClientByIdent: function(ident) {
         jQuery.post(pistol88.service.searchClientByIdentUrl, {ident: ident},
             function(json) {
@@ -137,7 +139,7 @@ pistol88.service = {
                 return true;
 
             }, "json");
-            
+
         return false;
     },
     customServiceToCart: function() {
@@ -159,7 +161,7 @@ pistol88.service = {
                 return true;
 
             }, "json");
-            
+
         return false;
     },
     callPrint: function (strid) {
@@ -182,12 +184,12 @@ pistol88.service = {
             $(this).parent('div').find('p').remove();
             var url = $(this).attr('data-unset-href');
         }
-        
+
         $.post(url, {'worker_id': $(this).data('worker-id'), 'session_id': $(this).data('session-id'), 'sum': $(this).data('sum')},
             function(answer) {
                 json = answer;
             }, "json");
-  
+
         return false;
     },
     getCategories: function() {
@@ -196,7 +198,7 @@ pistol88.service = {
                 json = answer;
                 $('.service-order-net').replaceWith(json.HtmlBlock);
             }, "json");
-  
+
         return false;
     },
     getSessions: function() {
@@ -207,7 +209,7 @@ pistol88.service = {
                 json = answer;
                 $(input).siblings('ul').replaceWith(json.HtmlList);
             }, "json");
-  
+
         return false;
     },
     getServicesByCategory: function() {
@@ -216,7 +218,7 @@ pistol88.service = {
                 json = answer;
                 $('.service-order-net').replaceWith(json.HtmlBlock);
             }, "json");
-  
+
         return false;
     },
     renderCross: function () {
