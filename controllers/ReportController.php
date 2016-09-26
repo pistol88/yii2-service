@@ -110,15 +110,17 @@ class ReportController extends Controller
                 $workerStat[$worker->id]['sessions'] = $workerSessions;
 
                 foreach($workerSessions as $workSession) {
-                    $userStat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $workSession->start, $workSession->stop);
-                    $workerStat[$worker->id]['service_count'] += $stat['count_elements'];
-                    $workerStat[$worker->id]['order_count'] += $stat['count_order'];
-                    $workerStat[$worker->id]['service_total'] += $stat['total'];
+                    $sessionStat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $workSession->start, $workSession->stop);
+                    $workerStat[$worker->id]['service_count'] += $sessionStat['count_elements'];
+                    $workerStat[$worker->id]['order_count'] += $sessionStat['count_order'];
+                    $workerStat[$worker->id]['service_total'] += $sessionStat['total'];
 
-                    if($workersCount && !$worker->persent) {
-                        $earning = ($stat['total']*$persent)/$workersCount;
+					$sessionWorkersCount = yii::$app->worksess->getWorkersCountByDate($session, $workSession->start, $workSession->stop);
+
+                    if($sessionWorkersCount && !$worker->persent) {
+                        $earning = ($sessionStat['total']*$persent)/$sessionWorkersCount;
                     } else {
-                        $earning = ($stat['total']*$persent);
+                        $earning = ($sessionStat['total']*$persent);
                     }
 
                     $earningsEvent = new Earnings(
@@ -126,7 +128,7 @@ class ReportController extends Controller
                             'worker' => $worker,
                             'persent' => $persent,
                             'total' => $stat['total'],
-                            'userTotal' => $userStat['total'],
+                            'userTotal' => $sessionStat['total'],
                             'workersCount' => $workersCount,
                             'earning' => $earning,
                         ]

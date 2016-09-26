@@ -109,7 +109,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'li',
                                     Html::a(
                                         date('H:i', $workSession->start_timestamp).' - '.$dateStop,
-                                        ['/order/order/index', 'date_start' => $workSession->start, 'date_stop' => $workSession->stop]
+                                        ['/order/order/index', 'time_start' => $workSession->start, 'time_stop' => $workSession->stop]
                                     )
                                 );
                             }
@@ -134,7 +134,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?=$workerStat[$worker->id]['fines'];?>
                     </td>
                     <td class="earnings">
-                        <?=$workerStat[$worker->id]['earnings'];?>
+                        <?=round($workerStat[$worker->id]['earnings']);?>
                         <?=$module->currency;?>
                         <?php if($bonus = $workerStat[$worker->id]['bonus']) { ?>
                             <span class="bonus" title="Бонус">+<?=$bonus;?> <?=$module->currency;?></span>
