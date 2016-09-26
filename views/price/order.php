@@ -23,9 +23,9 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
     </div>
 
     <br class="clear" />
-    
+
     <p align="center"><small>Enter - отправить заказ</small></p>
-    
+
     <div class="control row">
         <div class="col-md-9 ident">
             <div class="service-ident">
@@ -39,13 +39,13 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                         <option value="table">Таблицей</option>
                         <option value="net" <?php if($type == 'net') { echo ' selected="selected"'; }?>>Сеткой</option>
                     </select>
-                    
+
                 </form>
             </div>
-            
+
         </div>
     </div>
-    
+
     <div class="row">
         <div class="col-lg-9 col-md-8  col-sm-12">
             <?=$this->render('order-type/'.$type, ['categories' => $categories, 'services' => $services, 'complexes' => $complexes, 'prices' => $prices]);?>
@@ -63,7 +63,7 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                         </small>
                     </div>
                 </div>
-                
+
                 <div class="row">
                     <div class="col-md-6">
                         <h3>Чек <span class="pistol88-cart-count"><?=yii::$app->cart->count;?></span></h3>
@@ -71,9 +71,9 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                     <div class="col-md-6 custom-service">
                     </div>
                 </div>
-                
+
                 <?=ElementsList::widget(['columns' => '3', 'showCountArrows' => false, 'type' => ElementsList::TYPE_FULL]);?>
-                
+
                 <div class="row">
                     <div class="col-md-7">
                         <div class="total">
@@ -88,8 +88,17 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                 </div>
 
                 <iframe src="about:blank" id="orderSubmitter" name="orderSubmitter" style="display:none;"></iframe>
-                <?php $form = ActiveForm::begin(['options' => ['target' => 'orderSubmitter', 'class' => 'panel-group-none'], 'action' => ['/order/order/create'], 'id' => 'orderForm']); ?>
-                    <div class="panel panel-default">
+                <!-- <iframe src="<?php // echo Url::to(['/order/order/create-from-iframe']); ?>" width="335" height="800" frameborder="0"></iframe> -->
+
+                <div class="order-create-container" style="width: 320px; height: 580px;" id="order-creation-container">
+                    <?= \pistol88\order\widgets\OrderFormLight::widget([
+                            'useAjax' => true,
+                        ]);
+                    ?>
+                </div>
+
+                <?php // $form = ActiveForm::begin(['options' => ['target' => 'orderSubmitter', 'class' => 'panel-group-none'], 'action' => ['/order/order/create'], 'id' => 'orderForm']); ?>
+                    <!-- <div class="panel panel-default">
                         <div class="panel-heading" role="tab" id="headingOne">
                             <h4 class="panel-title">
                                 <a class="heading collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseTwo">
@@ -99,7 +108,7 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                         </div>
                         <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo" aria-expanded="false">
                             <div class="panel-body">
-                                <?=ChooseClient::widget(['form' => $form, 'model' => $orderModel]);?>
+                                <?php // echo ChooseClient::widget(['form' => $form, 'model' => $orderModel]);?>
                                 <select class="form-control service-choose-property">
                                     <option>Автомобиль...</option>
                                 </select>
@@ -118,11 +127,11 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                             <div class="row panel-body">
                                 <div class="col-lg-12">
                                     <div style="display: none;">
-                                        <?= $form->field($orderModel, 'status')->label(false)->textInput(['value' => 'new', 'type' => 'hidden', 'maxlength' => true]) ?>
+                                        <?php // echo $form->field($orderModel, 'status')->label(false)->textInput(['value' => 'new', 'type' => 'hidden', 'maxlength' => true]) ?>
                                     </div>
-                                    <?= $form->field($orderModel, 'payment_type_id')->dropDownList($paymentTypes) ?>
+                                    <?php // echo $form->field($orderModel, 'payment_type_id')->dropDownList($paymentTypes) ?>
                                 </div>
-                                <?php if($fields = $orderModel->allfields) { ?>
+                                <?php /* if($fields = $orderModel->allfields) { ?>
                                     <div class="row">
                                         <?php foreach($fields as $fieldModel) { ?>
                                             <div class="col-lg-12 col-xs-12">
@@ -140,21 +149,22 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                                             </div>
                                         <?php } ?>
                                     </div>
-                                <?php } ?>
+                                <?php } */ ?>
                                 <div class="row">
                                     <div class="col-lg-12 col-xs-12">
-                                        <?= $form->field($orderModel, 'comment')->textArea(['maxlength' => true]) ?>
+                                        <?php // echo $form->field($orderModel, 'comment')->textArea(['maxlength' => true]) ?>
                                     </div>
                                 </div>
                                 </div>
                         </div>
                     </div>
                     <div class="form-group offer">
-                        <?= Html::submitButton($orderModel->isNewRecord ? Yii::t('order', 'Create order') : Yii::t('order', 'Update'), ['class' => $orderModel->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-                    </div>
-                
-                <?php ActiveForm::end(); ?>
+                        <?php // echo Html::submitButton($orderModel->isNewRecord ? Yii::t('order', 'Create order') : Yii::t('order', 'Update'), ['class' => $orderModel->isNewRecord ? 'btn btn-success' : 'btn btn-primary', 'id' => 'test']); ?>
+                    </div> -->
+
+                <?php // ActiveForm::end(); ?>
             </div>
+
         </div>
     </div>
 </div>
