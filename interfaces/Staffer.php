@@ -7,4 +7,5 @@ interface Staffer
     function getFullName();
     function getFix();
     function getPersent();
+	function getCategory_id();
 }

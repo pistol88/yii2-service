@@ -74,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <td><strong>Сотрудник</strong></td>
                 <td><strong>Заказов/Услуг</strong></td>
-                <td><strong>Время работы</strong></td>
+                <!--td><strong>Время работы</strong></td-->
                 <td><strong>Выручка</strong></td>
                 <td><strong>Процент</strong></td>
                 <td><strong>Штрафы</strong></td>
@@ -119,9 +119,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     </td>
                     <td>
                         <?=$workerStat[$worker->id]['order_count'];?>/<?=$workerStat[$worker->id]['service_count'];?>
-                    </td>
-                    <td class="worker-session-time">
-                        <?=$worker->getSessionTime();?>
                     </td>
                     <td>
                         <?=$workerStat[$worker->id]['service_total'];?>
@@ -168,7 +165,6 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <td align="right">Итого:</td>
                 <td><strong><?=$stat['count_order'];?>/<?=$stat['count_elements'];?></strong></td>
-                <td>-</td>
                 <td>
                     <strong><?=$stat['total'];?> <?=$module->currency;?></strong>
                     <ul class="payment-types">
