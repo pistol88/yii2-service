@@ -150,7 +150,7 @@ class ReportController extends Controller
 					[
 						'worker' => $worker,
 						'total' => $stat['total'],
-						'userTotal' => $sessionStat['total'],
+						'userTotal' => $workerStat[$worker->id]['service_total'],
 						'workersCount' => $workersCount,
 						'earning' => $earning,
 					]
@@ -177,6 +177,7 @@ class ReportController extends Controller
 			}
 
             $stop = $session->stop;
+			
             if(!$stop) {
                 $stop = date('Y-m-d H:i:s');
             }
