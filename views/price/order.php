@@ -54,7 +54,7 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
             <div class="service-order">
                 <div class="row">
                     <div class="col-md-6">
-                        <?=BuyByCode::widget();?>
+                        <?php //BuyByCode::widget();?>
                     </div>
                     <div class="col-md-6">
                         <small>
