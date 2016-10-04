@@ -124,7 +124,7 @@ class ReportController extends Controller
 								
 								$workerStat[$worker->id]['service_count'] += $element->count; //Выполнено услуг
 								$workerStat[$worker->id]['order_count'] += 1; //Кол-во заказов
-								$workerStat[$worker->id]['service_total'] += $element->price; //Общая сумма выручки
+								$workerStat[$worker->id]['service_total'] += $element->price*$element->count; //Общая сумма выручки
 							}
 						}
 
@@ -132,9 +132,9 @@ class ReportController extends Controller
 							$persent = round(($workerStat[$worker->id]['persent']/100), 2);
 
 							if((empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds))) {
-								$earning = ($element->price*$persent)/$orderCustomerCount;
+								$earning = (($element->price*$element->count)*$persent)/$orderCustomerCount;
 							} else {
-								$earning = ($element->price*$persent);
+								$earning = (($element->price*$element->count)*$persent);
 							}
 							
 							$workerStat[$worker->id]['earnings'] += $earning;
@@ -143,6 +143,7 @@ class ReportController extends Controller
 				}
 			}
 			
+			//Костомные начисления через триггер
 			foreach($workers as $worker) {
 				$earning = $workerStat[$worker->id]['earnings'];
 				
@@ -164,7 +165,7 @@ class ReportController extends Controller
 				$fines = $worker->getFinesByDatePeriod($workSession->start, $workSession->stop)->sum('sum');
 				
 				$workerStat[$worker->id]['fines'] += $fines;
-				$workerStat[$worker->id]['earnings'] += $earning;
+				$workerStat[$worker->id]['earnings'] = $earning;
 				$workerStat[$worker->id]['earnings'] -= $fines;
 				
 				if($earningsEvent->bonus) {
