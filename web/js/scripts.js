@@ -13,8 +13,8 @@ pistol88.service = {
         
         $(document).on('blur', '.get-sessions-by-date', this.getSessions);
         
-        $(document).on('submit', '#orderForm', function() {
-            $('#orderForm').css('css', '0.5');
+        $(document).on('submit', '.order-create-container form', function() {
+            $('.order-create-container form').css('css', '0.5');
             pistol88.srcive.clearServiceOrder();
         });
         
@@ -50,7 +50,7 @@ pistol88.service = {
                             return false;
                         //}
                     }
-                    $('#orderForm').submit();
+                    $('.order-create-container form').submit();
                 }
             }
         });
@@ -75,7 +75,7 @@ pistol88.service = {
     searchClientByIdentUrl: null,
     propertyListUrl: null,
     clearServiceOrder : function() {
-        $('#orderForm').css('css', '0.5');
+        $('.order-create-container form').css('css', '0.5');
         $('.service-order .pistol88-cart-truncate-button').click();
         $('.pistol88-cart').html('Корзина пуста');
         $('.pistol88-cart-count').html('0');
@@ -86,8 +86,8 @@ pistol88.service = {
         $('#order-payment_type_id').val(1);
         $('.promo-code-enter input[type=text]').val('');
         $('.promo-code-discount').hide();
-        $('#orderForm input[type=text], #orderForm textarea').val('');
-        $('#orderForm').css('css', '1');
+        $('.order-create-container form input[type=text], .order-create-container form textarea').val('');
+        $('.order-create-container form').css('css', '1');
     },
     searchClientByIdent: function(ident) {
         jQuery.post(pistol88.service.searchClientByIdentUrl, {ident: ident},
@@ -111,6 +111,8 @@ pistol88.service = {
         $('#service-ident').val($(this).val());
         $('.service-category-'+category_id).click();
         
+		$($('#service-ident').data('field-selector')).val($(this).val());
+		
         return true;
     },
     getProperties: function(clientId) {
@@ -136,7 +138,9 @@ pistol88.service = {
                 }
 
                 $('.service-choose-property').val($('#service-ident').val());
-
+				
+				$($('#service-ident').data('field-selector')).val($('#service-ident').val());
+				
                 return true;
 
             }, "json");
