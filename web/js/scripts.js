@@ -198,8 +198,10 @@ pistol88.service = {
         return false;
     },
     getCategories: function() {
+		$('.services').css('opacity', '0.3');
         $.post($(this).attr('href'), {},
             function(answer) {
+				$('.services').css('opacity', '1');
                 json = answer;
                 $('.service-order-net').replaceWith(json.HtmlBlock);
             }, "json");
@@ -218,8 +220,10 @@ pistol88.service = {
         return false;
     },
     getServicesByCategory: function() {
+		$('.service-order-net').css('opacity', '0.3');
         $.post($(this).attr('href'), {id: $(this).data('id')},
             function(answer) {
+				$('.service-order-net').css('opacity', '1');
                 json = answer;
                 $('.service-order-net').replaceWith(json.HtmlBlock);
             }, "json");
