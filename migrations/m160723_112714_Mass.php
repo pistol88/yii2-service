@@ -17,6 +17,7 @@ class m160723_112714_Mass extends Migration {
             $this->createTable('{{%service_category}}', [
                 'id' => Schema::TYPE_PK . "",
                 'category_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+				'parent_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'sort' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'name' => Schema::TYPE_STRING . "(255) NOT NULL",
                 ], $tableOptions);
@@ -34,20 +35,29 @@ class m160723_112714_Mass extends Migration {
             
             $this->createTable('{{%service_price}}', [
                 'id' => Schema::TYPE_PK . "",
-                'name' => Schema::TYPE_STRING . "(255) NOT NULL",
-                'sum' => Schema::TYPE_INTEGER . "(11) NOT NULL",
-                'date' => Schema::TYPE_DECIMAL . "(11,2)",
+                'name' => Schema::TYPE_STRING . "(255)",
+				'service_type' => Schema::TYPE_STRING . "(255)",
+                'sum' => Schema::TYPE_INTEGER . "(11)",
+				'price' => Schema::TYPE_DECIMAL . "(11,2)",
+                'date' => chema::TYPE_DATE,
                 'user_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+				'service_id' => Schema::TYPE_INTEGER . "(11)",
                 'session_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+				'category_id' => Schema::TYPE_INTEGER . "(11)",
+				'description' => Schema::TYPE_STRING . "(255)",
                 ], $tableOptions);
 
             $this->createTable('{{%service_cost}}', [
                 'id' => Schema::TYPE_PK . "",
+				'name' => Schema::TYPE_STRING . "(255)",
                 'service_type' => Schema::TYPE_STRING . "(255) NOT NULL",
                 'service_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'price' => Schema::TYPE_DECIMAL . "(11,2)",
+				'sum' => Schema::TYPE_DECIMAL . "(11,2)",
+				'date' => Schema::TYPE_DATE,
                 'category_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'description' => Schema::TYPE_TEXT . "",
+				'session_id' => Schema::TYPE_INTEGER . "(11)",
                 ], $tableOptions);
             
             $this->createTable('{{%service_payment}}', [
@@ -58,7 +68,7 @@ class m160723_112714_Mass extends Migration {
                 'worker_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'client_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'session_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
-                'date' => Schema::TYPE_DATE . " NOT NULL",
+                'date' => Schema::TYPE_DATE,
                 'date_timestamp' => Schema::TYPE_INTEGER . "(11) NOT NULL",
                 'sum' => Schema::TYPE_DECIMAL . "(11,2)",
                 ], $tableOptions);
