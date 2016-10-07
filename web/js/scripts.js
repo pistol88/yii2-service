@@ -15,7 +15,7 @@ pistol88.service = {
         
         $(document).on('submit', '.order-create-container form', function() {
             $('.order-create-container form').css('css', '0.5');
-            pistol88.srcive.clearServiceOrder();
+            //pistol88.service.clearServiceOrder();
         });
         
         $(document).on('blur', '#service-ident', function() {
@@ -81,6 +81,7 @@ pistol88.service = {
         $('.pistol88-cart-count').html('0');
         $('.pistol88-cart-informer').find('.pistol88-cart-count').html('0');
         $('.pistol88-cart-informer').find('.pistol88-cart-price').find("span").html('0');
+		$('.pistol88-cart-informer').find('.pistol88-cart-price').find("s").remove();
         $('.service-order-net .header .back').click();
         $('#service-ident').val('').focus().select();
         $('#order-payment_type_id').val(1);
