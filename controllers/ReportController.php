@@ -64,20 +64,6 @@ class ReportController extends Controller
 		$shopStatPromocode = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop, "`promocode` != ''");
 		$statPromocode = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop, "`promocode` != ''");
 		
-		foreach($workers as $worker) {
-			if(!isset($workerStat[$worker->id]['service_count'])) {
-				$workerStat[$worker->id]['service_count'] = 0; //Выполнено услуг
-				$workerStat[$worker->id]['order_count'] = 0; //Кол-во заказов
-				$workerStat[$worker->id]['service_total'] = 0; //Общая сумма выручки
-				$workerStat[$worker->id]['earnings'] = (int)$worker->fix; //
-				$workerStat[$worker->id]['fines'] = 0; //штрафы
-				$workerStat[$worker->id]['payment'] = Payment::findOne(['session_id' => $session->id, 'worker_id' => $worker->id]);
-				$workerStat[$worker->id]['bonus'] = 0;
-				$workerStat[$worker->id]['fine'] = 0;
-				$workerStat[$worker->id]['persent'] = $basePersent;
-			}
-		}
-
         if($session) {
             $costs = Cost::findAll(['session_id' => $session->id]);
             
@@ -106,13 +92,17 @@ class ReportController extends Controller
 
 								//Задан ли индивидуальный процент
 								if(empty($worker->persent)) {
-									$basePersent = $this->module->getWorkerPersent($session);
+									if($worker->pay_type == base) {
+										$basePersent = $this->module->getWorkerPersent($session);
+									} else {
+										$basePersent = 0;
+									}
 								} else {
 									$basePersent = $worker->persent;
 								}
 
 								if(!isset($workerStat[$worker->id]['fines'])) {
-									$workerStat[$worker->id]['earnings'] = 0;
+									$workerStat[$worker->id]['earnings'] = (int)$worker->fix;
 									$workerStat[$worker->id]['fines'] = 0; //штрафы
 									$workerStat[$worker->id]['payment'] = Payment::findOne(['session_id' => $session->id, 'worker_id' => $worker->id]);
 									$workerStat[$worker->id]['persent'] = $basePersent;
@@ -129,15 +119,17 @@ class ReportController extends Controller
 						}
 
 						foreach($orderWorkers as $worker) {
-							$persent = round(($workerStat[$worker->id]['persent']/100), 2);
+							if($workerStat[$worker->id]['persent']) {
+								$persent = round(($workerStat[$worker->id]['persent']/100), 2);
 
-							if((empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds))) {
-								$earning = (($element->price*$element->count)*$persent)/$orderCustomerCount;
-							} else {
-								$earning = (($element->price*$element->count)*$persent);
+								if((empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds))) {
+									$earning = (($element->price*$element->count)*$persent)/$orderCustomerCount;
+								} else {
+									$earning = (($element->price*$element->count)*$persent);
+								}
+								
+								$workerStat[$worker->id]['earnings'] += $earning;
 							}
-							
-							$workerStat[$worker->id]['earnings'] += $earning;
 						}
 					}
 				}
