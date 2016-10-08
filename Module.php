@@ -20,6 +20,7 @@ class Module extends \yii\base\Module
     public $propertyStatuses = ['active' => 'Активно', 'unactive' => 'Неактивно'];
     public $propertyName = 'Автомобили';
     public $identName = 'Номер авто';
+	public $promoDivision = []; //'model' => ['Скидка >' => 'процент от стоимости']
     
     const EVENT_EARNINGS = 'earnings';
     

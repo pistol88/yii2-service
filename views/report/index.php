@@ -64,18 +64,20 @@ $this->params['breadcrumbs'][] = $this->title;
     <div id="report-to-print">
         <h1> <?php if(isset($session->user)) { ?>Администратор <?=$session->user->name;?><?php } ?> </h1>
         <a href="#" class="btn btn-submit" onclick="pistol88.service.callPrint('report-to-print'); return false;" style="float: right;"><i class="glyphicon glyphicon-print"></i></a>
-        <p>Смена: <?=$session->shiftName;?></p>
-        <p>Старт: <?=date('d.m.Y H:i:s', $session->start_timestamp);?></p>
-        <p>Стоп: <?php if($session->stop_timestamp) echo date('d.m.Y H:i:s', $session->stop_timestamp); else echo '-';?></p>
+        <p><strong>Смена</strong>: <?=$session->shiftName;?></p>
+        <p><strong>Старт</strong>: <?=date('d.m.Y H:i:s', $session->start_timestamp);?></p>
+        <p><strong>Стоп</strong>: <?php if($session->stop_timestamp) echo date('d.m.Y H:i:s', $session->stop_timestamp); else echo '-';?></p>
+		<p><strong>Продолжительность</strong>: <?=$session->getTime();?></p>
         <hr style="clear: both;" />
 
         <h2>Услуги</h2>
         <table class="table table-hover table-responsive">
             <tr>
                 <td><strong>Сотрудник</strong></td>
+				<td><strong>Время работы</strong></td>
                 <td><strong>Заказов/Услуг</strong></td>
-                <!--td><strong>Время работы</strong></td-->
                 <td><strong>Выручка</strong></td>
+				<td><strong>Фикс</strong></td>
                 <td><strong>Процент</strong></td>
                 <td><strong>Штрафы</strong></td>
                 <td><strong>Зарплата</strong></td>
@@ -117,12 +119,19 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         ?>
                     </td>
+					<td class="work-time">
+						<?=$workerStat[$worker->id]['time'];?>
+					</td>
                     <td>
                         <?=$workerStat[$worker->id]['order_count'];?>/<?=$workerStat[$worker->id]['service_count'];?>
                     </td>
                     <td>
-                        <?=$workerStat[$worker->id]['service_total'];?>
+                        <?php if($workerStat[$worker->id]['service_base_total'] != $workerStat[$worker->id]['service_total']) { ?> <s title="Базовая стоимость услуг"><small><?=$workerStat[$worker->id]['service_base_total'];?></small></s><?php } ?>
+						<strong title="Фактически полученная выручка"><?=$workerStat[$worker->id]['service_total'];?></strong>
                         <?=$module->currency;?>
+                    </td>
+                    <td class="fix">
+                        <?=$workerStat[$worker->id]['fix'];?>
                     </td>
                     <td class="persent">
                         <?=$workerStat[$worker->id]['persent'];?>%
@@ -164,16 +173,11 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php } ?>
             <tr>
                 <td align="right">Итого:</td>
+				<td><?=$session->getTime();?></td>
                 <td><strong><?=$stat['count_order'];?>/<?=$stat['count_elements'];?></strong></td>
-                <td>
-                    <strong><?=$stat['total'];?> <?=$module->currency;?></strong>
-                    <ul class="payment-types">
-                        <?php foreach($paymentsInfo as $name => $psum) { ?>
-                            <li><?=$name;?>: <?=$psum;?> <?=$module->currency;?></li>
-                        <?php } ?>
-                    </ul>
-                </td>
+                <td><strong><?=$stat['total'];?> <?=$module->currency;?></strong></td>
                 <td>-</td>
+				<td><?=$sumfix;?></td>
                 <td>-</td>
                 <td><strong><?=$sum['earnings'];?> <?=$module->currency;?></strong></td>
                 <td>

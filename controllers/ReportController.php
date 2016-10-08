@@ -47,11 +47,7 @@ class ReportController extends Controller
         $workerStat = [];
 
         $workers = [];
-        
-        $paymentsInfo = [];
-        
-        $paymentTypes = PaymentType::find()->all();
-        
+		
         $shopStat = [];
         
         $sessionId = 0;
@@ -102,6 +98,8 @@ class ReportController extends Controller
 								}
 
 								if(!isset($workerStat[$worker->id]['fines'])) {
+									$workerStat[$worker->id]['fix'] = (int)$worker->fix;
+									$workerStat[$worker->id]['time'] = yii::$app->worksess->getUserWorkTimeBySession($worker, $session);
 									$workerStat[$worker->id]['earnings'] = (int)$worker->fix;
 									$workerStat[$worker->id]['fines'] = 0; //штрафы
 									$workerStat[$worker->id]['payment'] = Payment::findOne(['session_id' => $session->id, 'worker_id' => $worker->id]);
@@ -110,22 +108,45 @@ class ReportController extends Controller
 									$workerStat[$worker->id]['service_count'] = 0; //Выполнено услуг
 									$workerStat[$worker->id]['order_count'] = 0; //Кол-во заказов
 									$workerStat[$worker->id]['service_total'] = 0; //Общая сумма выручки
+									$workerStat[$worker->id]['service_base_total'] = 0; //Общая сумма выручки без учета скидок
 								}
 								
 								$workerStat[$worker->id]['service_count'] += $element->count; //Выполнено услуг
 								$workerStat[$worker->id]['order_count'] += 1; //Кол-во заказов
 								$workerStat[$worker->id]['service_total'] += $element->price*$element->count; //Общая сумма выручки
+								$workerStat[$worker->id]['service_base_total'] += $element->base_price*$element->count; //Общая сумма выручки
 							}
 						}
 
 						foreach($orderWorkers as $worker) {
 							if($workerStat[$worker->id]['persent']) {
 								$persent = round(($workerStat[$worker->id]['persent']/100), 2);
+								
+								$elementCost = ($element->price*$element->count);
+								
+								//Процент, выдааемый сотруднику в случае применения скидки
+								if($promoDivision = $this->module->promoDivision) {
+									$dif = $element->base_price-$element->price;
+									if($dif) {
+										$promoPersent = ($dif*100)/$element->base_price;
+										foreach($promoDivision as $model => $params) {
+											if($elementModel::className() == $model) {
+												foreach($params as $k => $v) {
+													if($promoPersent > $k) {
+														$elementCost = ($element->base_price*$element->count);
+														$elementCost = $elementCost*($v/100);
+														break;
+													}
+												}
+											}
+										}
+									}
+								}
 
 								if((empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds))) {
-									$earning = (($element->price*$element->count)*$persent)/$orderCustomerCount;
+									$earning = ($elementCost*$persent)/$orderCustomerCount;
 								} else {
-									$earning = (($element->price*$element->count)*$persent);
+									$earning = ($elementCost*$persent);
 								}
 								
 								$workerStat[$worker->id]['earnings'] += $earning;
@@ -174,17 +195,6 @@ class ReportController extends Controller
             if(!$stop) {
                 $stop = date('Y-m-d H:i:s');
             }
-            
-            foreach($paymentTypes as $pt) {
-                $query = new Query();
-                $sum = $query->from([Order::tableName()])
-                        ->where('date >= :dateStart', [':dateStart' => $session->start])
-                        ->andWhere('date <= :dateStop', [':dateStop' => $stop])
-                        ->andWhere(['payment_type_id' => $pt->id])
-                        ->sum('cost');
-
-                $paymentsInfo[$pt->name] = (int)$sum;
-            }
         }
 
         $workerPersent = $this->module->workerPersent;
@@ -206,8 +216,6 @@ class ReportController extends Controller
             'sessionId' => $sessionId,
             'stat' => $stat,
             'workerPersent' => $workerPersent,
-            'paymentTypes' => $paymentTypes,
-            'paymentsInfo' => $paymentsInfo,
             'workers' => $workers,
             'workerStat' => $workerStat,
             'module' => $this->module,
