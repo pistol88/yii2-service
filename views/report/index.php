@@ -67,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <p><strong>Смена</strong>: <?=$session->shiftName;?></p>
         <p><strong>Старт</strong>: <?=date('d.m.Y H:i:s', $session->start_timestamp);?></p>
         <p><strong>Стоп</strong>: <?php if($session->stop_timestamp) echo date('d.m.Y H:i:s', $session->stop_timestamp); else echo '-';?></p>
-		<p><strong>Продолжительность</strong>: <?=$session->getTime();?></p>
+		<p><strong>Продолжительность</strong>: <?=$session->getDuration();?></p>
         <hr style="clear: both;" />
 
         <h2>Услуги</h2>
@@ -173,7 +173,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php } ?>
             <tr>
                 <td align="right">Итого:</td>
-				<td><?=$session->getTime();?></td>
+				<td><?=$session->getDuration();?></td>
                 <td><strong><?=$stat['count_order'];?>/<?=$stat['count_elements'];?></strong></td>
                 <td><strong><?=$stat['total'];?> <?=$module->currency;?></strong></td>
                 <td>-</td>
