@@ -88,7 +88,7 @@ class ReportController extends Controller
 
 								//Задан ли индивидуальный процент
 								if(empty($worker->persent)) {
-									if($worker->pay_type == base) {
+									if($worker->pay_type == 'base') {
 										$basePersent = $this->module->getWorkerPersent($session);
 									} else {
 										$basePersent = 0;
