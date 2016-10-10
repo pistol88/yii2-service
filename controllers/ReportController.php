@@ -23,7 +23,7 @@ class ReportController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-				'only' => ['index', 'get-sessions'],
+                'only' => ['index', 'get-sessions'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -47,19 +47,19 @@ class ReportController extends Controller
         $workerStat = [];
 
         $workers = [];
-		
+        
         $shopStat = [];
         
         $sessionId = 0;
         
         $costs = [];
         
-		$shopStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop);
-		$stat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop);
+        $shopStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop);
+        $stat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop);
 
-		$shopStatPromocode = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop, "`promocode` != ''");
-		$statPromocode = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop, "`promocode` != ''");
-		
+        $shopStatPromocode = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop, "`promocode` != ''");
+        $statPromocode = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop, "`promocode` != ''");
+        
         if($session) {
             $costs = Cost::findAll(['session_id' => $session->id]);
             
@@ -67,131 +67,131 @@ class ReportController extends Controller
             
             $workers = $session->users;
             
-			$workersCount = yii::$app->worksess->getWorkersCount($session);
-			
-			$orders = yii::$app->order->getOrdersByDatePeriod($session->start, $session->stop);
+            $workersCount = yii::$app->worksess->getWorkersCount($session);
+            
+            $orders = yii::$app->order->getOrdersByDatePeriod($session->start, $session->stop);
 
-			//Распределяем деньги от каждого заказа между сотрудниками
-			foreach($orders as $order) {
-				foreach($order->elements as $element) {
-					$elementModel = $element->getModel(); 
-					if(in_array($elementModel::className(), ['pistol88\service\models\CustomService', 'pistol88\service\models\Price'])) {
-						$orderWorkers = [];
-						$orderCustomerCount = 0;
-						foreach($workers as $worker) {
-							if($worker->hasWork(strtotime($order->date))) {
-								$orderWorkers[] = $worker;
+            //Распределяем деньги от каждого заказа между сотрудниками
+            foreach($orders as $order) {
+                foreach($order->elements as $element) {
+                    $elementModel = $element->getModel(); 
+                    if(in_array($elementModel::className(), ['pistol88\service\models\CustomService', 'pistol88\service\models\Price'])) {
+                        $orderWorkers = [];
+                        $orderCustomerCount = 0;
+                        foreach($workers as $worker) {
+                            if($worker->hasWork(strtotime($order->date))) {
+                                $orderWorkers[] = $worker;
 
-								if(empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds)) {
-									$orderCustomerCount++;
-								}
+                                if(empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds)) {
+                                    $orderCustomerCount++;
+                                }
 
-								//Задан ли индивидуальный процент
-								if(empty($worker->persent)) {
-									if($worker->pay_type == 'base') {
-										$basePersent = $this->module->getWorkerPersent($session);
-									} else {
-										$basePersent = 0;
-									}
-								} else {
-									$basePersent = $worker->persent;
-								}
+                                //Задан ли индивидуальный процент
+                                if(empty($worker->persent)) {
+                                    if($worker->pay_type == 'base') {
+                                        $basePersent = $this->module->getWorkerPersent($session);
+                                    } else {
+                                        $basePersent = 0;
+                                    }
+                                } else {
+                                    $basePersent = $worker->persent;
+                                }
 
-								if(!isset($workerStat[$worker->id]['fines'])) {
-									$workerStat[$worker->id]['fix'] = (int)$worker->fix;
-									$workerStat[$worker->id]['time'] = yii::$app->worksess->getUserWorkTimeBySession($worker, $session);
-									$workerStat[$worker->id]['earnings'] = (int)$worker->fix;
-									$workerStat[$worker->id]['fines'] = 0; //штрафы
-									$workerStat[$worker->id]['payment'] = Payment::findOne(['session_id' => $session->id, 'worker_id' => $worker->id]);
-									$workerStat[$worker->id]['persent'] = $basePersent;
-									$workerStat[$worker->id]['sessions'] = $worker->getSessionsBySessions($session);
-									$workerStat[$worker->id]['service_count'] = 0; //Выполнено услуг
-									$workerStat[$worker->id]['order_count'] = 0; //Кол-во заказов
-									$workerStat[$worker->id]['service_total'] = 0; //Общая сумма выручки
-									$workerStat[$worker->id]['service_base_total'] = 0; //Общая сумма выручки без учета скидок
-								}
-								
-								$workerStat[$worker->id]['service_count'] += $element->count; //Выполнено услуг
-								$workerStat[$worker->id]['order_count'] += 1; //Кол-во заказов
-								$workerStat[$worker->id]['service_total'] += $element->price*$element->count; //Общая сумма выручки
-								$workerStat[$worker->id]['service_base_total'] += $element->base_price*$element->count; //Общая сумма выручки
-							}
-						}
+                                if(!isset($workerStat[$worker->id]['fines'])) {
+                                    $workerStat[$worker->id]['fix'] = (int)$worker->fix;
+                                    $workerStat[$worker->id]['time'] = yii::$app->worksess->getUserWorkTimeBySession($worker, $session);
+                                    $workerStat[$worker->id]['earnings'] = (int)$worker->fix;
+                                    $workerStat[$worker->id]['fines'] = 0; //штрафы
+                                    $workerStat[$worker->id]['payment'] = Payment::findOne(['session_id' => $session->id, 'worker_id' => $worker->id]);
+                                    $workerStat[$worker->id]['persent'] = $basePersent;
+                                    $workerStat[$worker->id]['sessions'] = $worker->getSessionsBySessions($session);
+                                    $workerStat[$worker->id]['service_count'] = 0; //Выполнено услуг
+                                    $workerStat[$worker->id]['order_count'] = 0; //Кол-во заказов
+                                    $workerStat[$worker->id]['service_total'] = 0; //Общая сумма выручки
+                                    $workerStat[$worker->id]['service_base_total'] = 0; //Общая сумма выручки без учета скидок
+                                }
+                                
+                                $workerStat[$worker->id]['service_count'] += $element->count; //Выполнено услуг
+                                $workerStat[$worker->id]['order_count'] += 1; //Кол-во заказов
+                                $workerStat[$worker->id]['service_total'] += $element->price*$element->count; //Общая сумма выручки
+                                $workerStat[$worker->id]['service_base_total'] += $element->base_price*$element->count; //Общая сумма выручки
+                            }
+                        }
 
-						foreach($orderWorkers as $worker) {
-							if($workerStat[$worker->id]['persent']) {
-								$persent = round(($workerStat[$worker->id]['persent']/100), 2);
-								
-								$elementCost = ($element->price*$element->count);
-								
-								//Процент, выдааемый сотруднику в случае применения скидки
-								if($promoDivision = $this->module->promoDivision) {
-									$dif = $element->base_price-$element->price;
-									if($dif) {
-										$promoPersent = ($dif*100)/$element->base_price;
-										foreach($promoDivision as $model => $params) {
-											if($elementModel::className() == $model) {
-												foreach($params as $k => $v) {
-													if($promoPersent > $k) {
-														$elementCost = ($element->base_price*$element->count);
-														$elementCost = $elementCost*($v/100);
-														break;
-													}
-												}
-											}
-										}
-									}
-								}
+                        foreach($orderWorkers as $worker) {
+                            if($workerStat[$worker->id]['persent']) {
+                                $persent = round(($workerStat[$worker->id]['persent']/100), 2);
+                                
+                                $elementCost = ($element->price*$element->count);
+                                
+                                //Процент, выдааемый сотруднику в случае применения скидки
+                                if($promoDivision = $this->module->promoDivision) {
+                                    $dif = $element->base_price-$element->price;
+                                    if($dif) {
+                                        $promoPersent = ($dif*100)/$element->base_price;
+                                        foreach($promoDivision as $model => $params) {
+                                            if($elementModel::className() == $model) {
+                                                foreach($params as $k => $v) {
+                                                    if($promoPersent > $k) {
+                                                        $elementCost = ($element->base_price*$element->count);
+                                                        $elementCost = $elementCost*($v/100);
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
 
-								if((empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds))) {
-									$earning = ($elementCost*$persent)/$orderCustomerCount;
-								} else {
-									$earning = ($elementCost*$persent);
-								}
-								
-								$workerStat[$worker->id]['earnings'] += $earning;
-							}
-						}
-					}
-				}
-			}
-			
-			//Костомные начисления через триггер
-			foreach($workers as $worker) {
-				$earning = $workerStat[$worker->id]['earnings'];
-				
-				$earningsEvent = new Earnings(
-					[
-						'worker' => $worker,
-						'total' => $stat['total'],
-						'userTotal' => $workerStat[$worker->id]['service_total'],
-						'workersCount' => $workersCount,
-						'earning' => $earning,
-					]
-				);
-				
-				$module = $this->module;
-				$module->trigger($module::EVENT_EARNINGS, $earningsEvent);
-				
-				$earning = $earningsEvent->earning;
-				
-				$fines = $worker->getFinesByDatePeriod($session->start, $session->stop)->sum('sum');
-				
-				$workerStat[$worker->id]['fines'] += $fines;
-				$workerStat[$worker->id]['earnings'] = $earning;
-				$workerStat[$worker->id]['earnings'] -= $fines;
-				
-				if($earningsEvent->bonus) {
-					$workerStat[$worker->id]['bonus'] = $earningsEvent->bonus;
-				}
-				
-				if($earningsEvent->fine) {
-					$workerStat[$worker->id]['fine'] = $earningsEvent->fine;
-				}
-			}
+                                if((empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds))) {
+                                    $earning = ($elementCost*$persent)/$orderCustomerCount;
+                                } else {
+                                    $earning = ($elementCost*$persent);
+                                }
+                                
+                                $workerStat[$worker->id]['earnings'] += $earning;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            //Костомные начисления через триггер
+            foreach($workers as $worker) {
+                $earning = $workerStat[$worker->id]['earnings'];
+                
+                $earningsEvent = new Earnings(
+                    [
+                        'worker' => $worker,
+                        'total' => $stat['total'],
+                        'userTotal' => $workerStat[$worker->id]['service_total'],
+                        'workersCount' => $workersCount,
+                        'earning' => $earning,
+                    ]
+                );
+                
+                $module = $this->module;
+                $module->trigger($module::EVENT_EARNINGS, $earningsEvent);
+                
+                $earning = $earningsEvent->earning;
+                
+                $fines = $worker->getFinesByDatePeriod($session->start, $session->stop)->sum('sum');
+                
+                $workerStat[$worker->id]['fines'] += $fines;
+                $workerStat[$worker->id]['earnings'] = $earning;
+                $workerStat[$worker->id]['earnings'] -= $fines;
+                
+                if($earningsEvent->bonus) {
+                    $workerStat[$worker->id]['bonus'] = $earningsEvent->bonus;
+                }
+                
+                if($earningsEvent->fine) {
+                    $workerStat[$worker->id]['fine'] = $earningsEvent->fine;
+                }
+            }
 
             $stop = $session->stop;
-			
+            
             if(!$stop) {
                 $stop = date('Y-m-d H:i:s');
             }

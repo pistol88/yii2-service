@@ -67,17 +67,17 @@ $this->params['breadcrumbs'][] = $this->title;
         <p><strong>Смена</strong>: <?=$session->shiftName;?></p>
         <p><strong>Старт</strong>: <?=date('d.m.Y H:i:s', $session->start_timestamp);?></p>
         <p><strong>Стоп</strong>: <?php if($session->stop_timestamp) echo date('d.m.Y H:i:s', $session->stop_timestamp); else echo '-';?></p>
-		<p><strong>Продолжительность</strong>: <?=$session->getDuration();?></p>
+        <p><strong>Продолжительность</strong>: <?=$session->getDuration();?></p>
         <hr style="clear: both;" />
 
         <h2>Услуги</h2>
         <table class="table table-hover table-responsive">
             <tr>
                 <td><strong>Сотрудник</strong></td>
-				<td><strong>Время работы</strong></td>
+                <td><strong>Время работы</strong></td>
                 <td><strong>Заказов/Услуг</strong></td>
                 <td><strong>Выручка</strong></td>
-				<td><strong>Фикс</strong></td>
+                <td><strong>Фикс</strong></td>
                 <td><strong>Процент</strong></td>
                 <td><strong>Штрафы</strong></td>
                 <td><strong>Зарплата</strong></td>
@@ -119,15 +119,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                         ?>
                     </td>
-					<td class="work-time">
-						<?=$workerStat[$worker->id]['time'];?>
-					</td>
+                    <td class="work-time">
+                        <?=$workerStat[$worker->id]['time'];?>
+                    </td>
                     <td>
                         <?=$workerStat[$worker->id]['order_count'];?>/<?=$workerStat[$worker->id]['service_count'];?>
                     </td>
                     <td>
                         <?php if($workerStat[$worker->id]['service_base_total'] != $workerStat[$worker->id]['service_total']) { ?> <s title="Базовая стоимость услуг"><small><?=$workerStat[$worker->id]['service_base_total'];?></small></s><?php } ?>
-						<strong title="Фактически полученная выручка"><?=$workerStat[$worker->id]['service_total'];?></strong>
+                        <strong title="Фактически полученная выручка"><?=$workerStat[$worker->id]['service_total'];?></strong>
                         <?=$module->currency;?>
                     </td>
                     <td class="fix">
@@ -173,11 +173,11 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php } ?>
             <tr>
                 <td align="right">Итого:</td>
-				<td><?=$session->getDuration();?></td>
+                <td><?=$session->getDuration();?></td>
                 <td><strong><?=$stat['count_order'];?>/<?=$stat['count_elements'];?></strong></td>
                 <td><strong><?=$stat['total'];?> <?=$module->currency;?></strong></td>
                 <td>-</td>
-				<td>-</td>
+                <td>-</td>
                 <td>-</td>
                 <td><strong><?=$sum['earnings'];?> <?=$module->currency;?></strong></td>
                 <td>
