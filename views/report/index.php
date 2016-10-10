@@ -15,9 +15,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="service-menu">
         <?=$this->render('../parts/menu');?>
     </div>
-    
+
     <br style="clear: both;" />
-    
+
     <div class="row session-finder">
         <div class="col-md-6">
             <form action="" method="get">
@@ -54,10 +54,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
         </div>
         <div class="col-md-6">
-            
+
         </div>
     </div>
-    
+
     <?php if(!$session) { ?>
         <p>Выберите сессию.</p>
     <?php } else { ?>
@@ -194,7 +194,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <li>Сумма: <?=$shopStat['total'];?> <?=$module->currency;?></li>
             </ul>
         <?php } ?>
-        
+
         <?php if($costs) { ?>
             <h2>Расходы</h2>
             <ul>
@@ -204,9 +204,18 @@ $this->params['breadcrumbs'][] = $this->title;
             </ul>
         <?php } ?>
     </div>
-        
+
+
+        <h2>Отчёт по кассам</h2>
+
+        <?= \halumein\cashbox\widgets\ReportBalanceByPeriod::widget([
+                'dateStart' => date('Y-m-d H:i:s', $session->start_timestamp),
+                'dateStop' => $session->stop_timestamp ? date('Y-m-d H:i:s', $session->stop_timestamp) : null
+                 ])
+        ?>
+
         <h2>Рабочий день</h2>
-        
+
         <?=SessionGraph::widget(['workers' => $workers, 'control' => false, 'session' => $session, 'hoursCount' => $module->shiftDuration]);?>
     <?php } ?>
 </div>
