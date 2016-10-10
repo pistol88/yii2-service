@@ -175,7 +175,7 @@ class ReportController extends Controller
 				
 				$earning = $earningsEvent->earning;
 				
-				$fines = $worker->getFinesByDatePeriod($workSession->start, $workSession->stop)->sum('sum');
+				$fines = $worker->getFinesByDatePeriod($session->start, $session->stop)->sum('sum');
 				
 				$workerStat[$worker->id]['fines'] += $fines;
 				$workerStat[$worker->id]['earnings'] = $earning;
