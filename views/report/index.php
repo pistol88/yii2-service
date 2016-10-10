@@ -145,7 +145,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php if($bonus = $workerStat[$worker->id]['bonus']) { ?>
                             <span class="bonus" title="Бонус">+<?=$bonus;?> <?=$module->currency;?></span>
                         <?php } ?>
-                        <?php if($fine = $workerStat[$worker->id]['fine']) { ?>
+                        <?php if($fine = $workerStat[$worker->id]['fines']) { ?>
                             <span class="fine" title="Штраф">-<?=$fine;?> <?=$module->currency;?></span>
                         <?php } ?>
                     </td>
@@ -177,7 +177,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><strong><?=$stat['count_order'];?>/<?=$stat['count_elements'];?></strong></td>
                 <td><strong><?=$stat['total'];?> <?=$module->currency;?></strong></td>
                 <td>-</td>
-				<td><?=$sumfix;?></td>
+				<td>-</td>
                 <td>-</td>
                 <td><strong><?=$sum['earnings'];?> <?=$module->currency;?></strong></td>
                 <td>
