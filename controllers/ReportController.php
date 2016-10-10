@@ -109,6 +109,7 @@ class ReportController extends Controller
                                     $workerStat[$worker->id]['order_count'] = 0; //Кол-во заказов
                                     $workerStat[$worker->id]['service_total'] = 0; //Общая сумма выручки
                                     $workerStat[$worker->id]['service_base_total'] = 0; //Общая сумма выручки без учета скидок
+                                    $workerStat[$worker->id]['bonus'] = 0;
                                 }
                                 
                                 $workerStat[$worker->id]['service_count'] += $element->count; //Выполнено услуг
