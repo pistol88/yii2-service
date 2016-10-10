@@ -71,6 +71,23 @@ class ReportController extends Controller
             
             $orders = yii::$app->order->getOrdersByDatePeriod($session->start, $session->stop);
 
+            foreach($workers as $worker) {
+                if(!isset($workerStat[$worker->id]['fines'])) {
+                    $workerStat[$worker->id]['fix'] = (int)$worker->fix;
+                    $workerStat[$worker->id]['time'] = yii::$app->worksess->getUserWorkTimeBySession($worker, $session);
+                    $workerStat[$worker->id]['earnings'] = (int)$worker->fix;
+                    $workerStat[$worker->id]['fines'] = 0; //штрафы
+                    $workerStat[$worker->id]['payment'] = Payment::findOne(['session_id' => $session->id, 'worker_id' => $worker->id]);
+                    $workerStat[$worker->id]['persent'] = $basePersent;
+                    $workerStat[$worker->id]['sessions'] = $worker->getSessionsBySessions($session);
+                    $workerStat[$worker->id]['service_count'] = 0; //Выполнено услуг
+                    $workerStat[$worker->id]['order_count'] = 0; //Кол-во заказов
+                    $workerStat[$worker->id]['service_total'] = 0; //Общая сумма выручки
+                    $workerStat[$worker->id]['service_base_total'] = 0; //Общая сумма выручки без учета скидок
+                    $workerStat[$worker->id]['bonus'] = 0;
+                }
+            }
+            
             //Распределяем деньги от каждого заказа между сотрудниками
             foreach($orders as $order) {
                 foreach($order->elements as $element) {
@@ -97,21 +114,6 @@ class ReportController extends Controller
                                     $basePersent = $worker->persent;
                                 }
 
-                                if(!isset($workerStat[$worker->id]['fines'])) {
-                                    $workerStat[$worker->id]['fix'] = (int)$worker->fix;
-                                    $workerStat[$worker->id]['time'] = yii::$app->worksess->getUserWorkTimeBySession($worker, $session);
-                                    $workerStat[$worker->id]['earnings'] = (int)$worker->fix;
-                                    $workerStat[$worker->id]['fines'] = 0; //штрафы
-                                    $workerStat[$worker->id]['payment'] = Payment::findOne(['session_id' => $session->id, 'worker_id' => $worker->id]);
-                                    $workerStat[$worker->id]['persent'] = $basePersent;
-                                    $workerStat[$worker->id]['sessions'] = $worker->getSessionsBySessions($session);
-                                    $workerStat[$worker->id]['service_count'] = 0; //Выполнено услуг
-                                    $workerStat[$worker->id]['order_count'] = 0; //Кол-во заказов
-                                    $workerStat[$worker->id]['service_total'] = 0; //Общая сумма выручки
-                                    $workerStat[$worker->id]['service_base_total'] = 0; //Общая сумма выручки без учета скидок
-                                    $workerStat[$worker->id]['bonus'] = 0;
-                                }
-                                
                                 $workerStat[$worker->id]['service_count'] += $element->count; //Выполнено услуг
                                 $workerStat[$worker->id]['order_count'] += 1; //Кол-во заказов
                                 $workerStat[$worker->id]['service_total'] += $element->price*$element->count; //Общая сумма выручки
