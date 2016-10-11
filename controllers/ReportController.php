@@ -73,6 +73,17 @@ class ReportController extends Controller
 
             foreach($workers as $worker) {
                 if(!isset($workerStat[$worker->id]['fines'])) {
+                    //Задан ли индивидуальный процент
+                    if(empty($worker->persent)) {
+                        if($worker->pay_type == 'base') {
+                            $basePersent = $this->module->getWorkerPersent($session);
+                        } else {
+                            $basePersent = 0;
+                        }
+                    } else {
+                        $basePersent = $worker->persent;
+                    }
+                    
                     $workerStat[$worker->id]['fix'] = (int)$worker->fix;
                     $workerStat[$worker->id]['time'] = yii::$app->worksess->getUserWorkTimeBySession($worker, $session);
                     $workerStat[$worker->id]['earnings'] = (int)$worker->fix;
@@ -101,17 +112,6 @@ class ReportController extends Controller
 
                                 if(empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds)) {
                                     $orderCustomerCount++;
-                                }
-
-                                //Задан ли индивидуальный процент
-                                if(empty($worker->persent)) {
-                                    if($worker->pay_type == 'base') {
-                                        $basePersent = $this->module->getWorkerPersent($session);
-                                    } else {
-                                        $basePersent = 0;
-                                    }
-                                } else {
-                                    $basePersent = $worker->persent;
                                 }
 
                                 $workerStat[$worker->id]['service_count'] += $element->count; //Выполнено услуг
