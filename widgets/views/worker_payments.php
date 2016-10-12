@@ -20,7 +20,7 @@ use yii\widgets\Pjax;
                 'attribute' => 'session_id',
                 'filter' => false,
                 'content' => function($model) {
-                    return Html::a($model->session->start.' ('.$model->session->user->name.')', ['/service/report/index', 'sessionId' => $model->session->id]);
+                    if($model) Html::a($model->session->start.' ('.$model->session->user->name.')', ['/service/report/index', 'sessionId' => $model->session->id]);
                 }
             ],
         ],
