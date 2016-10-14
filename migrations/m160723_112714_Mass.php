@@ -35,7 +35,6 @@ class m160723_112714_Mass extends Migration {
             
             $this->createTable('{{%service_price}}', [
                 'id' => Schema::TYPE_PK . "",
-                'name' => Schema::TYPE_STRING . "(255)",
 				'service_type' => Schema::TYPE_STRING . "(255)",
                 'sum' => Schema::TYPE_INTEGER . "(11)",
 				'price' => Schema::TYPE_DECIMAL . "(11,2)",
