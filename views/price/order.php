@@ -90,7 +90,7 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                 <iframe src="about:blank" id="orderSubmitter" name="orderSubmitter" style="display:none;"></iframe>
                 <!-- <iframe src="<?php // echo Url::to(['/order/order/create-from-iframe']); ?>" width="335" height="800" frameborder="0"></iframe> -->
 
-                <div class="order-create-container" style="width: 320px;" id="order-creation-container">
+                <div class="order-create-container" style="width: 279px;" id="order-creation-container">
                     <?= \pistol88\order\widgets\OrderFormLight::widget([
                             'useAjax' => true,
                         ]);
