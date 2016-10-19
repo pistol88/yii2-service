@@ -82,7 +82,7 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                     </div>
                     <div class="col-md-5">
                         <?php
-                        if($yii::$app->has('promocode')) { ?>
+                        if(yii::$app->has('promocode')) { ?>
                             <div class="promocode">
                                 <?=\pistol88\promocode\widgets\Enter::widget();?>
                             </div>
