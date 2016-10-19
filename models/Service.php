@@ -32,7 +32,7 @@ class Service extends \yii\db\ActiveRecord implements ServiceInterface
     
     public function getService()
     {
-        return $this->hasOne(self::className(), ['parent_id' => 'id']);
+        return $this->hasOne(self::className(), ['id' => 'parent_id']);
     }
     
     public function getId()
