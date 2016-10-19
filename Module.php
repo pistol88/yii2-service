@@ -21,6 +21,40 @@ class Module extends \yii\base\Module
     public $propertyName = 'Автомобили';
     public $identName = 'Номер авто';
 	public $promoDivision = []; //'model' => ['Скидка >' => 'процент от стоимости'] 
+    public $menu = [
+            [
+                'label' => 'Заказ',
+                'url' => ['/service/price/order'],
+            ],
+            [
+                'label' => 'Отчеты',
+                'url' => ['/service/report/index'],
+            ],
+            [
+                'label' => 'Услуги',
+                'url' => ['/service/service/index'],
+            ],
+            /* [
+                'label' => yii::$app->getModule('service')->propertyName,
+                'url' => ['/service/property/index'],
+            ], */
+            [
+                'label' => 'Тарифы',
+                'url' => ['/service/price/index'],
+            ],
+            [
+                'label' => 'Категории',
+                'url' => ['/service/category/index'],
+            ],
+            [
+                'label' => 'Комплексы',
+                'url' => ['/service/complex/index'],
+            ],
+            [
+                'label' => 'Затраты',
+                'url' => ['/service/cost/index'],
+            ],
+        ];
     
     const EVENT_EARNINGS = 'earnings';
     

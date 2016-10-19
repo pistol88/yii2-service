@@ -3,40 +3,7 @@ use yii\bootstrap\Nav;
 ?>
 <div class="menu-container">
     <?= Nav::widget([
-        'items' => [
-            [
-                'label' => 'Заказ',
-                'url' => ['/service/price/order'],
-            ],
-            [
-                'label' => 'Отчеты',
-                'url' => ['/service/report/index'],
-            ],
-            [
-                'label' => 'Услуги',
-                'url' => ['/service/service/index'],
-            ],
-            /* [
-                'label' => yii::$app->getModule('service')->propertyName,
-                'url' => ['/service/property/index'],
-            ], */
-            [
-                'label' => 'Тарифы',
-                'url' => ['/service/price/index'],
-            ],
-            [
-                'label' => 'Категории',
-                'url' => ['/service/category/index'],
-            ],
-            [
-                'label' => 'Комплексы',
-                'url' => ['/service/complex/index'],
-            ],
-            [
-                'label' => 'Затраты',
-                'url' => ['/service/cost/index'],
-            ],
-        ],
+        'items' => yii::$app->getModule('service')->menu,
         'options' => ['class' =>'nav-pills'],
     ]); ?>
 </div>

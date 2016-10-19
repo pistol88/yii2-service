@@ -4,10 +4,9 @@ use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
 use pistol88\service\models\Category;
 
-
 $categories = Category::find()->where("id != :id AND (parent_id = 0 OR parent_id IS NULL)", [':id' => (int)$model->id])->all();
 $categories = ArrayHelper::map($categories, 'id', 'name');
-$parentCategories = array_merge(['0' => 'Нет'], $categories);
+$categories['0'] = 'Нет';
 ?>
 
 <div class="category-form">
@@ -21,7 +20,7 @@ $parentCategories = array_merge(['0' => 'Нет'], $categories);
 
         <p><small>Чем выше приоритет, тем выше элемент среди других в общем списке.</small></p>
     
-        <?= $form->field($model, 'parent_id')->dropdownList($parentCategories);?>
+        <?= $form->field($model, 'parent_id')->dropdownList($categories);?>
     
         
         <?=\pistol88\gallery\widgets\Gallery::widget(['model' => $model]); ?>

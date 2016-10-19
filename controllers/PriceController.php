@@ -212,7 +212,7 @@ class PriceController extends Controller
     
     public function actionGetCategories()
     {
-        $categories = Category::find()->orderBy('sort DESC, id ASC')->all();
+        $categories = Category::find()->where('parent_id IS NULL OR parent_id = 0')->orderBy('sort DESC, id ASC')->all();
         
         $json = [];
         

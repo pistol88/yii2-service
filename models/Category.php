@@ -51,7 +51,7 @@ class Category extends \yii\db\ActiveRecord
     
     public function getParent()
     {
-        return $this->getCategory();
+        return $this->hasOne(self::className(), ['id' => 'parent_id']);
     }
     
     public static function buldTree($parent_id = null)
