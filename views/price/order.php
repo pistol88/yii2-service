@@ -28,9 +28,11 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
 
     <div class="control row">
         <div class="col-md-9 ident">
-            <div class="service-ident">
-                <input type="text" name="service-ident" value="" id="service-ident" autocomplete="off" data-field-selector="<?=yii::$app->getModule('service')->mainIdentFieldSelector;?>" placeholder="<?=yii::$app->getModule('service')->mainIdent;?>" />
-            </div>
+            <?php if($ident = yii::$app->getModule('service')->mainIdent) { ?>
+                <div class="service-ident">
+                    <input type="text" name="service-ident" value="" id="service-ident" autocomplete="off" data-field-selector="<?=yii::$app->getModule('service')->mainIdentFieldSelector;?>" placeholder="<?=$ident;?>" />
+                </div>
+            <?php } ?>
         </div>
         <div class="col-md-3 types">
             <div class="order-type">
