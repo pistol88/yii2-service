@@ -221,13 +221,20 @@ pistol88.service = {
         return false;
     },
     getServicesByCategory: function() {
-		$('.service-order-net').css('opacity', '0.3');
-        $.post($(this).attr('href'), {id: $(this).data('id')},
-            function(answer) {
-				$('.service-order-net').css('opacity', '1');
-                json = answer;
-                $('.service-order-net').replaceWith(json.HtmlBlock);
-            }, "json");
+        var childs = $(this).parent('.category').find('.childs');
+        
+        if($(childs).length) {
+            $('.service-order-net .header').append($(this).data('title'));
+            $('.service-order-net .categories').html($(childs).html());
+        } else {
+            $('.service-order-net').css('opacity', '0.3');
+            $.post($(this).attr('href'), {id: $(this).data('id')},
+                function(answer) {
+                    $('.service-order-net').css('opacity', '1');
+                    json = answer;
+                    $('.service-order-net').replaceWith(json.HtmlBlock);
+                }, "json");
+        }
 
         return false;
     },

@@ -243,3 +243,7 @@
 .pistol88-cart-informer s {
     font-size: 16px;
 }
+
+.price-index .child {
+    padding-left: 6px;
+}

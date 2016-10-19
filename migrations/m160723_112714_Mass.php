@@ -17,8 +17,8 @@ class m160723_112714_Mass extends Migration {
             $this->createTable('{{%service_category}}', [
                 'id' => Schema::TYPE_PK . "",
                 'category_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
-				'parent_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
-                'sort' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+				'parent_id' => Schema::TYPE_INTEGER . "(11)",
+                'sort' => Schema::TYPE_INTEGER . "(11)",
                 'name' => Schema::TYPE_STRING . "(255) NOT NULL",
                 ], $tableOptions);
 
@@ -76,7 +76,7 @@ class m160723_112714_Mass extends Migration {
                 'id' => Schema::TYPE_PK . "",
                 'name' => Schema::TYPE_STRING . "(255) NOT NULL",
                 'parent_id' => Schema::TYPE_INTEGER . "(11)",
-                'sort' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+                'sort' => Schema::TYPE_INTEGER . "(11)",
                 'description' => Schema::TYPE_TEXT . "",
                 ], $tableOptions);
 
@@ -91,7 +91,7 @@ class m160723_112714_Mass extends Migration {
             
             $this->createTable('{{%service_complex}}', [
                 'id' => Schema::TYPE_PK . "",
-                'sort' => Schema::TYPE_INTEGER . "(11) NOT NULL",
+                'sort' => Schema::TYPE_INTEGER . "(11)",
                 'name' => Schema::TYPE_STRING . "(255) NOT NULL",
                 ], $tableOptions);
 
