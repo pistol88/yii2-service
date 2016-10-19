@@ -25,7 +25,7 @@ use yii\bootstrap\Nav;
                 'url' => ['/service/price/index'],
             ],
             [
-                'label' => 'Категории потребителей',
+                'label' => 'Категории',
                 'url' => ['/service/category/index'],
             ],
             [
