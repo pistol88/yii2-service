@@ -53,14 +53,14 @@ class ReportController extends Controller
         $sessionId = 0;
         
         $costs = [];
-        
-        $shopStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop);
-        $stat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop);
 
-        $shopStatPromocode = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop, "`promocode` != ''");
-        $statPromocode = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop, "`promocode` != ''");
-        
         if($session) {
+            $shopStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop);
+            $stat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop);
+
+            $shopStatPromocode = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop, "`promocode` != ''");
+            $statPromocode = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop, "`promocode` != ''");
+            
             $costs = Cost::findAll(['session_id' => $session->id]);
             
             $sessionId = $session->id;
@@ -101,27 +101,34 @@ class ReportController extends Controller
             
             //Распределяем деньги от каждого заказа между сотрудниками
             foreach($orders as $order) {
+                $orderWorkers = [];
+                $orderCustomerCount = 0;
+                foreach($workers as $worker) {
+                    if($worker->hasWork(strtotime($order->date))) {
+                        $orderWorkers[] = $worker;
+
+                        if(empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds)) {
+                            $orderCustomerCount++;
+                        }
+                    }
+                }
+                
+                $hasServiceElements = [];
                 foreach($order->elements as $element) {
                     $elementModel = $element->getModel(); 
                     if(in_array($elementModel::className(), ['pistol88\service\models\CustomService', 'pistol88\service\models\Price'])) {
-                        $orderWorkers = [];
-                        $orderCustomerCount = 0;
-                        foreach($workers as $worker) {
-                            if($worker->hasWork(strtotime($order->date))) {
-                                $orderWorkers[] = $worker;
-
-                                if(empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds)) {
-                                    $orderCustomerCount++;
-                                }
-
-                                $workerStat[$worker->id]['service_count'] += $element->count; //Выполнено услуг
-                                $workerStat[$worker->id]['order_count'] += 1; //Кол-во заказов
-                                $workerStat[$worker->id]['service_total'] += $element->price*$element->count; //Общая сумма выручки
-                                $workerStat[$worker->id]['service_base_total'] += $element->base_price*$element->count; //Общая сумма выручки
-                            }
-                        }
-
+                        
                         foreach($orderWorkers as $worker) {
+                            if(!$hasServiceElements[$worker->id]) {
+                                $workerStat[$worker->id]['order_count'] += 1; //Кол-во заказов
+                            }
+                            
+                            $hasServiceElements[$worker->id] = true;
+                            
+                            $workerStat[$worker->id]['service_count'] += $element->count; //Выполнено услуг
+                            $workerStat[$worker->id]['service_total'] += $element->price*$element->count; //Общая сумма выручки
+                            $workerStat[$worker->id]['service_base_total'] += $element->base_price*$element->count; //Общая сумма выручки
+                            
                             if($workerStat[$worker->id]['persent']) {
                                 $persent = round(($workerStat[$worker->id]['persent']/100), 2);
                                 
