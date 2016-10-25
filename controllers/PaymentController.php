@@ -2,8 +2,8 @@
 namespace pistol88\service\controllers;
 
 use Yii;
-use pistol88\service\models\Payment;
-use pistol88\service\models\category\PaymentSearch;
+use pistol88\staffer\models\Payment;
+use pistol88\staffer\models\category\PaymentSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -48,9 +48,9 @@ class PaymentController extends Controller
     public function actionSet()
     {
         $data = yii::$app->request->post();
-        
+
         $json = ['result' => null, 'error' => null];
-        
+
         if(!Payment::find()->where(['worker_id' => $data['worker_id'], 'session_id' => $data['session_id']])->one()) {
             $payment = new Payment;
             $payment->worker_id = $data['worker_id'];
@@ -63,16 +63,16 @@ class PaymentController extends Controller
                 $json['error'] = $payment->errors;
             }
         }
-        
+
         return json_encode($json);
     }
 
     public function actionUnset()
     {
         $data = yii::$app->request->post();
-        
+
         $json = ['result' => null, 'error' => null];
-        
+
         if($payment = Payment::find()->where(['worker_id' => $data['worker_id'], 'session_id' => $data['session_id']])->one()) {
             if($payment->delete()) {
                 $json['result'] = 'success';
@@ -81,7 +81,7 @@ class PaymentController extends Controller
                 $json['error'] = $payment->errors;
             }
         }
-        
+
         return json_encode($json);
     }
 }

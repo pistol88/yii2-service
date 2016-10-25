@@ -4,7 +4,7 @@ namespace pistol88\service\controllers;
 use yii;
 use pistol88\service\events\Earnings;
 use pistol88\service\models\Cost;
-use pistol88\service\models\Payment;
+use pistol88\staffer\models\Payment;
 use pistol88\staffer\models\Fine;
 use pistol88\order\models\Order;
 use pistol88\order\models\PaymentType;
@@ -33,7 +33,7 @@ class ReportController extends Controller
             ],
         ];
     }
-    
+
     public function actionIndex($sessionId = null)
     {
         if(!$sessionId) {
@@ -41,17 +41,17 @@ class ReportController extends Controller
         } else {
             $session = Session::findOne($sessionId);
         }
-        
+
         $stat = null;
 
         $workerStat = [];
 
         $workers = [];
-        
+
         $shopStat = [];
-        
+
         $sessionId = 0;
-        
+
         $costs = [];
 
         if($session) {
@@ -60,15 +60,15 @@ class ReportController extends Controller
 
             $shopStatPromocode = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop, "`promocode` != ''");
             $statPromocode = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop, "`promocode` != ''");
-            
+
             $costs = Cost::findAll(['session_id' => $session->id]);
-            
+
             $sessionId = $session->id;
-            
+
             $workers = $session->users;
-            
+
             $workersCount = yii::$app->worksess->getWorkersCount($session);
-            
+
             $orders = yii::$app->order->getOrdersByDatePeriod($session->start, $session->stop);
 
             foreach($workers as $worker) {
@@ -83,12 +83,13 @@ class ReportController extends Controller
                     } else {
                         $basePersent = $worker->persent;
                     }
-                    
+
                     $workerStat[$worker->id]['fix'] = (int)$worker->fix;
                     $workerStat[$worker->id]['time'] = yii::$app->worksess->getUserWorkTimeBySession($worker, $session);
                     $workerStat[$worker->id]['earnings'] = (int)$worker->fix;
                     $workerStat[$worker->id]['fines'] = 0; //штрафы
                     $workerStat[$worker->id]['payment'] = Payment::findOne(['session_id' => $session->id, 'worker_id' => $worker->id]);
+                    $workerStat[$worker->id]['payments'] = Payment::find()->where(['session_id' => $session->id, 'worker_id' => $worker->id])->all();
                     $workerStat[$worker->id]['persent'] = $basePersent;
                     $workerStat[$worker->id]['sessions'] = $worker->getSessionsBySessions($session);
                     $workerStat[$worker->id]['service_count'] = 0; //Выполнено услуг
@@ -98,7 +99,7 @@ class ReportController extends Controller
                     $workerStat[$worker->id]['bonus'] = 0;
                 }
             }
-            
+
             //Распределяем деньги от каждого заказа между сотрудниками
             foreach($orders as $order) {
                 $orderWorkers = [];
@@ -112,28 +113,29 @@ class ReportController extends Controller
                         }
                     }
                 }
-                
+
+
                 $hasServiceElements = [];
                 foreach($order->elements as $element) {
-                    $elementModel = $element->getModel(); 
+                    $elementModel = $element->getModel();
                     if(in_array($elementModel::className(), ['pistol88\service\models\CustomService', 'pistol88\service\models\Price'])) {
-                        
+
                         foreach($orderWorkers as $worker) {
-                            if(!$hasServiceElements[$worker->id]) {
+                            if(!isset($hasServiceElements[$worker->id])) {
                                 $workerStat[$worker->id]['order_count'] += 1; //Кол-во заказов
                             }
-                            
+
                             $hasServiceElements[$worker->id] = true;
-                            
+
                             $workerStat[$worker->id]['service_count'] += $element->count; //Выполнено услуг
                             $workerStat[$worker->id]['service_total'] += $element->price*$element->count; //Общая сумма выручки
                             $workerStat[$worker->id]['service_base_total'] += $element->base_price*$element->count; //Общая сумма выручки
-                            
+
                             if($workerStat[$worker->id]['persent']) {
                                 $persent = round(($workerStat[$worker->id]['persent']/100), 2);
-                                
+
                                 $elementCost = ($element->price*$element->count);
-                                
+
                                 //Процент, выдааемый сотруднику в случае применения скидки
                                 if($promoDivision = $this->module->promoDivision) {
                                     $dif = $element->base_price-$element->price;
@@ -158,18 +160,18 @@ class ReportController extends Controller
                                 } else {
                                     $earning = ($elementCost*$persent);
                                 }
-                                
+
                                 $workerStat[$worker->id]['earnings'] += $earning;
                             }
                         }
                     }
                 }
             }
-            
+
             //Костомные начисления через триггер
             foreach($workers as $worker) {
                 $earning = $workerStat[$worker->id]['earnings'];
-                
+
                 $earningsEvent = new Earnings(
                     [
                         'worker' => $worker,
@@ -179,42 +181,45 @@ class ReportController extends Controller
                         'earning' => $earning,
                     ]
                 );
-                
+
                 $module = $this->module;
                 $module->trigger($module::EVENT_EARNINGS, $earningsEvent);
-                
+
                 $earning = $earningsEvent->earning;
-                
+
                 $fines = $worker->getFinesByDatePeriod($session->start, $session->stop)->sum('sum');
-                
+
                 $workerStat[$worker->id]['fines'] += $fines;
                 $workerStat[$worker->id]['earnings'] = $earning;
                 $workerStat[$worker->id]['earnings'] -= $fines;
-                
+
                 if($earningsEvent->bonus) {
                     $workerStat[$worker->id]['bonus'] = $earningsEvent->bonus;
                 }
-                
+
                 if($earningsEvent->fine) {
                     $workerStat[$worker->id]['fine'] = $earningsEvent->fine;
                 }
+
+                $paymentSum = Payment::find()->where(['session_id' => $session->id, 'worker_id' => $worker->id])->sum('sum');
+                $workerStat[$worker->id]['earnings'] -= $paymentSum;
             }
 
             $stop = $session->stop;
-            
+
             if(!$stop) {
                 $stop = date('Y-m-d H:i:s');
             }
         }
 
         $workerPersent = $this->module->workerPersent;
-        
+
         if($session) {
             $date = date('Y-m-d', $session->start_timestamp);
         } else {
             $date = date('Y-m-d');
         }
-        
+
         $sessions = yii::$app->worksess->getSessions(null, $date);
 
         return $this->render('index', [
@@ -231,11 +236,11 @@ class ReportController extends Controller
             'module' => $this->module,
         ]);
     }
-    
+
     public function actionGetSessions()
     {
         $date = date('Y-m-d', strtotime(yii::$app->request->post('date')));
-        
+
         $session = yii::$app->worksess->getSessions(null, $date);
 
         $json = [];
@@ -244,7 +249,7 @@ class ReportController extends Controller
             $json['HtmlList'] = '<ul><li>Сессии не были открыты.</li></ul>';
         } else {
             $json['HtmlList'] = Html::ul($session, ['item' => function($item, $index) {
-                return html::tag('li', Html::a(date('d.m.Y H:i:s', $item->start_timestamp) . ' ' . $item->shiftName . ' ('.$item->user->name.')', ['/service/report/index', 'sessionId' => $item->id]));
+                return html::tag('li', Html::a(date('d.m.Y H:i:s', $item->start_timestamp) . ' ' . $item->shiftName , ['/service/report/index', 'sessionId' => $item->id]));
             }]);
         }
 
