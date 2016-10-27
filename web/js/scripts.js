@@ -30,6 +30,12 @@ pistol88.service = {
         $(document).on('click', 'input.service-price', function() {
             $(this).select();
         });
+
+        $(document).on('click', '.calculate-service-model', function() {
+            var self = $(this),
+                url = self.data('url');
+            pistol88.service.getCalculatedService(url);
+        });
         
         $(document).on('click', '.service-order-net .price, .pistol88-cart-buy-button', function() {
             $(this).css('border', '2px solid #3F5696').addClass('checked');
@@ -169,6 +175,9 @@ pistol88.service = {
             }, "json");
 
         return false;
+    },
+    getCalculatedService: function (url) {
+        $('[data-role=CalculateServiceForm]').load(url);
     },
     callPrint: function (strid) {
         var prtContent = document.getElementById(strid);

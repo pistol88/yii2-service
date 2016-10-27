@@ -3,7 +3,14 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
 use pistol88\service\models\Service;
-
+$script = <<< EOD
+        if ($('#service-calculator').val()) { $('#calculate').attr("checked","checked"); $('#calculateBlock').show().fadeIn();}
+        $('#calculate').on('click',function () {
+            if ($('#calculate').is(':checked')) $('#calculateBlock').show().fadeIn();
+            else $('#calculateBlock').hide().fadeOut();
+    });
+EOD;
+$this->registerJs($script);
 $services = Service::find()->where("id != :id AND (parent_id = 0 OR parent_id IS NULL)", [':id' => (int)$model->id])->all();
 $services = ArrayHelper::map($services, 'id', 'name');
 $parentServices = array_merge(['0' => 'Нет'], $services);
@@ -17,11 +24,16 @@ $parentServices = array_merge(['0' => 'Нет'], $services);
 
     <?php echo $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?php echo $form->field($model, 'sort')->textInput(['maxlength' => true]) ?>
-    <p><small>Чем выше приоритет, тем выше элемент среди других в общем списке.</small></p>
+    <?php echo $form->field($model, 'sort')->textInput(['maxlength' => true])->hint('Чем выше приоритет, тем выше элемент среди других в общем списке.'); ?>
     
     <?= $form->field($model, 'parent_id')->dropdownList($parentServices);?>
 
+    <label><input type="checkbox" name="calc" id="calculate"> Вычисляемая услуга</label>
+    <div id="calculateBlock" class="form-group" style="display: none;">
+        <?= $form->field($model, 'calculator')->textInput(); ?>
+
+        <?= $form->field($model, 'settings')->textarea(['rows' => 3, 'cols' => 7]); ?>
+    </div>
     <div class="form-group">
         <?php echo Html::submitButton($model->isNewRecord ? 'Добавить' : 'Редактировать', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>

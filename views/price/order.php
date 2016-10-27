@@ -7,6 +7,7 @@ use pistol88\cart\widgets\ElementsList;
 use pistol88\cart\widgets\CartInformer;
 use pistol88\order\widgets\ChooseClient;
 use pistol88\order\widgets\BuyByCode;
+use pistol88\service\widgets\AreaAndMaterial;
 
 $this->title = 'Заказ услуги';
 $this->params['breadcrumbs'][] = $this->title;
@@ -41,7 +42,6 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                         <option value="table">Таблицей</option>
                         <option value="net" <?php if($type == 'net') { echo ' selected="selected"'; }?>>Сеткой</option>
                     </select>
-
                 </form>
             </div>
 
@@ -58,10 +58,11 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                     <div class="col-md-6">
                         <?php //BuyByCode::widget();?>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                         <small>
+                            <a data-toggle="modal" data-target="#calculate-service" href="#calculate-service" class="choice-service" title="Вычисляемые услуги">Вычисляемые услуги <i class="glyphicon glyphicon-plus"></i> </a>
                             <a href="#productsModal" data-toggle="modal" data-target="#productsModal" class="choice-product  ">Товар <span class="glyphicon glyphicon-plus add-option"></span></a>
-                            <a data-toggle="modal" data-target="#custom-service" href="#custom-service" class=" choice-service" title="Другое">Другое <i class="glyphicon glyphicon-plus"></i> </a>
+                            <a data-toggle="modal" data-target="#custom-service" href="#custom-service" class="choice-service" title="Другое">Другое <i class="glyphicon glyphicon-plus"></i> </a>
                         </small>
                     </div>
                 </div>
@@ -195,6 +196,30 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                     </div>
                     <?php echo Html::submitButton('В корзину', ['class' => 'btn btn-success']) ?>
                 <?php ActiveForm::end(); ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><?=yii::t('order', 'Close');?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="calculate-service" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Вычисляемая услуга</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <?php foreach($calculateServiceModel as $calculateService) { ?>
+                        <div class="col-md-3 calculate-service-model btn btn-default" data-url="<?= Url::to(['price/get-calculate-service-form-ajax', 'id' => $calculateService->id]); ?>">
+                                <strong><?=$calculateService->name;?></strong>
+                        </div>
+                    <?php } ?>
+                    <div data-role="CalculateServiceForm"></div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><?=yii::t('order', 'Close');?></button>

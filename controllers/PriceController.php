@@ -127,6 +127,7 @@ class PriceController extends Controller
         
         $customServiceModel = new CustomService;
         
+
         if ($customServiceModel->load(Yii::$app->request->post()) && $customServiceModel->save()) {
             yii::$app->cart->put($customServiceModel);
             if(yii::$app->request->post('ajax')) {
@@ -156,6 +157,7 @@ class PriceController extends Controller
         $services = Service::find()->orderBy('sort DESC, id ASC')->all();
         $categories = Category::find()->where('parent_id IS NULL OR parent_id = 0')->orderBy('sort DESC, id ASC')->all();
         $complexes = Complex::find()->orderBy('sort DESC, id ASC')->all();
+        $calculateServiceModel = Service::find()->where('calculator != ""')->all();
         
         $priceModel = new Price;
         $orderModel = new Order;
@@ -175,6 +177,7 @@ class PriceController extends Controller
         return $this->render('order', [
             'type' => $type,
             'customServiceModel' => $customServiceModel,
+            'calculateServiceModel' => $calculateServiceModel,
             'prices' => $prices,
             'services' => $services,
             'complexes' => $complexes,
@@ -263,5 +266,15 @@ class PriceController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionGetCalculateServiceFormAjax($id)
+    {
+        
+        $calculateService = Service::findOne($id);
+            return $this->renderAjax('CalculateServiceWidgetAjax', [
+                'name' => $calculateService->name,
+                'settings' => $calculateService->settings,
+            ]);
     }
 }

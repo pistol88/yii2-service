@@ -1,0 +1,11 @@
+.calculate-service-data-form {
+    border-top: 2px solid #c0e2ff;
+    text-align: center;
+}
+
+.calculate-service-price {
+    margin-top: auto;
+    position: relative;
+    font-size: large;
+    font-style: italic;
+}

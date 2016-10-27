@@ -111,7 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'li',
                                     Html::a(
                                         date('H:i', $workSession->start_timestamp).' - '.$dateStop,
-                                        ['/order/order/index', 'element_types' => ['pistol88\service\models\Price', 'pistol88\service\models\CustomService'], 'time_start' => $workSession->start, 'time_stop' => $workSession->stop]
+                                        ['/order/order/index', 'time_start' => $workSession->start, 'time_stop' => $workSession->stop]
                                     )
                                 );
                             }
@@ -150,11 +150,24 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php } ?>
                     </td>
                     <td>
-                        <?= \pistol88\staffer\widgets\AddPayment::widget([
-                            'staffer' => $worker,
-                            'paymentSum' => round($workerStat[$worker->id]['earnings']),
-                            'sessionId' => $session->id
-                        ]); ?>
+                        <div class="<?php if($payment = $workerStat[$worker->id]['payment']) echo 'payment_yes'; else echo 'payment_no'; ?>">
+                            <input
+                                <?php if($payment) { ?>checked="checked"<?php } ?>
+                                data-set-href="<?=Url::toRoute(['/service/payment/set']);?>"
+                                data-unset-href="<?=Url::toRoute(['/service/payment/unset']);?>"
+                                data-session-id="<?=$session->id;?>"
+                                data-worker-id="<?=$worker->id;?>"
+                                data-sum="<?=$workerStat[$worker->id]['earnings'];?>"
+                                class="service-worker-payment"
+                                type="checkbox"
+                                id="earnings-done-<?=$worker->id;?>"
+                                name="done"
+                                value="1" />
+                            <label for="earnings-done-<?=$worker->id;?>">Выплачено</label>
+                            <?php if($payment) { ?>
+                                <p><small><?=date('d.m.Y H:i:s', $payment->date_timestamp);?></small></p>
+                            <?php } ?>
+                        </div>
                     </td>
                 </tr>
             <?php } ?>
