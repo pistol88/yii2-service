@@ -17,6 +17,8 @@ class Service extends \yii\db\ActiveRecord implements ServiceInterface
             [['name'], 'required'],
             [['id', 'parent_id', 'sort'], 'integer'],
             [['name'], 'string', 'max' => 255],
+            [['calculator'], 'string', 'max' => 155],
+            [['settings'],'string'],
         ];
     }
 
@@ -27,6 +29,8 @@ class Service extends \yii\db\ActiveRecord implements ServiceInterface
             'name' => 'Наименование',
             'parent_id' => 'Материнская услуга',
             'sort' => 'Приоритет',
+            'calculator' => 'Вычисляется',
+            'settings' => 'Параметры'
         ];
     }
     

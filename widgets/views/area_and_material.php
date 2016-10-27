@@ -1,0 +1,46 @@
+<?php
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+$array = explode(PHP_EOL,$settings);
+$result = [];
+foreach ($array as $arrayItem) {
+    $temp = explode(':',$arrayItem);
+    $temp[1] = (int) $temp[1];
+    $type[] = [ 'value' => $temp[1],'title'=>$temp[0]];
+}
+
+foreach($type as $value) {
+    $result = $result + [$value['value'] => $value['title']];
+}
+$param = [
+    'id' => 'input-type',
+    'class' => 'calculate-service-material form-control'
+];
+?>
+<div class="col-sm-6 col-sm-offset-3 calculate-service-data-form form">
+    <div class="form-group">
+        <label>Материал ковра</label><?= Html::dropDownList('set-type','null',$result,$param); ?>
+    </div>
+    <div class="form-group">
+        <label>Высота</label><input type="text" id="input-width" class="calculate-service-width form-control">
+    </div>
+    <div class="form-group">
+        <label>Ширина</label><input type="text" id="input-height" class="calculate-service-height form-control">
+    </div>
+    <div class="form-group">
+        <div class="calculate-service-price"></div>
+    </div>
+    <hr>
+    <?php $form = ActiveForm::begin(['action' => '/web/service/price/order','options' => ['enctype' => 'multipart/form-data'],'id' => 'add-custom-service-form']); ?>
+    <div class="row">
+        <div class="col-md-8 hidden"><?php echo $form->field($customServiceModel, 'name')->textInput(['value'=> $name]) ?></div>
+        <div class="col-md-4 hidden"><?php echo $form->field($customServiceModel, 'price')->textInput() ?></div>
+    </div>
+    <?php echo Html::submitButton('В корзину', ['class' => 'col-md-12 put-calculate-service-btn btn btn-success', 'disabled' => 'disabled']) ?>
+    <?php ActiveForm::end(); ?>
+</div>
+
+
+
+
