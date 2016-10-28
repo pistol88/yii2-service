@@ -58,7 +58,9 @@ pistol88.service = {
                             return false;
                         //}
                     }
-                    $('.order-create-container form').submit();
+                    if ($('.order-create-container form').data('ajax') != true ) {
+                        $('.order-create-container form').submit();
+                    }
                 }
             }
         });
