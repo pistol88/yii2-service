@@ -29,7 +29,7 @@ class Service extends \yii\db\ActiveRecord implements ServiceInterface
             'name' => 'Наименование',
             'parent_id' => 'Материнская услуга',
             'sort' => 'Приоритет',
-            'calculator' => 'Вычисляется',
+            'calculator' => 'Виджет калькулятора',
             'settings' => 'Параметры'
         ];
     }
