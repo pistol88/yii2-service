@@ -55,13 +55,11 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
         <div class="col-lg-3 col-md-4 col-sm-12">
             <div class="service-order">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <?php //BuyByCode::widget();?>
-                    </div>
-                    <div class="col-md-7">
                         <small>
-                            <a data-toggle="modal" data-target="#calculate-service" href="#calculate-service" class="choice-service" title="Вычисляемые услуги">Вычисляемые услуги <i class="glyphicon glyphicon-plus"></i> </a>
-                            <a href="#productsModal" data-toggle="modal" data-target="#productsModal" class="choice-product  ">Товар <span class="glyphicon glyphicon-plus add-option"></span></a>
+                            <a data-toggle="modal" data-target="#calculate-service" href="#calculate-service" class="choice-service" title="Вычисляемые услуги">Калькулятор <i class="glyphicon glyphicon-plus"></i> </a>
+                            <a href="#productsModal" data-toggle="modal" data-target="#productsModal" class="choice-product  ">Витрина <span class="glyphicon glyphicon-plus add-option"></span></a>
                             <a data-toggle="modal" data-target="#custom-service" href="#custom-service" class="choice-service" title="Другое">Другое <i class="glyphicon glyphicon-plus"></i> </a>
                         </small>
                     </div>
