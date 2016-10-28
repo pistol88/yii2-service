@@ -270,11 +270,11 @@ class PriceController extends Controller
 
     public function actionGetCalculateServiceFormAjax($id)
     {
-        
         $calculateService = Service::findOne($id);
-            return $this->renderAjax('CalculateServiceWidgetAjax', [
-                'name' => $calculateService->name,
-                'settings' => $calculateService->settings,
-            ]);
+        
+        return $this->renderAjax('calculate_service_widget_ajax', [
+            'name' => $calculateService->name,
+            'settings' => $calculateService->settings,
+        ]);
     }
 }

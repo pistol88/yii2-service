@@ -18,26 +18,35 @@ $param = [
     'class' => 'calculate-service-material form-control'
 ];
 ?>
-<div class="col-sm-6 col-sm-offset-3 calculate-service-data-form form">
-    <div class="form-group">
-        <label>Материал ковра</label><?= Html::dropDownList('set-type','null',$result,$param); ?>
+<div class="row calculate-service-data-form form">
+    <div class="col-md-12">
+        <div class="form-group">
+            <?= Html::dropDownList('set-type','null',$result,$param); ?>
+        </div>
     </div>
-    <div class="form-group">
-        <label>Высота</label><input type="text" id="input-width" class="calculate-service-width form-control">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Высота</label>
+            <input type="text" id="input-width" class="calculate-service-width form-control">
+        </div>
     </div>
-    <div class="form-group">
-        <label>Ширина</label><input type="text" id="input-height" class="calculate-service-height form-control">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Ширина</label>
+            <input type="text" id="input-height" class="calculate-service-height form-control">
+        </div>
     </div>
+
     <div class="form-group">
         <div class="calculate-service-price"></div>
     </div>
-    <hr>
+
     <?php $form = ActiveForm::begin(['action' => '/web/service/price/order','options' => ['enctype' => 'multipart/form-data'],'id' => 'add-custom-service-form']); ?>
-    <div class="row">
-        <div class="col-md-8 hidden"><?php echo $form->field($customServiceModel, 'name')->textInput(['value'=> $name]) ?></div>
-        <div class="col-md-4 hidden"><?php echo $form->field($customServiceModel, 'price')->textInput() ?></div>
-    </div>
-    <?php echo Html::submitButton('В корзину', ['class' => 'col-md-12 put-calculate-service-btn btn btn-success', 'disabled' => 'disabled']) ?>
+        <div class="row">
+            <div class="col-md-8 hidden"><?php echo $form->field($customServiceModel, 'name')->textInput(['value'=> $name]) ?></div>
+            <div class="col-md-4 hidden"><?php echo $form->field($customServiceModel, 'price')->textInput() ?></div>
+        </div>
+        <?php echo Html::submitButton('В корзину', ['class' => 'col-md-12 put-calculate-service-btn btn btn-success', 'disabled' => 'disabled']) ?>
     <?php ActiveForm::end(); ?>
 </div>
 

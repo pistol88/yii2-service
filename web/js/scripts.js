@@ -33,8 +33,10 @@ pistol88.service = {
 
         $(document).on('click', '.calculate-service-model', function() {
             var self = $(this),
-                url = self.data('url');
+            url = self.data('url');
             pistol88.service.getCalculatedService(url);
+            $('.calculate-service-model').removeClass('active');
+            $(self).addClass('active');
         });
         
         $(document).on('click', '.service-order-net .price, .pistol88-cart-buy-button', function() {
@@ -177,7 +179,11 @@ pistol88.service = {
         return false;
     },
     getCalculatedService: function (url) {
-        $('[data-role=CalculateServiceForm]').load(url);
+        $('[data-role=CalculateServiceForm]').css({'opacity': '0.3'});
+        $('[data-role=CalculateServiceForm]').load(url, function() {
+            
+            $('[data-role=CalculateServiceForm]').css({'opacity': '1'});
+        });
     },
     callPrint: function (strid) {
         var prtContent = document.getElementById(strid);

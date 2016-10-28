@@ -1,6 +1,7 @@
 if (typeof usesgraphcrt == "undefined" || !usesgraphcrt) {
     var usesgraphcrt = {};
 }
+
 usesgraphcrt.calculate = {
         init: function () {
             $calculateServiceModal = $('#calculate-service');
@@ -18,9 +19,11 @@ usesgraphcrt.calculate = {
                 $calculateServiceModal.modal('hide');
                 $calculateServiceForm.remove();
             });
+            
             $serviceMaterialInput.on('change',function () {
                 usesgraphcrt.calculate.setPrice($serviceMaterialInput.val(),$serviceWidthInput.val(),$serviceHeightInput.val());
             });
+            
             $calculateServiceForm.find('input').keyup(function () {
                 usesgraphcrt.calculate.setPrice($serviceMaterialInput.val(),$serviceWidthInput.val(),$serviceHeightInput.val());
             });

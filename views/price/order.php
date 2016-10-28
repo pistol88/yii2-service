@@ -212,7 +212,7 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                 <h4 class="modal-title">Вычисляемая услуга</h4>
             </div>
             <div class="modal-body">
-                <div class="row">
+                <div class="modal-rows">
                     <?php foreach($calculateServiceModel as $calculateService) { ?>
                         <div class="col-md-3 calculate-service-model btn btn-default" data-url="<?= Url::to(['price/get-calculate-service-form-ajax', 'id' => $calculateService->id]); ?>">
                                 <strong><?=$calculateService->name;?></strong>
@@ -220,6 +220,7 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                     <?php } ?>
                     <div data-role="CalculateServiceForm"></div>
                 </div>
+                <div style="clear: both;"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><?=yii::t('order', 'Close');?></button>
