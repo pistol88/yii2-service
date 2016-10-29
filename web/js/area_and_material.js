@@ -19,31 +19,31 @@ usesgraphcrt.calculate = {
                 $calculateServiceModal.modal('hide');
                 $calculateServiceForm.remove();
             });
-            
+
             $serviceMaterialInput.on('change',function () {
                 usesgraphcrt.calculate.setPrice($serviceMaterialInput.val(),$serviceMaterialInput.find(':selected').text(),$serviceWidthInput.val(),$serviceHeightInput.val());
             });
-            
+
             $calculateServiceForm.find('input').keyup(function () {
                 usesgraphcrt.calculate.setPrice($serviceMaterialInput.val(),$serviceMaterialInput.find(':selected').text(),$serviceWidthInput.val(),$serviceHeightInput.val());
             });
 
         },
-        setPrice: function (material,name,width,heigth) {
-            if (material && width && heigth) {
-                price = material*width*heigth;
+        setPrice: function (materialPrice, materialName,width,heigth) {
+            if (materialPrice && width && heigth) {
+                var calculateServiceName = $customServiceForm.data('service-name');
+                price = materialPrice*width*heigth;
                 $calculateServicePrice.text('Итоговая цена: '+price+'р.');
-                name = $calculateServiceName + ' ('+name+ ';' +width+ 'x'+heigth+')';
+                name = calculateServiceName + ' ('+materialName+ ';' +width+ 'x'+heigth+')';
                 $customServiceForm.find('#customservice-name').val(name);
                 $customServiceForm.find('#customservice-price').val(price);
                 $submitButton.removeAttr('disabled');
             }
         }
-        
+
     };
 
 $( document ).ajaxComplete(function( event, xhr, settings ) {
-    console.log(settings.url);
     if (settings.url.indexOf("get-calculate-service-form-ajax") !== -1) {
         usesgraphcrt.calculate.init();
     }

@@ -1,6 +1,8 @@
 <?php
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+
 
 $array = explode(PHP_EOL,$settings);
 $result = [];
@@ -43,7 +45,7 @@ $param = [
         </div>
     </div>
 
-    <?php $form = ActiveForm::begin(['action' => '/web/service/price/order','options' => ['enctype' => 'multipart/form-data'],'id' => 'add-custom-service-form']); ?>
+    <?php $form = ActiveForm::begin(['action' => Url::to(['/service/price/order']),'options' => ['enctype' => 'multipart/form-data', 'data-service-name' => $name],'id' => 'add-custom-service-form']); ?>
         <div class="row">
             <div class="col-md-8 hidden"><?php echo $form->field($customServiceModel, 'name')->textInput(['value'=> $name]) ?></div>
             <div class="col-md-4 hidden"><?php echo $form->field($customServiceModel, 'price')->textInput() ?></div>
@@ -51,7 +53,3 @@ $param = [
         <?php echo Html::submitButton('В корзину', ['class' => 'col-md-12 put-calculate-service-btn btn btn-success', 'disabled' => 'disabled']) ?>
     <?php ActiveForm::end(); ?>
 </div>
-
-
-
-
