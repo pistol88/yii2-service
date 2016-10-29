@@ -37,8 +37,10 @@ $param = [
         </div>
     </div>
 
-    <div class="form-group">
-        <div class="calculate-service-price"></div>
+    <div class="col-md-6 col-md-offset-3">
+        <div class="form-group">
+            <div class="calculate-service-price"></div>
+        </div>
     </div>
 
     <?php $form = ActiveForm::begin(['action' => '/web/service/price/order','options' => ['enctype' => 'multipart/form-data'],'id' => 'add-custom-service-form']); ?>
