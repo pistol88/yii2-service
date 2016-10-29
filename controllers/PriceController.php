@@ -39,7 +39,7 @@ class PriceController extends Controller
                 ]
             ]
         ];
-        
+
         if($this->module->cache) {
             $caches = [
                 'pageCache' => [
@@ -68,10 +68,10 @@ class PriceController extends Controller
                     ]
                 ],
             ];
-            
+
             $behaviors = array_merge($behaviors, $caches);
         }
-        
+
         return $behaviors;
     }
 
@@ -100,13 +100,13 @@ class PriceController extends Controller
         }
 
         $priceModel = new Price;
-        
+
         $prices = [];
-        
+
         foreach($priceModel::find()->all() as $price) {
             $prices[$price->service_type][$price->category_id][$price->service_id] = $price;
         }
-        
+
         $services = Service::find()->orderBy('sort DESC, id ASC')->all();
         $complexes = Complex::find()->orderBy('sort DESC, id ASC')->all();
         $categories = Category::find()->where('parent_id IS NULL OR parent_id = 0')->orderBy('sort DESC, id ASC')->all();
@@ -121,12 +121,12 @@ class PriceController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
-    
+
     public function actionOrder()
     {
-        
+
         $customServiceModel = new CustomService;
-        
+
 
         if ($customServiceModel->load(Yii::$app->request->post()) && $customServiceModel->save()) {
             yii::$app->cart->put($customServiceModel);
@@ -136,12 +136,12 @@ class PriceController extends Controller
                 \Yii::$app->session->setFlash('customServiceBuy', 'В корзине!');
             }
         }
-        
+
         if($type = yii::$app->request->get('service-order-type')) {
             if(!in_array($type, ['net', 'table'])) {
                 return $this->redirect('404');
             }
-            
+
             yii::$app->response->cookies->add(new \yii\web\Cookie([
                 'name' => 'service-order-type',
                 'value' => $type
@@ -153,27 +153,27 @@ class PriceController extends Controller
                 $type = 'net';
             }
         }
-        
+
         $services = Service::find()->orderBy('sort DESC, id ASC')->all();
         $categories = Category::find()->where('parent_id IS NULL OR parent_id = 0')->orderBy('sort DESC, id ASC')->all();
         $complexes = Complex::find()->orderBy('sort DESC, id ASC')->all();
         $calculateServiceModel = Service::find()->where('calculator != ""')->all();
-        
+
         $priceModel = new Price;
         $orderModel = new Order;
-        
+
         $paymentTypes = ArrayHelper::map(PaymentType::find()->orderBy('order DESC')->all(), 'id', 'name');
         $shippingTypes = ArrayHelper::map(ShippingType::find()->orderBy('order DESC')->all(), 'id', 'name');
 
         $prices = [];
-        
+
         foreach($priceModel::find()->all() as $price) {
             $prices[$price->service_type][$price->category_id][$price->service_id] = $price;
         }
-        
+
         $this->getView()->registerJs('pistol88.service.propertyListUrl = "'.Url::toRoute(['/service/property/get-ajax-list']).'";');
         $this->getView()->registerJs('pistol88.service.searchClientByIdentUrl = "'.Url::toRoute(['/service/property/get-client-by-property']).'";');
-        
+
         return $this->render('order', [
             'type' => $type,
             'customServiceModel' => $customServiceModel,
@@ -192,16 +192,16 @@ class PriceController extends Controller
     public function actionGetPrices()
     {
         $categoryId = (int)yii::$app->request->post('id');
-        
+
         $categoryModel = Category::findOne($categoryId);
-        
-        $services = Service::find()->orderBy('sort DESC, id ASC')->all();
+
+        $services = Service::find()->where(['calculator' => null])->orderBy('sort DESC, id ASC')->all();
         $complexes = Complex::find()->orderBy('sort DESC, id ASC')->all();
-        
+
         $priceModel = new Price;
-        
+
         $json = [];
-        
+
         $json['HtmlBlock'] = $this->renderPartial('order-type/net/services', [
             'priceModel' => $priceModel,
             'categoryId' => $categoryId,
@@ -209,23 +209,23 @@ class PriceController extends Controller
             'complexes' => $complexes,
             'categoryModel' => $categoryModel,
         ]);
-    
+
         die(json_encode($json));
     }
-    
+
     public function actionGetCategories()
     {
         $categories = Category::find()->where('parent_id IS NULL OR parent_id = 0')->orderBy('sort DESC, id ASC')->all();
-        
+
         $json = [];
-        
+
         $json['HtmlBlock'] = $this->renderPartial('order-type/net/categories', [
             'categories' => $categories,
         ]);
-    
+
         die(json_encode($json));
     }
-    
+
     public function actionCreate()
     {
         $model = new Price();
@@ -271,7 +271,7 @@ class PriceController extends Controller
     public function actionGetCalculateServiceFormAjax($id)
     {
         $calculateService = Service::findOne($id);
-        
+
         return $this->renderAjax('calculate_service_widget_ajax', [
             'name' => $calculateService->name,
             'settings' => $calculateService->settings,
