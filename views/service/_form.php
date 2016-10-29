@@ -25,14 +25,14 @@ $parentServices = array_merge(['0' => 'Нет'], $services);
     <?php echo $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <?php echo $form->field($model, 'sort')->textInput(['maxlength' => true])->hint('Чем выше приоритет, тем выше элемент среди других в общем списке.'); ?>
-    
+
     <?= $form->field($model, 'parent_id')->dropdownList($parentServices);?>
 
     <label><input type="checkbox" name="calc" id="calculate"> Вычисляемая услуга</label>
     <div id="calculateBlock" class="form-group" style="display: none;">
         <?= $form->field($model, 'calculator')->textInput(); ?>
 
-        <?= $form->field($model, 'settings')->textarea(['rows' => 3, 'cols' => 7]); ?>
+        <?= $form->field($model, 'settings')->textarea(['rows' => 3, 'cols' => 7, 'placeholder' => 'Опция: значение']); ?>
     </div>
     <div class="form-group">
         <?php echo Html::submitButton($model->isNewRecord ? 'Добавить' : 'Редактировать', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
