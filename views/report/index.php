@@ -162,11 +162,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td align="right">Итого:</td>
                 <td><?=$session->getDuration();?></td>
                 <td><strong><?=$stat['count_order'];?>/<?=$stat['count_elements'];?></strong></td>
-                <td><strong><?=$stat['total'];?> <?=$module->currency;?></strong></td>
+                <td><strong><?=$totalEarning;?> <?=$module->currency;?></strong></td>
                 <td>-</td>
                 <td>-</td>
                 <td>-</td>
-                <td><strong><?=$sum['earnings'];?> <?=$module->currency;?></strong></td>
+                <td><strong><?=round($sum['earnings']);?> <?=$module->currency;?></strong></td>
                 <td>
                     -
                 </td>
