@@ -111,7 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'li',
                                     Html::a(
                                         date('H:i', $workSession->start_timestamp).' - '.$dateStop,
-                                        ['/order/order/index', 'time_start' => $workSession->start, 'time_stop' => $workSession->stop]
+                                        ['/order/order/index', 'time_start' => $workSession->start, 'time_stop' => $workSession->stop, 'element_types' => ['pistol88\service\models\Price', 'pistol88\service\models\CustomService']]
                                     )
                                 );
                             }
