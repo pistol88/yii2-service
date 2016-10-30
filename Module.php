@@ -8,7 +8,7 @@ class Module extends \yii\base\Module
     public $adminRoles = ['admin', 'superadmin'];
     public $workers = null;
     public $workerPersent = 30;
-	public $workerCategoryIds = [];
+    public $workerCategoryIds = [];
     public $persentOdPromocode = 100; //Процент выплат сотрудникам от заказов с промокодом
     public $currency = 'руб.';
     public $mainIdent = 'Номер и марка автомобиля';
@@ -20,7 +20,7 @@ class Module extends \yii\base\Module
     public $propertyStatuses = ['active' => 'Активно', 'unactive' => 'Неактивно'];
     public $propertyName = 'Автомобили';
     public $identName = 'Номер авто';
-	public $promoDivision = []; //'model' => ['Скидка >' => 'процент от стоимости'] 
+    public $promoDivision = []; //'model' => ['Скидка >' => 'процент от стоимости'] 
     public $menu = [
             [
                 'label' => 'Заказ',
@@ -57,7 +57,8 @@ class Module extends \yii\base\Module
         ];
     
     const EVENT_EARNINGS = 'earnings';
-    
+    const EARNING_ELEMENT_CALCULATE = 'earning_element_calculate';
+	
     public function init()
     {
         parent::init();
