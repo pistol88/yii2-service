@@ -15,6 +15,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+
 class ReportController extends Controller
 {
     public function behaviors()
@@ -32,6 +33,7 @@ class ReportController extends Controller
             ],
         ];
     }
+    
     public function actionIndex($sessionId = null)
     {
         if(!$sessionId) {
