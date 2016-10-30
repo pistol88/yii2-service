@@ -119,7 +119,7 @@ class ReportController extends Controller
                         $this->module->trigger($module::EARNING_ELEMENT_CALCULATE, $elementEvent);
                         $total = $elementEvent->cost;
 
-                        $totalToEarning += $total;
+                        $totalEarning += $total;
                         
                         $elements[$elementModel::className()]['service_count'] += $element->count;
                         $elements[$elementModel::className()]['service_total'] += $total;
