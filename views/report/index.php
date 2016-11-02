@@ -140,7 +140,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?=$workerStat[$worker->id]['fines'];?>
                     </td>
                     <td class="earnings">
-                        <?=round($workerStat[$worker->id]['earnings']);?>
+                        <?=round($workerStat[$worker->id]['earnings'], 0, PHP_ROUND_HALF_DOWN);?>
                         <?=$module->currency;?>
                         <?php if($bonus = $workerStat[$worker->id]['bonus']) { ?>
                             <span class="bonus" title="Бонус">+<?=$bonus;?> <?=$module->currency;?></span>
@@ -152,7 +152,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td>
                         <?= \pistol88\staffer\widgets\AddPayment::widget([
                             'staffer' => $worker,
-                            'paymentSum' => round($workerStat[$worker->id]['earnings']),
+                            'paymentSum' => round($workerStat[$worker->id]['earnings'], 0, PHP_ROUND_HALF_DOWN),
                             'sessionId' => $session->id
                         ]); ?>
                     </td>
@@ -166,7 +166,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td>-</td>
                 <td>-</td>
                 <td>-</td>
-                <td><strong><?=round($sum['earnings']);?> <?=$module->currency;?></strong></td>
+                <td><strong><?=round($sum['earnings'], 0, PHP_ROUND_HALF_DOWN);?> <?=$module->currency;?></strong></td>
                 <td>
                     -
                 </td>
