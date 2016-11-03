@@ -90,11 +90,42 @@ class ReportController extends Controller
             foreach($orders as $order) {
                 $orderWorkers = [];
                 $orderCustomerCount = 0;
-                foreach($workers as $worker) {
-                    if($worker->hasWork(strtotime($order->date))) {
-                        $orderWorkers[] = $worker;
-                        if(empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds)) {
-                            $orderCustomerCount++;
+
+
+                // включение нового метода распределения зарплаты
+                if ($this->module->splitOrderPerfome) {
+
+                    $staffersToService = Yii::$app->service->getStafferIdsByServiceId($order->id);
+                    // для новых заказаов созданных с разделением по работникам
+                    if ($staffersToService) {
+                        foreach ($staffersToService as $key => $stafferToService) {
+                            $stafferModel = $stafferToService->staffer_model;
+                            $stafferModel = new $stafferModel();
+                            $worker =  $stafferModel::findOne($stafferToService->staffer_id);
+                            $orderWorkers[] = $worker;
+                            if(empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds)) {
+                                $orderCustomerCount++;
+                            }
+                        }
+                    // для отображения отчёта по старым заказам, когда делились между всеми работниками на смене
+                    } else {
+                        foreach($workers as $worker) {
+                            if($worker->hasWork(strtotime($order->date))) {
+                                $orderWorkers[] = $worker;
+                                if(empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds)) {
+                                    $orderCustomerCount++;
+                                }
+                            }
+                        }
+                    }
+                // вариант распределения зарплаты по заказам между всеми работкникам
+                } else {
+                    foreach($workers as $worker) {
+                        if($worker->hasWork(strtotime($order->date))) {
+                            $orderWorkers[] = $worker;
+                            if(empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds)) {
+                                $orderCustomerCount++;
+                            }
                         }
                     }
                 }

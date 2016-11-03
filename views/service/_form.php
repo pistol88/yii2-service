@@ -30,7 +30,7 @@ $parentServices = array_merge(['0' => 'Нет'], $services);
 
     <label><input type="checkbox" name="calc" id="calculate"> Вычисляемая услуга</label>
     <div id="calculateBlock" class="form-group" style="display: none;">
-        <?= $form->field($model, 'calculator')->textInput(); ?>
+        <?= $form->field($model, 'calculator')->dropdownList(Yii::$app->service->getCalculateWidgets(), ['prompt' => 'Выберите виджет']); ?>
 
         <?= $form->field($model, 'settings')->textarea(['rows' => 3, 'cols' => 7, 'placeholder' => 'Опция: значение']); ?>
     </div>
