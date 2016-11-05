@@ -182,20 +182,20 @@ $this->params['breadcrumbs'][] = $this->title;
             </ul>
         <?php } ?>
 
-        <?php if($costs) { ?>
-            <h2>Расходы</h2>
-            <ul>
-                <?php foreach($costs as $cost) { ?>
-                    <li><?=$cost->sum;?> <?=$module->currency;?>. <?=date('d.m.Y H:i', strtotime($cost->date));?></li>
-                <?php } ?>
-            </ul>
-        <?php } ?>
-    </div>
 
+    </div>
 
         <h2>Отчёт по кассам</h2>
 
         <?= \halumein\cashbox\widgets\ReportBalanceByPeriod::widget([
+                'dateStart' => date('Y-m-d H:i:s', $session->start_timestamp),
+                'dateStop' => $session->stop_timestamp ? date('Y-m-d H:i:s', $session->stop_timestamp) : null
+                 ])
+        ?>
+    
+        <h2>Отчёт по расходам</h2>
+
+        <?= \halumein\spending\widgets\ReportSpendingsByPeriod::widget([
                 'dateStart' => date('Y-m-d H:i:s', $session->start_timestamp),
                 'dateStop' => $session->stop_timestamp ? date('Y-m-d H:i:s', $session->stop_timestamp) : null
                  ])

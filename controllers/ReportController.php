@@ -46,7 +46,7 @@ class ReportController extends Controller
         $workers = [];
         $shopStat = [];
         $sessionId = 0;
-        $costs = [];
+
         $totalEarning = 0;
         
         if($session) {
@@ -54,7 +54,7 @@ class ReportController extends Controller
             $stat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop);
             $shopStatPromocode = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop, "`promocode` != ''");
             $statPromocode = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop, "`promocode` != ''");
-            $costs = Cost::findAll(['session_id' => $session->id]);
+
             $sessionId = $session->id;
             $workers = $session->users;
             $workersCount = yii::$app->worksess->getWorkersCount($session);
@@ -236,18 +236,20 @@ class ReportController extends Controller
                 $stop = date('Y-m-d H:i:s');
             }
         }
+        
         $workerPersent = $this->module->workerPersent;
+        
         if($session) {
             $date = date('Y-m-d', $session->start_timestamp);
         } else {
             $date = date('Y-m-d');
         }
         $sessions = yii::$app->worksess->getSessions(null, $date);
+        
         return $this->render('index', [
             'totalEarning' => $totalEarning,
             'shopStat' => $shopStat,
             'date' => $date,
-            'costs' => $costs,
             'session' => $session,
             'sessions' => $sessions,
             'sessionId' => $sessionId,

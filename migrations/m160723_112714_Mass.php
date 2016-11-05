@@ -41,19 +41,6 @@ class m160723_112714_Mass extends Migration {
 				'category_id' => Schema::TYPE_INTEGER . "(11)",
 				'description' => Schema::TYPE_STRING . "(255)",
                 ], $tableOptions);
-                
-            $this->createTable('{{%service_cost}}', [
-                'id' => Schema::TYPE_PK . "",
-				'name' => Schema::TYPE_STRING . "(255)",
-                'service_type' => Schema::TYPE_STRING . "(255) NOT NULL",
-                'service_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
-                'price' => Schema::TYPE_DECIMAL . "(11,2)",
-				'sum' => Schema::TYPE_DECIMAL . "(11,2)",
-				'date' => Schema::TYPE_DATE,
-                'category_id' => Schema::TYPE_INTEGER . "(11) NOT NULL",
-                'description' => Schema::TYPE_TEXT . "",
-				'session_id' => Schema::TYPE_INTEGER . "(11)",
-                ], $tableOptions);
             
             $this->createTable('{{%service_payment}}', [
                 'id' => Schema::TYPE_PK . "",
@@ -119,7 +106,6 @@ class m160723_112714_Mass extends Migration {
             $this->dropTable('{{%service_service}}');
             $this->dropTable('{{%service_complex}}');
             $this->dropTable('{{%service_to_complex}}');
-            $this->dropTable('{{%service_cost}}');
             
         } catch (Exception $e) {
             echo 'Catch Exception ' . $e->getMessage() . ' ';

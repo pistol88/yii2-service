@@ -13,5 +13,11 @@ class Bootstrap implements BootstrapInterface
                 'class' => '\kartik\grid\Module',
             ]);
         }
+        
+        if(!$app->has('service')) {
+            $app->set('service', [
+                'class' => '\pistol88\service\Service',
+            ]);
+        }
     }
 }

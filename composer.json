@@ -31,7 +31,8 @@
         "voskobovich/yii2-many-many-behavior": "^3.0",
         "kartik-v/yii2-widget-select2": "*",
         "nex/yii2-datepicker": "*",
-        "halumein/yii2-cashbox-module": "*"
+        "halumein/yii2-cashbox-module": "*",
+        "halumein/yii2-spending": "*"
     },
     "config": {
         "process-timeout": 1800

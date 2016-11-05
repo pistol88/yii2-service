@@ -52,10 +52,6 @@ class Module extends \yii\base\Module
                 'label' => 'Комплексы',
                 'url' => ['/service/complex/index'],
             ],
-            [
-                'label' => 'Затраты',
-                'url' => ['/service/cost/index'],
-            ],
         ];
     
     const EVENT_EARNINGS = 'earnings';
