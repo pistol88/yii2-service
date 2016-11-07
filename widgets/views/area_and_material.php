@@ -28,7 +28,7 @@ $param = [
     </div>
     <div class="col-md-6">
         <div class="form-group">
-            <label>Высота</label>
+            <label>Длина</label>
             <input type="text" id="input-width" class="calculate-service-width form-control">
         </div>
     </div>
