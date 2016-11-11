@@ -78,6 +78,7 @@ class ReportController extends Controller
                     
                     $workerStat[$worker->id]['fix'] = (int)$worker->fix;
                     $workerStat[$worker->id]['time'] = yii::$app->worksess->getUserWorkTimeBySession($worker, $session);
+                    $workerStat[$worker->id]['base_earnings'] = (int)$worker->fix;
                     $workerStat[$worker->id]['earnings'] = (int)$worker->fix;
                     $workerStat[$worker->id]['fines'] = 0; //штрафы
                     $workerStat[$worker->id]['payment'] = Payment::findOne(['session_id' => $session->id, 'worker_id' => $worker->id]);
@@ -202,6 +203,7 @@ class ReportController extends Controller
                                 $earning = ($elementCost*$persent);
                             }
                             $workerStat[$worker->id]['earnings'] += $earning;
+                            $workerStat[$worker->id]['base_earnings'] += $earning;
                         }
                     }
                 }
@@ -227,6 +229,8 @@ class ReportController extends Controller
                 $workerStat[$worker->id]['fines'] += $fines;
                 $workerStat[$worker->id]['earnings'] = $earning;
                 $workerStat[$worker->id]['earnings'] -= $fines;
+                $workerStat[$worker->id]['base_earnings'] = $earning;
+                $workerStat[$worker->id]['base_earnings'] -= $fines;
                 if($earningsEvent->bonus) {
                     $workerStat[$worker->id]['bonus'] = $earningsEvent->bonus;
                 }
