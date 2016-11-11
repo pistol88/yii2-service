@@ -24,7 +24,7 @@ $parentServices = array_merge(['0' => 'Нет'], $services);
 
     <?php echo $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?php if($organisation = yii::$app->get('organisation')) { ?>
+    <?php if(yii::$app->has('organisation') && $organisation = yii::$app->get('organisation')) { ?>
         <?php echo $form->field($model, 'organisation_id')->dropDownList(array_merge(['0' => 'Нет'], ArrayHelper::map($organisation->getList(), 'id', 'name'))) ?>
     <?php } ?>
     
