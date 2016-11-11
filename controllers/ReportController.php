@@ -51,9 +51,9 @@ class ReportController extends Controller
         $totalEarning = 0;
         
         if($session) {
-            if(yii::$app->has('organisation') && $organisation = yii::$app->organisation->get()) {
-                $shopStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop, ['o.organisation_id' => $organisation->id]);
-                $stat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop, ['o.organisation_id' => $organisation->id]);
+            if(yii::$app->has('organization') && $organization = yii::$app->organization->get()) {
+                $shopStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop, ['o.organization_id' => $organization->id]);
+                $stat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop, ['o.organization_id' => $organization->id]);
             } else {
                 $shopStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop);
                 $stat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop);
@@ -62,7 +62,7 @@ class ReportController extends Controller
             $sessionId = $session->id;
             $workers = $session->users;
             $workersCount = yii::$app->worksess->getWorkersCount($session);
-            $orders = yii::$app->order->getOrdersByDatePeriod($session->start, $session->stop, ['order.organisation_id' => $organisation->id]);
+            $orders = yii::$app->order->getOrdersByDatePeriod($session->start, $session->stop, ['order.organization_id' => $organization->id]);
             foreach($workers as $worker) {
                 if(!isset($workerStat[$worker->id]['fines'])) {
                     //Задан ли индивидуальный процент

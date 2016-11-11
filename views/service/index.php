@@ -10,11 +10,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
 \pistol88\service\assets\BackendAsset::register($this);
 
-if(yii::$app->has('organisation')) {
-    $organisations = yii::$app->organisation->getList();
-    $organisations = ArrayHelper::map($organisations, 'id', 'name');
+if(yii::$app->has('organization')) {
+    $organizations = yii::$app->organization->getList();
+    $organizations = ArrayHelper::map($organizations, 'id', 'name');
 } else {
-    $organisations = [];
+    $organizations = [];
 }
 
 ?>
@@ -35,16 +35,16 @@ if(yii::$app->has('organisation')) {
             ['attribute' => 'id', 'filter' => false, 'options' => ['style' => 'width: 49px;']],
             'name',
             [
-                'attribute' => 'organisation_id',
+                'attribute' => 'organization_id',
                 'filter' => Html::activeDropDownList(
                     $searchModel,
-                    'organisation_id',
-                    $organisations,
+                    'organization_id',
+                    $organizations,
                     ['class' => 'form-control', 'prompt' => 'Организация']
                 ),
-                'content' => function($model) use ($organisations) {
-                    foreach($organisations as $id => $name) {
-                        if($id == $model->organisation_id) {
+                'content' => function($model) use ($organizations) {
+                    foreach($organizations as $id => $name) {
+                        if($id == $model->organization_id) {
                             return $name;
                         }
                     }

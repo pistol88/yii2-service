@@ -65,8 +65,8 @@ $this->params['breadcrumbs'][] = $this->title;
         <h1>
             <?php if(isset($session->user)) { ?>Администратор <?=$session->user->name;?><?php } ?>
             
-            <?php if(yii::$app->has('organisation') && $organisation = yii::$app->organisation->get()) { ?>
-                (<?=$organisation->name;?>)
+            <?php if(yii::$app->has('organization') && $organization = yii::$app->organization->get()) { ?>
+                (<?=$organization->name;?>)
             <?php } ?>
         </h1>
         <a href="#" class="btn btn-submit" onclick="pistol88.service.callPrint('report-to-print'); return false;" style="float: right;"><i class="glyphicon glyphicon-print"></i></a>

@@ -15,7 +15,7 @@ class Service extends \yii\db\ActiveRecord implements ServiceInterface
     {
         return [
             [['name'], 'required'],
-            [['id', 'parent_id', 'sort', 'organisation_id'], 'integer'],
+            [['id', 'parent_id', 'sort', 'organization_id'], 'integer'],
             [['name'], 'string', 'max' => 255],
             [['calculator'], 'string', 'max' => 155],
             [['settings'],'string'],
@@ -31,7 +31,7 @@ class Service extends \yii\db\ActiveRecord implements ServiceInterface
             'sort' => 'Приоритет',
             'calculator' => 'Виджет калькулятора',
             'settings' => 'Параметры',
-            'organisation_id' => 'Организация',
+            'organization_id' => 'Организация',
         ];
     }
     

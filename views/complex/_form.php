@@ -17,8 +17,8 @@ $services = ArrayHelper::map($services, 'id', 'name');
 
     <?php echo $form->field($model, 'name')->textInput() ?>
     
-    <?php if(yii::$app->has('organisation') && $organisation = yii::$app->get('organisation')) { ?>
-        <?php echo $form->field($model, 'organisation_id')->dropDownList(array_merge(['0' => 'Нет'], ArrayHelper::map($organisation->getList(), 'id', 'name'))) ?>
+    <?php if(yii::$app->has('organization') && $organization = yii::$app->get('organization')) { ?>
+        <?php echo $form->field($model, 'organization_id')->dropDownList(array_merge(['0' => 'Нет'], ArrayHelper::map($organization->getList(), 'id', 'name'))) ?>
     <?php } ?>
     
     <?php echo $form->field($model, 'sort')->textInput(['maxlength' => true]) ?>

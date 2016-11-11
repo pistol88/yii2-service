@@ -12,7 +12,7 @@ class ServiceSearch extends Service
     public function rules()
     {
         return [
-            [['id', 'organisation_id'], 'integer'],
+            [['id', 'organization_id'], 'integer'],
             [['name'], 'safe'],
         ];
     }
@@ -37,7 +37,7 @@ class ServiceSearch extends Service
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'organisation_id' => $this->organisation_id,
+            'organization_id' => $this->organization_id,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);
