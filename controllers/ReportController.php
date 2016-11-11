@@ -41,6 +41,7 @@ class ReportController extends Controller
         } else {
             $session = Session::findOne($sessionId);
         }
+        
         $stat = null;
         $workerStat = [];
         $workers = [];
@@ -50,15 +51,18 @@ class ReportController extends Controller
         $totalEarning = 0;
         
         if($session) {
-            $shopStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop);
-            $stat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop);
-            $shopStatPromocode = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop, "`promocode` != ''");
-            $statPromocode = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop, "`promocode` != ''");
+            if(yii::$app->has('organisation') && $organisation = yii::$app->organisation->get()) {
+                $shopStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop, ['o.organisation_id' => $organisation->id]);
+                $stat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop, ['o.organisation_id' => $organisation->id]);
+            } else {
+                $shopStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop);
+                $stat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop);
+            }
 
             $sessionId = $session->id;
             $workers = $session->users;
             $workersCount = yii::$app->worksess->getWorkersCount($session);
-            $orders = yii::$app->order->getOrdersByDatePeriod($session->start, $session->stop);
+            $orders = yii::$app->order->getOrdersByDatePeriod($session->start, $session->stop, ['order.organisation_id' => $organisation->id]);
             foreach($workers as $worker) {
                 if(!isset($workerStat[$worker->id]['fines'])) {
                     //Задан ли индивидуальный процент
@@ -71,6 +75,7 @@ class ReportController extends Controller
                     } else {
                         $basePersent = $worker->persent;
                     }
+                    
                     $workerStat[$worker->id]['fix'] = (int)$worker->fix;
                     $workerStat[$worker->id]['time'] = yii::$app->worksess->getUserWorkTimeBySession($worker, $session);
                     $workerStat[$worker->id]['earnings'] = (int)$worker->fix;

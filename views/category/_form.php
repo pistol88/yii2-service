@@ -7,6 +7,7 @@ use pistol88\service\models\Category;
 $categories = Category::find()->where("id != :id AND (parent_id = 0 OR parent_id IS NULL)", [':id' => (int)$model->id])->all();
 $categories = ArrayHelper::map($categories, 'id', 'name');
 $categories['0'] = 'Нет';
+$categories = array_reverse($categories);
 ?>
 
 <div class="category-form">
@@ -16,6 +17,10 @@ $categories['0'] = 'Нет';
 
         <?php echo $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
     
+        <?php if($organisation = yii::$app->get('organisation')) { ?>
+            <?php echo $form->field($model, 'organisation_id')->dropDownList(array_merge(['0' => 'Нет'], ArrayHelper::map($organisation->getList(), 'id', 'name'))) ?>
+        <?php } ?>
+
         <?php echo $form->field($model, 'sort')->textInput(['maxlength' => true]) ?>
 
         <p><small>Чем выше приоритет, тем выше элемент среди других в общем списке.</small></p>

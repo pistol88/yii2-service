@@ -107,11 +107,31 @@ class PriceController extends Controller
             $prices[$price->service_type][$price->category_id][$price->service_id] = $price;
         }
 
-        $services = Service::find()->orderBy('sort DESC, id ASC')->all();
-        $complexes = Complex::find()->orderBy('sort DESC, id ASC')->all();
-        $categories = Category::find()->where('parent_id IS NULL OR parent_id = 0')->orderBy('sort DESC, id ASC')->all();
+        $organisation = false;
+        
+        if(yii::$app->has('organisation')) {
+            $organisation = yii::$app->organisation->get();
+        }
+        
+        if($organisation) {
+            $services = Service::find()->where('(calculator = "" OR calculator IS NULL) AND organisation_id = :org_id', [':org_id' => $organisation->id])->orderBy('sort DESC, id ASC')->all();
+            $categories = Category::find()->where(['organisation_id' => $organisation->id])->orderBy('sort DESC, id ASC')->all();
+            $complexes = Complex::find()->where(['organisation_id' => $organisation->id])->orderBy('sort DESC, id ASC')->all();
+        } else {
+            $services = Service::find()->orderBy('sort DESC, id ASC')->all();
+            $complexes = Complex::find()->orderBy('sort DESC, id ASC')->all();
+            $categories = Category::find()->where('parent_id IS NULL OR parent_id = 0')->orderBy('sort DESC, id ASC')->all();
+        }
 
+        if(yii::$app->has('organisation')) {
+            $organisations = yii::$app->organisation->getList();
+        } else {
+            $organisations = [];
+        }
+        
         return $this->render('index', [
+            'organisation' => $organisation,
+            'organisations' => $organisations,
             'prices' => $prices,
             'services' => $services,
             'categories' => $categories,
@@ -124,9 +144,7 @@ class PriceController extends Controller
 
     public function actionOrder()
     {
-
         $customServiceModel = new CustomService;
-
 
         if ($customServiceModel->load(Yii::$app->request->post()) && $customServiceModel->save()) {
             yii::$app->cart->put($customServiceModel);
@@ -154,9 +172,24 @@ class PriceController extends Controller
             }
         }
 
-        $services = Service::find()->orderBy('sort DESC, id ASC')->all();
-        $categories = Category::find()->where('parent_id IS NULL OR parent_id = 0')->orderBy('sort DESC, id ASC')->all();
-        $complexes = Complex::find()->orderBy('sort DESC, id ASC')->all();
+        $organisation = false;
+        $organisations = [];
+        
+        if(yii::$app->has('organisation')) {
+            $organisation = yii::$app->organisation->get();
+            $organisations = yii::$app->organisation->getList();
+        }
+        
+        if($organisation) {
+            $services = Service::find()->where('(calculator = "" OR calculator IS NULL) AND organisation_id = :org_id', [':org_id' => $organisation->id])->orderBy('sort DESC, id ASC')->all();
+            $categories = Category::find()->where(['organisation_id' => $organisation->id])->orderBy('sort DESC, id ASC')->all();
+            $complexes = Complex::find()->where(['organisation_id' => $organisation->id])->orderBy('sort DESC, id ASC')->all();
+        } else {
+            $services = Service::find()->orderBy('sort DESC, id ASC')->all();
+            $categories = Category::find()->where('parent_id IS NULL OR parent_id = 0')->orderBy('sort DESC, id ASC')->all();
+            $complexes = Complex::find()->orderBy('sort DESC, id ASC')->all();
+        }
+
         $calculateServiceModel = Service::find()->where('calculator != ""')->all();
 
         $priceModel = new Price;
@@ -174,7 +207,11 @@ class PriceController extends Controller
         $this->getView()->registerJs('pistol88.service.propertyListUrl = "'.Url::toRoute(['/service/property/get-ajax-list']).'";');
         $this->getView()->registerJs('pistol88.service.searchClientByIdentUrl = "'.Url::toRoute(['/service/property/get-client-by-property']).'";');
 
+        
+
         return $this->render('order', [
+            'organisation' => $organisation,
+            'organisations' => $organisations,
             'type' => $type,
             'customServiceModel' => $customServiceModel,
             'calculateServiceModel' => $calculateServiceModel,
@@ -195,8 +232,16 @@ class PriceController extends Controller
 
         $categoryModel = Category::findOne($categoryId);
 
-        $services = Service::find()->where(['calculator' => null])->orderBy('sort DESC, id ASC')->all();
-        $complexes = Complex::find()->orderBy('sort DESC, id ASC')->all();
+        if(yii::$app->has('organisation') && $organisation = yii::$app->organisation->get()) {
+            $services = Service::find()->where('(calculator = "" OR calculator IS NULL) AND organisation_id = :org_id', [':org_id' => $organisation->id])->orderBy('sort DESC, id ASC')->all();
+            $complexes = Complex::find()->where(['organisation_id' => $organisation->id])->orderBy('sort DESC, id ASC')->all();
+
+        } else {
+            $services = Service::find()->where('calculator = "" OR calculator IS NULL')->orderBy('sort DESC, id ASC')->all();
+            $complexes = Complex::find()->orderBy('sort DESC, id ASC')->all();
+        }
+        
+
 
         $priceModel = new Price;
 

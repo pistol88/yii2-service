@@ -46,8 +46,11 @@
     font-size: 12px;
 }
 
+.price-index .control .types > div {
+    float: right;    
+}
 
-.price-index .control .order-type select {
+.price-index .control .types select {
     font-size: 12px;
     padding: 2px;
     height: auto;

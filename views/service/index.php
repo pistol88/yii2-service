@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 use pistol88\service\modules\Service;
 
@@ -8,6 +9,14 @@ $this->title = 'Услуги';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pistol88\service\assets\BackendAsset::register($this);
+
+if(yii::$app->has('organisation')) {
+    $organisations = yii::$app->organisation->getList();
+    $organisations = ArrayHelper::map($organisations, 'id', 'name');
+} else {
+    $organisations = [];
+}
+
 ?>
 <div class="service-index">
 
@@ -25,6 +34,24 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['attribute' => 'id', 'filter' => false, 'options' => ['style' => 'width: 49px;']],
             'name',
+            [
+                'attribute' => 'organisation_id',
+                'filter' => Html::activeDropDownList(
+                    $searchModel,
+                    'organisation_id',
+                    $organisations,
+                    ['class' => 'form-control', 'prompt' => 'Организация']
+                ),
+                'content' => function($model) use ($organisations) {
+                    foreach($organisations as $id => $name) {
+                        if($id == $model->organisation_id) {
+                            return $name;
+                        }
+                    }
+                    
+                    return '';
+                }
+            ],
             ['attribute' => 'service.name', 'label' => 'Материнская услуга'],
             ['class' => 'yii\grid\ActionColumn', 'template' => '{update} {delete}',  'buttonOptions' => ['class' => 'btn btn-default'], 'options' => ['style' => 'width: 100px;']],
         ],

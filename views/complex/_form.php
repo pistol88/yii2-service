@@ -17,6 +17,10 @@ $services = ArrayHelper::map($services, 'id', 'name');
 
     <?php echo $form->field($model, 'name')->textInput() ?>
     
+    <?php if($organisation = yii::$app->get('organisation')) { ?>
+        <?php echo $form->field($model, 'organisation_id')->dropDownList(array_merge(['0' => 'Нет'], ArrayHelper::map($organisation->getList(), 'id', 'name'))) ?>
+    <?php } ?>
+    
     <?php echo $form->field($model, 'sort')->textInput(['maxlength' => true]) ?>
 
     <p><small>Чем выше приоритет, тем выше элемент среди других в общем списке.</small></p>

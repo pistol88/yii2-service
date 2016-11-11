@@ -24,7 +24,7 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['parent_id', 'sort'], 'integer'],
+            [['parent_id', 'sort', 'organisation_id'], 'integer'],
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -36,6 +36,7 @@ class Category extends \yii\db\ActiveRecord
             'name' => 'Название категории',
             'sort' => 'Приоритет',
             'parent_id' => 'Материнская категория',
+            'organisation_id' => 'Организация',
         ];
     }
     

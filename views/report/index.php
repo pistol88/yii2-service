@@ -62,7 +62,13 @@ $this->params['breadcrumbs'][] = $this->title;
         <p>Выберите сессию.</p>
     <?php } else { ?>
     <div id="report-to-print">
-        <h1> <?php if(isset($session->user)) { ?>Администратор <?=$session->user->name;?><?php } ?> </h1>
+        <h1>
+            <?php if(isset($session->user)) { ?>Администратор <?=$session->user->name;?><?php } ?>
+            
+            <?php if(yii::$app->has('organisation') && $organisation = yii::$app->organisation->get()) { ?>
+                (<?=$organisation->name;?>)
+            <?php } ?>
+        </h1>
         <a href="#" class="btn btn-submit" onclick="pistol88.service.callPrint('report-to-print'); return false;" style="float: right;"><i class="glyphicon glyphicon-print"></i></a>
         <p><strong>Смена</strong>: <?=$session->shiftName;?></p>
         <p><strong>Старт</strong>: <?=date('d.m.Y H:i:s', $session->start_timestamp);?></p>

@@ -24,6 +24,10 @@ $parentServices = array_merge(['0' => 'Нет'], $services);
 
     <?php echo $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
+    <?php if($organisation = yii::$app->get('organisation')) { ?>
+        <?php echo $form->field($model, 'organisation_id')->dropDownList(array_merge(['0' => 'Нет'], ArrayHelper::map($organisation->getList(), 'id', 'name'))) ?>
+    <?php } ?>
+    
     <?php echo $form->field($model, 'sort')->textInput(['maxlength' => true])->hint('Чем выше приоритет, тем выше элемент среди других в общем списке.'); ?>
 
     <?= $form->field($model, 'parent_id')->dropdownList($parentServices);?>

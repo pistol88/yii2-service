@@ -12,6 +12,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $categories = Category::find()->where("id != :id AND (parent_id = 0 OR parent_id IS NULL)", [':id' => (int)$model->id])->all();
 $categories = ArrayHelper::map($categories, 'id', 'name');
+
+if(yii::$app->has('organisation')) {
+    $organisations = yii::$app->organisation->getList();
+    $organisations = ArrayHelper::map($organisations, 'id', 'name');
+} else {
+    $organisations = [];
+}
+
 ?>
 <div class="category-index">
 
@@ -29,6 +37,24 @@ $categories = ArrayHelper::map($categories, 'id', 'name');
         'columns' => [
             ['attribute' => 'id', 'filter' => false, 'options' => ['style' => 'width: 49px;']],
             'name',
+            [
+                'attribute' => 'organisation_id',
+                'filter' => Html::activeDropDownList(
+                    $searchModel,
+                    'organisation_id',
+                    $organisations,
+                    ['class' => 'form-control', 'prompt' => 'Организация']
+                ),
+                'content' => function($model) use ($organisations) {
+                    foreach($organisations as $id => $name) {
+                        if($id == $model->organisation_id) {
+                            return $name;
+                        }
+                    }
+                    
+                    return '';
+                }
+            ],
             [
                 'attribute' => 'parent.name',
                 'filter' => Html::activeDropDownList(
