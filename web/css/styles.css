@@ -250,3 +250,21 @@
 .price-index .child {
     padding-left: 6px;
 }
+
+.services-list td li {
+    font-size: 11px;
+}
+
+.report-services {
+    position: relative;
+    border-top: 1px solid #333;
+    border-right: 1px solid #333;
+    border-bottom: 1px solid #333;
+}
+
+.report-services:before {
+    content: "▶";
+    position: absolute;
+    right: -13px;
+    top: 18px;
+}

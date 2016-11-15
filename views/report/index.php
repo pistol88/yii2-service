@@ -58,9 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
-    <?php if(!$session) { ?>
-        <p>Выберите сессию.</p>
-    <?php } else { ?>
+<?php if($session) { ?>
     <div id="report-to-print">
         <h1>
             <?php if(isset($session->user)) { ?>Администратор <?=$session->user->name;?><?php } ?>
@@ -76,140 +74,160 @@ $this->params['breadcrumbs'][] = $this->title;
         <p><strong>Продолжительность</strong>: <?=$session->getDuration();?></p>
         <hr style="clear: both;" />
 
-        <h2>Услуги</h2>
-        <table class="table table-hover table-responsive">
-            <tr>
-                <td><strong>Сотрудник</strong></td>
-                <td><strong>Время работы</strong></td>
-                <td><strong>Заказов/Услуг</strong></td>
-                <td><strong>Выручка</strong></td>
-                <td><strong>Фикс</strong></td>
-                <td><strong>Процент</strong></td>
-                <td><strong>Штрафы</strong></td>
-                <td><strong>Зарплата</strong></td>
-                <td><strong>К выплате</strong></td>
-            </tr>
-            <?php
-            $sum = ['earnings' => '0'];
-            foreach($workers as $worker) {
-                $sum['earnings'] += $workerStat[$worker->id]['earnings'];
-                ?>
-                <tr>
-                    <td class="worker-name">
-                        <p class="staffername">
-                            <strong><a href="<?=Url::toRoute([$module->stafferProfileUrl, 'id' => $worker->id]);?>"><?=$worker->name;?></a></strong>
-                        </p>
-                        <?php if($cat = $worker->category) { ?>
-                            <p>
-                                <small>(<?=$cat->name;?>)</small>
-                            </p>
-                        <?php } ?>
-                        <?php
-                        if($workerSessions = $workerStat[$worker->id]['sessions']) {
-                            echo '<ul>';
-                            foreach($workerSessions as $workSession) {
-                                if($workSession->stop_timestamp) {
-                                    $dateStop = date('H:i', $workSession->stop_timestamp);
-                                } else {
-                                    $dateStop = '...';
-                                }
-                                echo Html::tag(
-                                    'li',
-                                    Html::a(
-                                        date('H:i', $workSession->start_timestamp).' - '.$dateStop,
-                                        ['/order/order/index', 'time_start' => $workSession->start, 'time_stop' => $workSession->stop, 'element_types' => ['pistol88\service\models\Price', 'pistol88\service\models\CustomService']]
-                                    )
-                                );
-                            }
-                            echo '</ul>';
-                        }
-                        ?>
-                    </td>
-                    <td class="work-time">
-                        <?=$workerStat[$worker->id]['time'];?>
-                    </td>
-                    <td>
-                        <?=$workerStat[$worker->id]['order_count'];?>/<?=$workerStat[$worker->id]['service_count'];?>
-                    </td>
-                    <td>
-                        <?php if($workerStat[$worker->id]['service_base_total'] != $workerStat[$worker->id]['service_total']) { ?> <s title="Базовая стоимость услуг"><small><?=$workerStat[$worker->id]['service_base_total'];?></small></s><?php } ?>
-                        <strong title="Фактически полученная выручка"><?=$workerStat[$worker->id]['service_total'];?></strong>
-                        <?=$module->currency;?>
-                    </td>
-                    <td class="fix">
-                        <?=$workerStat[$worker->id]['fix'];?>
-                    </td>
-                    <td class="persent">
-                        <?=$workerStat[$worker->id]['persent'];?>%
-                    </td>
-                    <td class="fines">
-                        <?=$workerStat[$worker->id]['fines'];?>
-                    </td>
-                    <td class="earnings">
-                        <?=round($workerStat[$worker->id]['base_earnings'], 0, PHP_ROUND_HALF_DOWN);?>
-                        <?=$module->currency;?>
-                        <?php if($bonus = $workerStat[$worker->id]['bonus']) { ?>
-                            <span class="bonus" title="Бонус">+<?=$bonus;?> <?=$module->currency;?></span>
-                        <?php } ?>
-                        <?php if($fine = $workerStat[$worker->id]['fines']) { ?>
-                            <span class="fine" title="Штраф">-<?=$fine;?> <?=$module->currency;?></span>
-                        <?php } ?>
-                    </td>
-                    <td>
-                        <p><?=round($workerStat[$worker->id]['earnings'], 0, PHP_ROUND_HALF_DOWN);?> <?=$module->currency;?></p>
-                        <?= \pistol88\staffer\widgets\AddPayment::widget([
-                            'staffer' => $worker,
-                            'paymentSum' => round($workerStat[$worker->id]['earnings'], 0, PHP_ROUND_HALF_DOWN),
-                            'sessionId' => $session->id
-                        ]); ?>
-                    </td>
-                </tr>
-            <?php } ?>
-            <tr>
-                <td align="right">Итого:</td>
-                <td><?=$session->getDuration();?></td>
-                <td><strong><?=$stat['count_order'];?>/<?=$stat['count_elements'];?></strong></td>
-                <td><strong><?=$totalEarning;?> <?=$module->currency;?></strong></td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-                <td><strong><?=round($sum['earnings'], 0, PHP_ROUND_HALF_DOWN);?> <?=$module->currency;?></strong></td>
-                <td>
-                    -
-                </td>
-            </tr>
-        </table>
+        <h2>Заказы</h2>
 
-        <?php if($shopStat['total']) { ?>
-            <h2>Витрина</h2>
-            <ul>
-                <li>Заказов: <?=$shopStat['count_order'];?></li>
-                <li>Товаров: <?=$shopStat['count_elements'];?></li>
-                <li>Сумма: <?=$shopStat['total'];?> <?=$module->currency;?></li>
-            </ul>
+        <?php $i = 0; foreach($data['orders'] as $start => $group) { $i++; ?>
+            <div class="row">
+                <div class="col-md-6 report-services">
+                    <table class="table services-list">
+                        <?php if($i == 1) { ?>
+                            <tr>
+                                <th>Заказ</th>
+                                <th>Услуги</th>
+                                <th>Промокод</th>
+                                <th>Цена</th>
+                                <th>Цена %</th>
+                                <th>В базу</th>
+                            </tr>
+                        <?php } ?>
+
+                        <?php foreach($group['orders'] as $order) { ?>
+                            <tr>
+                                <td>[<?=date('H:i', $order['timestamp']);?>] <a href="<?=Url::toRoute(['/order/order/view', 'id' => $order['id']]);?>"><i class="glyphicon glyphicon-eye-open"></i></a></td>
+                                <td>
+                                    <ul>
+                                        <?php
+                                        foreach($order['elements'] as $element) {
+                                            echo "<li>{$element['serviceName']} - {$element['price']} {$currency}x{$element['count']}</li>";
+                                        }
+                                        ?>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <?=$order['promocode'];?> 
+                                </td>
+                                <td>
+                                    <?=$order['base_price']?> <?=$currency;?>
+                                </td>
+                                <td>
+                                    <?=$order['price']?> <?=$currency;?>
+                                </td>
+                                <td <?php if($order['to_base'] != $order['price']) echo ' style="color: red;"'; ?>>
+                                    <?=$order['to_base']?> <?=$currency;?>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </table>
+                    
+                </div>
+                <div class="col-md-1">
+                    <p>Итого: <strong><?=$group['sum'];?></strong> <?=$currency;?></p>
+                </div>
+                <div class="col-md-5">
+                    <p><strong><?=round($group['base'], 2);?> <?=$currency;?> (<?=$group['persent'];?>%)</strong>, делится между <strong><?=$group['workersCount'];?></strong> сотрудниками.</p>
+                    
+                    <table class="table">
+                        <?php foreach($group['workers'] as $worker) { ?>
+                            <tr>
+                                <td><a href="<?=Url::toRoute(['/staffer/staffer/view', 'id' => $worker['id']]);?>"><?=$worker['name'];?></a><?php if(isset($worker['categoryName'])) { ?><br /><small><?=$worker['categoryName'];?></small><?php } ?></td>
+                                <td><?php if($worker['persent']) echo "$worker[persent]%"; ?></td>
+                                <td>+<strong><?=$worker['salary'];?></strong> <?=$currency;?></td>
+                                <?php if(isset($group['isLast']) && $group['isLast'] === true) { ?>
+                                    <td><?= \pistol88\staffer\widgets\AddPayment::widget([
+                                        'staffer' => $worker,
+                                        'paymentSum' => round($worker['totalSalary'], 0, PHP_ROUND_HALF_DOWN),
+                                        'sessionId' => $session->id
+                                    ]); ?></td>
+                                <?php } ?>
+                            </tr>
+                        <?php } ?>
+                    </table>
+
+                </div>
+            </div>
         <?php } ?>
-
-
     </div>
 
-        <h2>Отчёт по кассам</h2>
+    <h2>Зарплата</h2>
 
-        <?= \halumein\cashbox\widgets\ReportBalanceByPeriod::widget([
-                'dateStart' => date('Y-m-d H:i:s', $session->start_timestamp),
-                'dateStop' => $session->stop_timestamp ? date('Y-m-d H:i:s', $session->stop_timestamp) : null
-                 ])
-        ?>
+    <table class="table">
+        <tr>
+            <th>Сотрудник</th>
+            <th>Продолжительность работы</th>
+            <th>Грязные</th>
+            <th>Фикс</th>
+            <th>Штрафы</th>
+            <th>Бонусы</th>
+            <th>Чистые</th>
+            <th>К выплате</th>
+            <th>Выплата</th>
+        </tr>
+        <?php foreach($data['salary'] as $workerId => $workerData) { ?>
+            <tr>
+                <td>
+                    <p><a href="<?=Url::toRoute(['/staffer/staffer/view', 'id' => $workerId]);?>"><?=$workerData['staffer']->name;?></a></p>
+                    <?php if($cat = $workerData['staffer']->category) { ?><p><small><?=$cat->name;?></small></p><?php } ?>
+                </td>
+                <td>
+                    <?php
+                    if($workerSessions = $workerData['staffer']->getSessionsBySession($session)) {
+                        echo '<ul>';
+                        foreach($workerSessions as $workSession) {
+                            if($workSession->stop_timestamp) {
+                                $dateStop = date('H:i', $workSession->stop_timestamp);
+                            } else {
+                                $dateStop = '...';
+                            }
+                            echo Html::tag(
+                                'li',
+                                Html::a(
+                                    date('H:i', $workSession->start_timestamp).' - '.$dateStop,
+                                    ['/order/order/index', 'time_start' => $workSession->start, 'time_stop' => $workSession->stop, 'element_types' => ['pistol88\service\models\Price', 'pistol88\service\models\CustomService']]
+                                )
+                            );
+                        }
+                        echo '</ul>';
+                    }
+                    ?>
+                </td>
+                <td><?=$workerData['base_salary'];?></td>
+                <td><?php if($fix = $workerData['staffer']->fix) echo $fix; else echo '-';?></td>
+                <td><?=$workerData['fines'];?></td>
+                <td><?=$workerData['bonuses'];?></td>
+                <td><?=$workerData['salary'];?></td>
+                <td><?=$workerData['balance'];?></td>
+                <td>
+                    <?php if($workerData['balance'] > 0) { ?>
+                        <?= \pistol88\staffer\widgets\AddPayment::widget([
+                            'staffer' => $workerData['staffer'],
+                            'paymentSum' => round($workerData['balance'], 0, PHP_ROUND_HALF_DOWN),
+                            'sessionId' => $session->id
+                        ]); ?>
+                    <?php } ?>
+                </td>
+            </tr>
+        <?php } ?>
+    </table>
     
-        <h2>Отчёт по расходам</h2>
+    <h2>Отчёт по кассам</h2>
 
-        <?= \halumein\spending\widgets\ReportSpendingsByPeriod::widget([
-                'dateStart' => date('Y-m-d H:i:s', $session->start_timestamp),
-                'dateStop' => $session->stop_timestamp ? date('Y-m-d H:i:s', $session->stop_timestamp) : null
-                 ])
-        ?>
+    <?= \halumein\cashbox\widgets\ReportBalanceByPeriod::widget([
+            'dateStart' => date('Y-m-d H:i:s', $session->start_timestamp),
+            'dateStop' => $session->stop_timestamp ? date('Y-m-d H:i:s', $session->stop_timestamp) : null
+             ])
+    ?>
 
-        <h2>Рабочий день</h2>
+    <h2>Отчёт по расходам</h2>
 
-        <?=SessionGraph::widget(['workers' => $workers, 'control' => false, 'session' => $session, 'hoursCount' => $module->shiftDuration]);?>
-    <?php } ?>
+    <?= \halumein\spending\widgets\ReportSpendingsByPeriod::widget([
+            'dateStart' => date('Y-m-d H:i:s', $session->start_timestamp),
+            'dateStop' => $session->stop_timestamp ? date('Y-m-d H:i:s', $session->stop_timestamp) : null
+             ])
+    ?>
+
+    <h2>Рабочий день</h2>
+
+    <?=SessionGraph::widget(['workers' => $workers, 'control' => false, 'session' => $session, 'hoursCount' => $module->shiftDuration]);?>
+    
+<?php } ?>
 </div>

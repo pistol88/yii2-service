@@ -94,6 +94,7 @@ pistol88.service = {
 		$('.pistol88-cart-informer').find('.pistol88-cart-price').find("s").remove();
         $('.service-order-net .header .back').click();
         $('#service-ident').val('').focus().select();
+        $('#order-is_assigment').val(0);
         $('#order-payment_type_id').val(1);
         $('.promo-code-enter input[type=text]').val('');
         $('.promo-code-discount').hide();

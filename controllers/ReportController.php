@@ -10,6 +10,7 @@ use pistol88\order\models\Order;
 use pistol88\order\models\PaymentType;
 use pistol88\worksess\models\Session;
 use yii\db\Query;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -42,232 +43,34 @@ class ReportController extends Controller
             $session = Session::findOne($sessionId);
         }
         
-        $stat = null;
-        $workerStat = [];
-        $workers = [];
-        $shopStat = [];
-        $sessionId = 0;
-
-        $totalEarning = 0;
-        
         if($session) {
-            if(yii::$app->has('organization') && $organization = yii::$app->organization->get()) {
-                $shopStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop, ['o.organization_id' => $organization->id]);
-                $stat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop, ['o.organization_id' => $organization->id]);
+            $data = yii::$app->service->getReportBySession($session);
+
+            if($session) {
+                $date = date('Y-m-d', $session->start_timestamp);
             } else {
-                $shopStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\shop\models\Product', $session->start, $session->stop);
-                $stat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\service\models\CustomService', 'pistol88\service\models\Price'], $session->start, $session->stop);
+                $date = date('Y-m-d');
             }
 
-            $sessionId = $session->id;
-            $workers = $session->users;
-            $workersCount = yii::$app->worksess->getWorkersCount($session);
-            $orders = yii::$app->order->getOrdersByDatePeriod($session->start, $session->stop, ['order.organization_id' => $organization->id]);
-            foreach($workers as $worker) {
-                if(!isset($workerStat[$worker->id]['fines'])) {
-                    //Задан ли индивидуальный процент
-                    if(empty($worker->persent)) {
-                        if($worker->pay_type == 'base') {
-                            $basePersent = $this->module->getWorkerPersent($session);
-                        } else {
-                            $basePersent = 0;
-                        }
-                    } else {
-                        $basePersent = $worker->persent;
-                    }
-                    
-                    $workerStat[$worker->id]['fix'] = (int)$worker->fix;
-                    $workerStat[$worker->id]['time'] = yii::$app->worksess->getUserWorkTimeBySession($worker, $session);
-                    $workerStat[$worker->id]['base_earnings'] = (int)$worker->fix;
-                    $workerStat[$worker->id]['earnings'] = (int)$worker->fix;
-                    $workerStat[$worker->id]['fines'] = 0; //штрафы
-                    $workerStat[$worker->id]['payment'] = Payment::findOne(['session_id' => $session->id, 'worker_id' => $worker->id]);
-                    $workerStat[$worker->id]['payments'] = Payment::find()->where(['session_id' => $session->id, 'worker_id' => $worker->id])->all();
-                    $workerStat[$worker->id]['persent'] = $basePersent;
-                    $workerStat[$worker->id]['sessions'] = $worker->getSessionsBySessions($session);
-                    $workerStat[$worker->id]['service_count'] = 0; //Выполнено услуг
-                    $workerStat[$worker->id]['order_count'] = 0; //Кол-во заказов
-                    $workerStat[$worker->id]['service_total'] = 0; //Общая сумма выручки
-                    $workerStat[$worker->id]['service_base_total'] = 0; //Общая сумма выручки без учета скидок
-                    $workerStat[$worker->id]['bonus'] = 0;
-                }
-            }
-            //Распределяем деньги от каждого заказа между сотрудниками
-            foreach($orders as $order) {
-                $orderWorkers = [];
-                $orderCustomerCount = 0;
-
-
-                // включение нового метода распределения зарплаты
-                if ($this->module->splitOrderPerfome) {
-
-                    $staffersToService = Yii::$app->service->getStafferIdsByServiceId($order->id);
-                    // для новых заказаов созданных с разделением по работникам
-                    if ($staffersToService) {
-                        foreach ($staffersToService as $key => $stafferToService) {
-                            $stafferModel = $stafferToService->staffer_model;
-                            $stafferModel = new $stafferModel();
-                            $worker =  $stafferModel::findOne($stafferToService->staffer_id);
-                            $orderWorkers[] = $worker;
-                            if(empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds)) {
-                                $orderCustomerCount++;
-                            }
-                        }
-                    // для отображения отчёта по старым заказам, когда делились между всеми работниками на смене
-                    } else {
-                        foreach($workers as $worker) {
-                            if($worker->hasWork(strtotime($order->date))) {
-                                $orderWorkers[] = $worker;
-                                if(empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds)) {
-                                    $orderCustomerCount++;
-                                }
-                            }
-                        }
-                    }
-                // вариант распределения зарплаты по заказам между всеми работкникам
-                } else {
-                    foreach($workers as $worker) {
-                        if($worker->hasWork(strtotime($order->date))) {
-                            $orderWorkers[] = $worker;
-                            if(empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds)) {
-                                $orderCustomerCount++;
-                            }
-                        }
-                    }
-                }
-                
-                $hasServiceElements = [];
-                
-                $elements = [];
-                
-                foreach($order->elements as $element) {
-                    $elementModel = $element->getModel();
-                    
-                    if(in_array($elementModel::className(), ['pistol88\service\models\CustomService', 'pistol88\service\models\Price'])) {
-                        if(!isset($elements[$elementModel::className()])) {
-                            $elements[$elementModel::className()]['service_count'] = 0;
-                            $elements[$elementModel::className()]['service_total'] = 0;
-                            $elements[$elementModel::className()]['service_base_total'] = 0;
-                        }
-                        
-                        $total = $element->price*$element->count;
-                        
-                        $elementEvent = new Element(['cost' => $total]);
-
-                        $module = $this->module;
-                        $this->module->trigger($module::EARNING_ELEMENT_CALCULATE, $elementEvent);
-                        $total = $elementEvent->cost;
-
-                        $totalEarning += $total;
-                        
-                        $elements[$elementModel::className()]['service_count'] += $element->count;
-                        $elements[$elementModel::className()]['service_total'] += $total;
-                        $elements[$elementModel::className()]['service_base_total'] += $element->base_price*$element->count;
-                    }
-                }
-                
-                foreach($elements as $element) {
-                    foreach($orderWorkers as $worker) {
-                        if(!isset($hasServiceElements[$worker->id])) {
-                            $workerStat[$worker->id]['order_count'] += 1;
-                        }
-                        $hasServiceElements[$worker->id] = true;
-                        $workerStat[$worker->id]['service_count'] += $element['service_count'];
-                        $workerStat[$worker->id]['service_total'] += $element['service_total'];
-                        $workerStat[$worker->id]['service_base_total'] += $element['service_total'];
-                        
-                        if($workerStat[$worker->id]['persent']) {
-                            $persent = round(($workerStat[$worker->id]['persent']/100), 2);
-                            $elementCost = $element['service_total'];
-                            //Процент, выдааемый сотруднику в случае применения скидки
-                            if($promoDivision = $this->module->promoDivision) {
-                                $dif = $element['service_base_total']-$element['service_total'];
-                                if($dif > 0) {
-                                    $promoPersent = ($dif*100)/$element['service_base_total'];
-                                    foreach($promoDivision as $model => $params) {
-                                        if($elementModel::className() == $model) {
-                                            foreach($params as $k => $v) {
-                                                if($promoPersent > $k) {
-                                                    $elementCost = $element['service_base_total'];
-                                                    $elementCost = $elementCost*($v/100);
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            if((empty($this->module->workerCategoryIds) | in_array($worker->category_id, $this->module->workerCategoryIds))) {
-                                $earning = ($elementCost*$persent)/$orderCustomerCount;
-                            } else {
-                                $earning = ($elementCost*$persent);
-                            }
-                            $workerStat[$worker->id]['earnings'] += $earning;
-                            $workerStat[$worker->id]['base_earnings'] += $earning;
-                        }
-                    }
-                }
-            }
-            //Костомные начисления через триггер
-            foreach($workers as $worker) {
-                $earning = $workerStat[$worker->id]['earnings'];
-                $earningsEvent = new Earnings(
-                    [
-                        'worker' => $worker,
-                        'total' => $stat['total'],
-                        'userTotal' => $workerStat[$worker->id]['service_total'],
-                        'workersCount' => $workersCount,
-                        'earning' => $earning,
-                    ]
-                );
-
-                $module = $this->module;
-                $this->module->trigger($module::EVENT_EARNINGS, $earningsEvent);
-                $earning = $earningsEvent->earning;
-                
-                $fines = $worker->getFinesByDatePeriod($session->start, $session->stop)->sum('sum');
-                $workerStat[$worker->id]['fines'] += $fines;
-                $workerStat[$worker->id]['earnings'] = $earning;
-                $workerStat[$worker->id]['earnings'] -= $fines;
-                $workerStat[$worker->id]['base_earnings'] = $earning;
-                $workerStat[$worker->id]['base_earnings'] -= $fines;
-                if($earningsEvent->bonus) {
-                    $workerStat[$worker->id]['bonus'] = $earningsEvent->bonus;
-                }
-                if($earningsEvent->fine) {
-                    $workerStat[$worker->id]['fine'] = $earningsEvent->fine;
-                }
-                $paymentSum = Payment::find()->where(['session_id' => $session->id, 'worker_id' => $worker->id])->sum('sum');
-                $workerStat[$worker->id]['earnings'] -= $paymentSum;
-            }
-            $stop = $session->stop;
-            if(!$stop) {
-                $stop = date('Y-m-d H:i:s');
-            }
-        }
-        
-        $workerPersent = $this->module->workerPersent;
-        
-        if($session) {
-            $date = date('Y-m-d', $session->start_timestamp);
+            $sessions = yii::$app->worksess->getSessions(null, $date);
+            
+            return $this->render('index', [
+                'data' => $data,
+                'date' => $date,
+                'session' => $session,
+                'sessions' => $sessions,
+                'sessionId' => $sessionId,
+                'module' => $this->module,
+                'currency' => $this->module->currency,
+            ]);
         } else {
-            $date = date('Y-m-d');
+            return $this->render('index', [
+                'sessions' => $sessions,
+                'session' => false,
+                'module' => $this->module,
+            ]);
         }
-        $sessions = yii::$app->worksess->getSessions(null, $date);
-        
-        return $this->render('index', [
-            'totalEarning' => $totalEarning,
-            'shopStat' => $shopStat,
-            'date' => $date,
-            'session' => $session,
-            'sessions' => $sessions,
-            'sessionId' => $sessionId,
-            'stat' => $stat,
-            'workerPersent' => $workerPersent,
-            'workers' => $workers,
-            'workerStat' => $workerStat,
-            'module' => $this->module,
-        ]);
+
     }
     
     public function actionGetSessions()
@@ -282,6 +85,7 @@ class ReportController extends Controller
                 return html::tag('li', Html::a(date('d.m.Y H:i:s', $item->start_timestamp) . ' ' . $item->shiftName , ['/service/report/index', 'sessionId' => $item->id]));
             }]);
         }
+        
         die(json_encode($json));
     }
 }

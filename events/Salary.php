@@ -3,14 +3,12 @@ namespace pistol88\service\events;
 
 use yii\base\Event;
 
-class Earnings extends Event
+class Salary extends Event
 {
+    public $session;
     public $worker;
-    public $persent;
     public $total;
-    public $userTotal;
-    public $earning;
-    public $workersCount;
+    public $salary;
     public $bonus = 0;
     public $fine = 0;
 }

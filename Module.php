@@ -7,8 +7,7 @@ class Module extends \yii\base\Module
 {
     public $adminRoles = ['admin', 'superadmin'];
     public $workers = null;
-    public $workerPersent = 30;
-    public $workerCategoryIds = [];
+
     public $persentOdPromocode = 100; //Процент выплат сотрудникам от заказов с промокодом
     public $currency = 'руб.';
     public $mainIdent = 'Номер и марка автомобиля';
@@ -20,8 +19,6 @@ class Module extends \yii\base\Module
     public $propertyStatuses = ['active' => 'Активно', 'unactive' => 'Неактивно'];
     public $propertyName = 'Автомобили';
     public $identName = 'Номер авто';
-    public $promoDivision = []; //'model' => ['Скидка >' => 'процент от стоимости']
-    public $splitOrderPerfome = false; // возможность исполнения заказа отдельными работниками
     public $stafferModel = 'pistol88\staffer\models\Staffer'; // модель работников для назначения на исполнение заказа
     public $menu = [
             [
@@ -53,33 +50,9 @@ class Module extends \yii\base\Module
                 'url' => ['/service/complex/index'],
             ],
         ];
-    
-    const EVENT_EARNINGS = 'earnings';
-    const EARNING_ELEMENT_CALCULATE = 'earning_element_calculate';
 	
     public function init()
     {
         parent::init();
-    }
-    
-    public function getWorkersList()
-    {
-        if(is_callable($this->workers)) {
-            $values = $this->workers;
-            
-            return $values();
-        }
-        
-        return [];
-    }
-
-    public function getWorkerPersent($session)
-    {
-        if ( is_callable($this->workerPersent)) {
-            $workerPercent = $this->workerPersent;
-            return  $workerPercent($session);
-        } else {
-            return $this->workerPersent;
-        } 
     }
 }

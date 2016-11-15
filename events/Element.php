@@ -5,5 +5,6 @@ use yii\base\Event;
 
 class Element extends Event
 {
+    public $group;
     public $cost;
 }
