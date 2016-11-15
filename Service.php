@@ -263,9 +263,9 @@ class Service extends Component
         foreach($workers as $worker) {
             $dataSalary[$worker->id] = [];
             $dataSalary[$worker->id]['staffer'] = $worker;
-            $dataSalary[$worker->id]['base_salary'] = $baseSalary[$worker['id']]; //Грязная ЗП
-            $dataSalary[$worker->id]['balance'] = $balances[$worker['id']]; //Остаток по выплате ЗП
-            $dataSalary[$worker->id]['fines'] = $fines[$worker['id']]; //Штрафы
+            $dataSalary[$worker->id]['base_salary'] = round($baseSalary[$worker['id']], 2); //Грязная ЗП
+            $dataSalary[$worker->id]['balance'] = round($balances[$worker['id']], 2); //Остаток по выплате ЗП
+            $dataSalary[$worker->id]['fines'] = round($fines[$worker['id']], 2); //Штрафы
             $dataSalary[$worker->id]['bonuses'] = 0; //Бонусы
 
             $workerSalary = $salary[$worker['id']]; //Чистая ЗП без изменчивости
@@ -286,7 +286,7 @@ class Service extends Component
             $dataSalary[$worker->id]['fines'] += $salaryEvent->fine;
             $dataSalary[$worker->id]['bonuses'] += $salaryEvent->bonus;
             
-            $dataSalary[$worker->id]['salary'] = $workerSalary; //Чистая ЗП (со штрафами и бонусами)
+            $dataSalary[$worker->id]['salary'] = round($workerSalary, 2); //Чистая ЗП (со штрафами и бонусами)
         }
         
         return ['orders' => $data, 'salary' => $dataSalary];

@@ -124,25 +124,26 @@ $this->params['breadcrumbs'][] = $this->title;
                     <p>Итого: <strong><?=$group['sum'];?></strong> <?=$currency;?></p>
                 </div>
                 <div class="col-md-5">
-                    <p><strong><?=round($group['base'], 2);?> <?=$currency;?> (<?=$group['persent'];?>%)</strong>, делится между <strong><?=$group['workersCount'];?></strong> сотрудниками.</p>
-                    
-                    <table class="table">
-                        <?php foreach($group['workers'] as $worker) { ?>
-                            <tr>
-                                <td><a href="<?=Url::toRoute(['/staffer/staffer/view', 'id' => $worker['id']]);?>"><?=$worker['name'];?></a><?php if(isset($worker['categoryName'])) { ?><br /><small><?=$worker['categoryName'];?></small><?php } ?></td>
-                                <td><?php if($worker['persent']) echo "$worker[persent]%"; ?></td>
-                                <td>+<strong><?=$worker['salary'];?></strong> <?=$currency;?></td>
-                                <?php if(isset($group['isLast']) && $group['isLast'] === true) { ?>
-                                    <td><?= \pistol88\staffer\widgets\AddPayment::widget([
-                                        'staffer' => $worker,
-                                        'paymentSum' => round($worker['totalSalary'], 0, PHP_ROUND_HALF_DOWN),
-                                        'sessionId' => $session->id
-                                    ]); ?></td>
-                                <?php } ?>
-                            </tr>
-                        <?php } ?>
-                    </table>
-
+                    <div style="max-height: 250px; overflow-y: scroll;">
+                        <p><strong><?=round($group['base'], 2);?> <?=$currency;?> (<?=$group['persent'];?>%)</strong>, делится между <strong><?=$group['workersCount'];?></strong> сотрудниками.</p>
+                        
+                        <table class="table">
+                            <?php foreach($group['workers'] as $worker) { ?>
+                                <tr>
+                                    <td><a href="<?=Url::toRoute(['/staffer/staffer/view', 'id' => $worker['id']]);?>"><?=$worker['name'];?></a><?php if(isset($worker['categoryName'])) { ?><br /><small><?=$worker['categoryName'];?></small><?php } ?></td>
+                                    <td><?php if($worker['persent']) echo "$worker[persent]%"; ?></td>
+                                    <td>+<strong><?=$worker['salary'];?></strong> <?=$currency;?></td>
+                                    <?php if(isset($group['isLast']) && $group['isLast'] === true) { ?>
+                                        <td><?= \pistol88\staffer\widgets\AddPayment::widget([
+                                            'staffer' => $worker,
+                                            'paymentSum' => round($worker['totalSalary'], 0, PHP_ROUND_HALF_DOWN),
+                                            'sessionId' => $session->id
+                                        ]); ?></td>
+                                    <?php } ?>
+                                </tr>
+                            <?php } ?>
+                        </table>
+                    </div>
                 </div>
             </div>
         <?php } ?>
