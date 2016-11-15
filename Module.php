@@ -19,6 +19,7 @@ class Module extends \yii\base\Module
     public $propertyStatuses = ['active' => 'Активно', 'unactive' => 'Неактивно'];
     public $propertyName = 'Автомобили';
     public $identName = 'Номер авто';
+    public $splitOrderPerfome;
     public $stafferModel = 'pistol88\staffer\models\Staffer'; // модель работников для назначения на исполнение заказа
     public $menu = [
             [
