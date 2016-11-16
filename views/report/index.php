@@ -132,7 +132,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <tr>
                                     <td><a href="<?=Url::toRoute(['/staffer/staffer/view', 'id' => $worker['id']]);?>"><?=$worker['name'];?></a><?php if(isset($worker['categoryName'])) { ?><br /><small><?=$worker['categoryName'];?></small><?php } ?></td>
                                     <td><?php if($worker['persent']) echo "$worker[persent]%"; ?></td>
-                                    <td>+<strong><?=$worker['salary'];?></strong> <?=$currency;?></td>
+                                    <td>+<strong><?=round($worker['salary'], 2);?></strong> <?=$currency;?></td>
                                     <?php if(isset($group['isLast']) && $group['isLast'] === true) { ?>
                                         <td><?= \pistol88\staffer\widgets\AddPayment::widget([
                                             'staffer' => $worker,
