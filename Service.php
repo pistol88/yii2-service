@@ -54,7 +54,7 @@ class Service extends Component
         return $model->save();
     }
 
-    public function getStafferIdsByServiceId($serviceId)
+    public function getStafferByServiceId($serviceId)
     {
         return StafferToService::find()->where(['service_id' => $serviceId])->all();
     }
@@ -86,8 +86,10 @@ class Service extends Component
             $workersCount = 0;
             
             //Присваиваем сотрудников заказу
-            if ($this->splitOrderPerfome && $staffersToService = $this->getStafferIdsByServiceId($order->id)) {
-                $orderWorkers = $staffersToService;
+            if ($this->splitOrderPerfome && $staffersToService = $this->getStafferByServiceId($order->id)) {
+                $stafferModel = $staffer->staffer_model;
+                $stafferModel = new $stafferModel();
+                $orderWorkers = $stafferModel::find()->where(['id' => ArrayHelper::getColumn($staffersToService, 'id')])->all();
             } else {
                 $orderWorkers = $workers;
             }
