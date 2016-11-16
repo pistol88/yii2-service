@@ -87,9 +87,13 @@ class Service extends Component
             
             //Присваиваем сотрудников заказу
             if ($this->splitOrderPerfome && $staffersToService = $this->getStafferByServiceId($order->id)) {
-                $stafferModel = $staffer->staffer_model;
-                $stafferModel = new $stafferModel();
-                $orderWorkers = $stafferModel::find()->where(['id' => ArrayHelper::getColumn($staffersToService, 'id')])->all();
+                // так как модель workera у staffer'а может быть любой - придётся пробежаться по всем
+                foreach ($staffersToService as $key => $staffer) {
+                    $stafferModel = $staffer->staffer_model;
+                    $stafferModel = new $stafferModel();
+                    $worker =  $stafferModel::findOne($staffer->staffer_id);
+                    $orderWorkers[] = $worker;
+                }
             } else {
                 $orderWorkers = $workers;
             }
