@@ -98,16 +98,18 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                     <?php if (Yii::$app->service->splitOrderPerfome) {
                         if (isset(yii::$app->worksess->soon()->users)) {
                             $staffers = yii::$app->worksess->soon()->getUsers();
+                            $staffers = $staffers->all();
                         } else {
                             $staffers = null;
                         }
                     } else {
                         $staffers = null;
-                    } ?>
+                    }
+                    ?>
 
                     <?= \pistol88\order\widgets\OrderFormLight::widget([
                             'useAjax' => true,
-                            'staffer' => $staffers->all()
+                            'staffer' => $staffers
                         ]);
                     ?>
                 </div>
