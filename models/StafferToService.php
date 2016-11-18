@@ -13,7 +13,7 @@ use Yii;
  * @property string $service_model
  * @property integer $service_id
  * @property integer $session_id
- * @property string $date
+ * @property string $datetime
  */
 class StafferToService extends \yii\db\ActiveRecord
 {
@@ -33,7 +33,7 @@ class StafferToService extends \yii\db\ActiveRecord
         return [
             [['staffer_id', 'service_id'], 'required'],
             [['staffer_id', 'service_id', 'session_id'], 'integer'],
-            [['date'], 'safe'],
+            [['datetime'], 'safe'],
             [['staffer_model', 'service_model'], 'string', 'max' => 255],
         ];
     }
@@ -50,7 +50,7 @@ class StafferToService extends \yii\db\ActiveRecord
             'service_model' => 'Модель сервиса',
             'service_id' => 'ID сервиса',
             'session_id' => 'ID сессии',
-            'date' => 'Дата',
+            'datetime' => 'Дата',
         ];
     }
 

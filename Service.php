@@ -31,24 +31,18 @@ class Service extends Component
     * staffer_model и service_model - classname сооствествующих моделей
     */
 
-    public function addStafferToService($stafferId, $serviceId, $params = null)
+    public function addStafferToService($stafferId, $serviceId, $stafferModel, $serviceModel, $sessionId = null)
     {
         $model = new StafferToService();
 
         $model->staffer_id = $stafferId;
         $model->service_id = $serviceId;
-        $model->date = date('Y-m-d H:i:s');
+        $model->staffer_model = $stafferModel;
+        $model->service_model = $serviceModel;
+        $model->datetime = date('Y-m-d H:i:s');
 
-        if (isset($params['stafferModel'])) {
-            $model->staffer_model = $params['stafferModel'];
-        }
-
-        if (isset($params['serviceModel'])) {
-            $model->service_model = $params['serviceModel'];
-        }
-
-        if (isset($params['sessionId'])) {
-            $model->session_id = $params['sessionId'];
+        if($sessionId) {
+            $model->session_id = $sessionId;
         }
 
         return $model->save();
