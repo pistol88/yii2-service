@@ -7,7 +7,10 @@ use pistol88\service\models\Category;
 $categories = Category::find()->where("id != :id AND (parent_id = 0 OR parent_id IS NULL)", [':id' => (int)$model->id])->all();
 $categories = ArrayHelper::map($categories, 'id', 'name');
 $categories['0'] = 'Нет';
-$categories = array_reverse($categories);
+if(!$model->parent_id) {
+    $model->parent_id = 0;
+}
+//$categories = array_reverse($categories);
 ?>
 
 <div class="category-form">

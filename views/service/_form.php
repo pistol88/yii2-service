@@ -13,7 +13,12 @@ EOD;
 $this->registerJs($script);
 $services = Service::find()->where("id != :id AND (parent_id = 0 OR parent_id IS NULL)", [':id' => (int)$model->id])->all();
 $services = ArrayHelper::map($services, 'id', 'name');
-$parentServices = array_merge(['0' => 'Нет'], $services);
+$parentServices = $services;
+$parentServices[0] = 'Нет';
+
+if(!$model->parent_id) {
+    $model->parent_id = 0;
+}
 ?>
 
 <div class="service-form">
