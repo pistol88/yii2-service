@@ -48,19 +48,29 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
         </div>
     </div>
 
+    <div class="summary-slide" style="display: none;">
+        <div class="total col-md-4">
+            <?= CartInformer::widget(['htmlTag' => 'span', 'text' => '{c} на {p}']); ?>
+        </div>
+        <div class="total col-md-4">
+            <button class="btn btn-success">Создать заказ</button>
+        </div>
+    </div>
+    
     <div class="row">
-        <div class="col-lg-9 col-md-8  col-sm-12">
+        <div class="col-lg-9 col-md-8  col-sm-12 service-list">
             <?=$this->render('order-type/'.$type, ['categories' => $categories, 'services' => $services, 'complexes' => $complexes, 'prices' => $prices]);?>
         </div>
         <div class="col-lg-3 col-md-4 col-sm-12">
             <div class="service-order">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 other-services">
                         <?php //BuyByCode::widget();?>
                         <small>
-                            <a data-toggle="modal" data-target="#calculate-service" href="#calculate-service" class="choice-service" title="Вычисляемые услуги">Калькулятор <i class="glyphicon glyphicon-plus"></i> </a>
-                            <a href="#productsModal" data-toggle="modal" data-target="#productsModal" class="choice-product  ">Витрина <span class="glyphicon glyphicon-plus add-option"></span></a>
-                            <a data-toggle="modal" data-target="#custom-service" href="#custom-service" class="choice-service" title="Другое">Другое <i class="glyphicon glyphicon-plus"></i> </a>
+                            <a href="#productsModal" data-toggle="modal" data-target="#productsModal" class="btn btn-default choice-product  ">Витрина <span class="glyphicon glyphicon-plus add-option"></span></a>
+                             <a data-toggle="modal" data-target="#custom-service" href="#custom-service" class="btn btn-default choice-service" title="Другое">Другое <i class="glyphicon glyphicon-plus"></i> </a>
+                            <a data-toggle="modal" data-target="#calculate-service" href="#calculate-service" class="btn btn-default choice-service" title="Вычисляемые услуги">Калькулятор <i class="glyphicon glyphicon-plus"></i> </a>
+                           
                         </small>
                     </div>
                 </div>
@@ -78,7 +88,7 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                 <div class="row">
                     <div class="col-md-7">
                         <div class="total">
-                            <?= CartInformer::widget(['htmlTag' => 'span', 'offerUrl' => '/?r=cart', 'text' => '{c} на {p}']); ?>
+                            <?= CartInformer::widget(['htmlTag' => 'span', 'text' => '{c} на {p}']); ?>
                         </div>
                     </div>
                     <div class="col-md-5">

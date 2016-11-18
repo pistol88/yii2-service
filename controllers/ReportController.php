@@ -43,6 +43,8 @@ class ReportController extends Controller
             $session = Session::findOne($sessionId);
         }
         
+        $sessions = yii::$app->worksess->getSessions(null, $date);
+        
         if($session) {
             $data = yii::$app->service->getReportBySession($session);
 
@@ -51,8 +53,6 @@ class ReportController extends Controller
             } else {
                 $date = date('Y-m-d');
             }
-
-            $sessions = yii::$app->worksess->getSessions(null, $date);
             
             return $this->render('index', [
                 'data' => $data,

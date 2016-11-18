@@ -10,7 +10,7 @@ class Module extends \yii\base\Module
 
     public $persentOdPromocode = 100; //Процент выплат сотрудникам от заказов с промокодом
     public $currency = 'руб.';
-    public $mainIdent = 'Номер и марка автомобиля';
+    public $mainIdent = 'Номер автомобиля с буквами';
     public $mainIdentFieldSelector = '#fieldvalue-value-2';
     public $cache = true;
     public $cachePeriod = 7000;

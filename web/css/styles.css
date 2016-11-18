@@ -1,5 +1,4 @@
 .service-menu {
-    margin-bottom: 30px;
     height: 50px;
 }
 
@@ -267,4 +266,10 @@
     position: absolute;
     right: -13px;
     top: 18px;
+}
+
+.other-services a {
+    text-align: left;
+    font-size: 17px;
+    display: block;
 }

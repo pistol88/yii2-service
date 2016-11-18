@@ -71,7 +71,6 @@ class Service extends Component
 
         $data = []; //Данные по заказам
         $salary = []; //Зарплаты
-        $balances = []; //Остаток по выплатам
         $fines = []; //Штрафы
         $baseSalary = []; //Базовая зарплата без штрафов и бонусов
 
@@ -191,6 +190,9 @@ class Service extends Component
                         if(!$customToBase) {
                             $order['to_base'] += $price;
                         } else {
+                            $elementEvent = new Element(['cost' => $customToBase, 'group' => $group]);
+                            $this->trigger(self::EVENT_SALARY_ELEMENT_CALCULATE, $elementEvent);
+                            $customToBase = $elementEvent->cost;
                             $order['to_base'] += $customToBase;
                         }
                         
@@ -215,8 +217,9 @@ class Service extends Component
                             //Исполнитель
                             if(in_array($worker['category_id'], $this->workerCategoryIds)) {
                                 $group['persent'] = $group['persent']-$worker['persent'];
+                                $group['workersCount']--;
                             }
-                            $workerSalary = $group['base']*($worker['persent']/100);
+                            $workerSalary = $group['sum']*($worker['persent']/100);
                             $group['workers'][$key]['salary'] = $workerSalary;
                         }
                         //С выручки
@@ -227,6 +230,9 @@ class Service extends Component
                         }
                     }
                 }
+                
+                //Перерасчитываем базу
+                $group['base'] = $group['sum']*($group['persent']/100);
                 
                 //Начисляем ЗП обычным сотрудникам
                 foreach($group['workers'] as $key => $worker) {
@@ -258,19 +264,12 @@ class Service extends Component
                 $salary[$worker->id] += $fix;
             }
         }
-
-        //Узнаем, сколько уже выплатили
-        foreach($salary as $workerId => $workerSalary) {
-            $paymentSum = Payment::find()->where(['session_id' => $session->id, 'worker_id' => $workerId])->sum('sum');
-            $balances[$workerId] = $workerSalary-$paymentSum;
-        }
         
         $dataSalary = [];
         foreach($workers as $worker) {
             $dataSalary[$worker->id] = [];
             $dataSalary[$worker->id]['staffer'] = $worker;
             $dataSalary[$worker->id]['base_salary'] = round($baseSalary[$worker['id']], 2); //Грязная ЗП
-            $dataSalary[$worker->id]['balance'] = round($balances[$worker['id']], 2); //Остаток по выплате ЗП
             $dataSalary[$worker->id]['fines'] = round($fines[$worker['id']], 2); //Штрафы
             $dataSalary[$worker->id]['bonuses'] = 0; //Бонусы
 
@@ -291,10 +290,15 @@ class Service extends Component
             
             $dataSalary[$worker->id]['fines'] += $salaryEvent->fine;
             $dataSalary[$worker->id]['bonuses'] += $salaryEvent->bonus;
+
+            $workerSalary = round($workerSalary, 1, PHP_ROUND_HALF_DOWN);
             
-            $dataSalary[$worker->id]['salary'] = round($workerSalary, 2); //Чистая ЗП (со штрафами и бонусами)
+            $dataSalary[$worker->id]['salary'] = $workerSalary; //Чистая ЗП (со штрафами и бонусами)
+            
+            $paymentSum = Payment::find()->where(['session_id' => $session->id, 'worker_id' => $worker['id']])->sum('sum');
+            $dataSalary[$worker->id]['balance'] = $workerSalary-$paymentSum;
         }
-        
+
         return ['orders' => $data, 'salary' => $dataSalary];
     }
     
