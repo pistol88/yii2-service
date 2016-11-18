@@ -16,10 +16,10 @@ class Service extends Component
     public $workers = null;
     public $promoDivision = []; //'model' => ['Скидка >' => 'процент от стоимости']
     public $splitOrderPerfome = false; // возможность исполнения заказа отдельными работниками
-    
+
     const EVENT_SALARY = 'salary';
     const EVENT_SALARY_ELEMENT_CALCULATE = 'salary_element_calculate';
-    
+
     public function getCalculateWidgets()
     {
         return [
@@ -56,7 +56,7 @@ class Service extends Component
     public function getReportBySession($session)
     {
         $workers = $session->getUsers()->orderBy('category_id')->all();
-        
+
         if(yii::$app->has('organization') && $organization = yii::$app->organization->get()) {
             $orders = yii::$app->order->setOrganization($organization->id)->getOrdersByDatePeriod($session->start, $session->stop);
         } else {
@@ -69,15 +69,16 @@ class Service extends Component
         $baseSalary = []; //Базовая зарплата без штрафов и бонусов
 
         $sessionTotal = 0; //Сумарный оборот сегодня
-        
+
         $prevOrderWorkers = 0;
         $prevGroup = false;
-        
+
         //Формируем группы, исходя из кол-ва сотрудников
         foreach($orders as $order) {
             $groupWorkers = [];
+            $orderWorkers = [];
             $workersCount = 0;
-            
+
             //Присваиваем сотрудников заказу
             if ($this->splitOrderPerfome && $staffersToService = $this->getStafferByServiceId($order->id)) {
                 // так как модель workera у staffer'а может быть любой - придётся пробежаться по всем
@@ -90,7 +91,7 @@ class Service extends Component
             } else {
                 $orderWorkers = $workers;
             }
-            
+
             foreach($orderWorkers as $worker) {
                 if($worker->hasWork($order->timestamp)) {
                     if($worker->category) {
@@ -98,26 +99,26 @@ class Service extends Component
                     } else {
                         $workerCategoryName = '';
                     }
-                    
+
                     $worker =  ArrayHelper::toArray($worker);
                     $worker['categoryName'] = $workerCategoryName;
                     $worker['salary'] = 0;
 
                     $groupWorkers[] = $worker;
-                    
+
                     if(empty($this->workerCategoryIds) | in_array($worker['category_id'], $this->workerCategoryIds)) {
                         $workersCount++;
                     }
                 }
             }
 
-            if(!$prevGroup | $prevOrderWorkers != $workersCount) {                
+            if(!$prevGroup | $prevOrderWorkers != $workersCount) {
                 $data[$order->timestamp] = [
                     'workers' => $groupWorkers,
                     'workersCount' => $workersCount,
                     'orders' => [$order],
                 ];
-                
+
                 if(!$prevGroup) {
                     $data[$order->timestamp]['name'] = $workersCount;
                 } elseif($prevOrderWorkers > $workersCount) {
@@ -125,15 +126,14 @@ class Service extends Component
                 } else {
                     $data[$order->timestamp]['name'] = '-1';
                 }
-                
+
                 $prevGroup = $order->timestamp;
             } else {
                 $data[$prevGroup]['orders'][] = $order;
             }
-            
+
             $prevOrderWorkers = $workersCount;
         }
-        
         //Проходимся по группам, делаем расчеты ЗП
         foreach($data as &$group) {
             if($group['orders']) {
@@ -149,21 +149,21 @@ class Service extends Component
 
                         $basePrice = 0;
                         $price = 0;
-                        
+
                         foreach($elements->all() as $element) {
                             $serviceName = $element->getModel()->name;
                             $element = ArrayHelper::toArray($element);
                             $element['serviceName'] = $serviceName;
                             $order['elements'][] = $element;
-                            
+
                             $basePrice += $element['base_price']*$element['count'];
                             $price += $element['price']*$element['count'];
                         }
-                        
+
                         $elementEvent = new Element(['cost' => $price, 'group' => $group]);
                         $this->trigger(self::EVENT_SALARY_ELEMENT_CALCULATE, $elementEvent);
                         $price = $elementEvent->cost;
-                        
+
                         $customToBase = false;
                         //Процент, выдааемый сотруднику в случае применения скидки
                         if($promoDivision = $this->promoDivision) {
@@ -180,7 +180,7 @@ class Service extends Component
                                 }
                             }
                         }
-                        
+
                         if(!$customToBase) {
                             $order['to_base'] += $price;
                         } else {
@@ -189,7 +189,7 @@ class Service extends Component
                             $customToBase = $elementEvent->cost;
                             $order['to_base'] += $customToBase;
                         }
-                        
+
                         $order['base_price'] += $basePrice;
                         $order['price'] += $price;
                         $sessionTotal += $price;
@@ -198,11 +198,11 @@ class Service extends Component
                         unset($group['orders'][$key]);
                     }
                 }
-                
+
                 //Назначаем процент и базу
                 $group['persent'] = $this->getWorkerPersent($group);
                 $group['base'] = $group['sum']*($group['persent']/100);
-                
+
                 //Начисляем ЗП сотрудникам с индивидуальным процентом
                 foreach($group['workers'] as $key => $worker) {
                     if($worker['persent']) {
@@ -224,10 +224,10 @@ class Service extends Component
                         }
                     }
                 }
-                
+
                 //Перерасчитываем базу
                 $group['base'] = $group['sum']*($group['persent']/100);
-                
+
                 //Начисляем ЗП обычным сотрудникам
                 foreach($group['workers'] as $key => $worker) {
                     //Процент для мойщиков
@@ -243,7 +243,7 @@ class Service extends Component
         }
 
         $baseSalary = $salary;
-        
+
         //Вычитаем штрафы
         foreach($workers as $worker) {
             if($fineSum = $worker->getFinesByDatePeriod($session->start, $session->stop)->sum('sum')) {
@@ -251,14 +251,14 @@ class Service extends Component
                 $salary[$worker->id] -= $fineSum;
             }
         }
-        
+
         //Начисляем фиксы
         foreach($workers as $worker) {
             if($fix = $worker->fix) {
                 $salary[$worker->id] += $fix;
             }
         }
-        
+
         $dataSalary = [];
         foreach($workers as $worker) {
             $dataSalary[$worker->id] = [];
@@ -268,7 +268,7 @@ class Service extends Component
             $dataSalary[$worker->id]['bonuses'] = 0; //Бонусы
 
             $workerSalary = $salary[$worker['id']]; //Чистая ЗП без изменчивости
-            
+
             //Добавляем изменчивости
             $salaryEvent = new Salary(
                 [
@@ -281,29 +281,29 @@ class Service extends Component
 
             $this->trigger(self::EVENT_SALARY, $salaryEvent);
             $workerSalary = $salaryEvent->salary;
-            
+
             $dataSalary[$worker->id]['fines'] += $salaryEvent->fine;
             $dataSalary[$worker->id]['bonuses'] += $salaryEvent->bonus;
 
             $workerSalary = round($workerSalary, 1, PHP_ROUND_HALF_DOWN);
-            
+
             $dataSalary[$worker->id]['salary'] = $workerSalary; //Чистая ЗП (со штрафами и бонусами)
-            
+
             $paymentSum = Payment::find()->where(['session_id' => $session->id, 'worker_id' => $worker['id']])->sum('sum');
             $dataSalary[$worker->id]['balance'] = $workerSalary-$paymentSum;
         }
 
         return ['orders' => $data, 'salary' => $dataSalary];
     }
-    
+
     public function getWorkersList()
     {
         if(is_callable($this->workers)) {
             $values = $this->workers;
-            
+
             return $values();
         }
-        
+
         return [];
     }
 
@@ -314,6 +314,6 @@ class Service extends Component
             return  $workerPercent($session);
         } else {
             return $this->workerPersent;
-        } 
+        }
     }
 }
