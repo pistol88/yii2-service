@@ -70,7 +70,6 @@ class ReportController extends Controller
                 'module' => $this->module,
             ]);
         }
-
     }
     
     public function actionGetSessions()
