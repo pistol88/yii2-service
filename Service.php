@@ -2,6 +2,7 @@
 namespace pistol88\service;
 
 use pistol88\service\events\Salary;
+use pistol88\service\events\GroupSalary;
 use pistol88\service\events\Element;
 use pistol88\staffer\models\Payment;
 use yii\base\Component;
@@ -18,7 +19,8 @@ class Service extends Component
     public $splitOrderPerfome = false; // возможность исполнения заказа отдельными работниками
 
     const EVENT_SALARY = 'salary';
-    const EVENT_SALARY_ELEMENT_CALCULATE = 'salary_element_calculate';
+    const EVENT_GROUP_CALCULATE = 'group_calculate';
+    const EVENT_GROUP_SALARY = 'salary_group';
 
     public function getCalculateWidgets()
     {
@@ -53,6 +55,22 @@ class Service extends Component
         return StafferToService::find()->where(['service_id' => $serviceId])->all();
     }
 
+    public function groupSalaryVariablity($salary, $group, $session, $worker)
+    {
+        //Добавляем изменчивости
+        $salaryEvent = new GroupSalary(
+            [
+                'session' => $session,
+                'worker' => $worker,
+                'salary' => $salary,
+            ]
+        );
+
+        $this->trigger(self::EVENT_GROUP_SALARY, $salaryEvent);
+        
+        return $salaryEvent->salary;
+    }
+    
     public function getReportBySession($session)
     {
         $workers = $session->getUsers()->orderBy('category_id')->all();
@@ -161,7 +179,7 @@ class Service extends Component
                         }
 
                         $elementEvent = new Element(['cost' => $price, 'group' => $group]);
-                        $this->trigger(self::EVENT_SALARY_ELEMENT_CALCULATE, $elementEvent);
+                        $this->trigger(self::EVENT_GROUP_CALCULATE, $elementEvent);
                         $price = $elementEvent->cost;
 
                         $customToBase = false;
@@ -185,7 +203,7 @@ class Service extends Component
                             $order['to_base'] += $price;
                         } else {
                             $elementEvent = new Element(['cost' => $customToBase, 'group' => $group]);
-                            $this->trigger(self::EVENT_SALARY_ELEMENT_CALCULATE, $elementEvent);
+                            $this->trigger(self::EVENT_GROUP_CALCULATE, $elementEvent);
                             $customToBase = $elementEvent->cost;
                             $order['to_base'] += $customToBase;
                         }
@@ -213,15 +231,16 @@ class Service extends Component
                                 $group['persent'] = $group['persent']-$worker['persent'];
                                 $group['workersCount']--;
                             }
-                            $workerSalary = $group['sum']*($worker['persent']/100);
+                            $workerSalary = $this->groupSalaryVariablity($group['sum']*($worker['persent']/100), $group, $session, $worker);
                             $group['workers'][$key]['salary'] = $workerSalary;
                         }
                         //С выручки
                         else {
-                            $workerSalary = $group['sum']*($worker['persent']/100);
+                            $workerSalary = $this->groupSalaryVariablity($group['sum']*($worker['persent']/100), $group, $session, $worker);
                             $group['workers'][$key]['salary'] = $workerSalary;
-                            $salary[$worker['id']] += $workerSalary;
                         }
+                        
+                        $salary[$worker['id']] += $workerSalary;
                     }
                 }
 
@@ -233,7 +252,7 @@ class Service extends Component
                     //Процент для мойщиков
                     if(!$worker['persent']) {
                         if($worker['pay_type'] == 'base' && in_array($worker['category_id'], $this->workerCategoryIds)) {
-                            $workerSalary = $group['base']/$group['workersCount'];
+                            $workerSalary = $this->groupSalaryVariablity($group['base']/$group['workersCount'], $group, $session, $worker);
                             $group['workers'][$key]['salary'] = $workerSalary;
                             $salary[$worker['id']] += $workerSalary;
                         }
@@ -285,12 +304,12 @@ class Service extends Component
             $dataSalary[$worker->id]['fines'] += $salaryEvent->fine;
             $dataSalary[$worker->id]['bonuses'] += $salaryEvent->bonus;
 
-            $workerSalary = round($workerSalary, 1, PHP_ROUND_HALF_DOWN);
+            $workerSalary = round($workerSalary, 1, PHP_ROUND_HALF_UP);
 
             $dataSalary[$worker->id]['salary'] = $workerSalary; //Чистая ЗП (со штрафами и бонусами)
 
             $paymentSum = Payment::find()->where(['session_id' => $session->id, 'worker_id' => $worker['id']])->sum('sum');
-            $dataSalary[$worker->id]['balance'] = $workerSalary-$paymentSum;
+            $dataSalary[$worker->id]['balance'] = round($workerSalary-$paymentSum, 0, PHP_ROUND_HALF_UP);
         }
 
         return ['orders' => $data, 'salary' => $dataSalary];
