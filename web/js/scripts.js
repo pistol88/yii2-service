@@ -137,13 +137,13 @@ pistol88.service = {
                 if(json.result == 'success') {
                     $(json.list).each(function(i, el) {
                         selected = '';
-                        //if(i == 0) {
-                        //    selected = "selected";
-                        //}
+                        if(i == 0) {
+                            selected = "selected";
+                        }
                         $(select).html($(select).html()+'<option '+selected+' value="'+el.name+'" data-category="'+el.category_id+'">'+el.name+'</option>');
                     });
                     
-                    //$('.service-choose-property').change();
+                    $('.service-choose-property').change();
                 }
                 else {
                     console.log(json.errors);
