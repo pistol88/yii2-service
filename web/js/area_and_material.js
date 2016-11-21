@@ -13,11 +13,18 @@ usesgraphcrt.calculate = {
             $customServiceForm = $calculateServiceForm.find('#add-custom-service-form');
             $calculateServicePrice = $calculateServiceForm.find('.calculate-service-price');
 
+            $(document).find('#calculate-service').on('keypress', function() {
+                if ((event.keyCode == 13) && ($(this).find('.put-calculate-service-btn').prop('disabled')  != 'disabled')) {
+                    $(this).find('.put-calculate-service-btn').click();
+                }
+            });
+
             $submitButton.on('click', function (e) {
                 e.preventDefault();
                 $customServiceForm.submit();
-                $calculateServiceModal.modal('hide');
-                $calculateServiceForm.remove();
+                $serviceWidthInput.val('');
+                $serviceHeightInput.val('');
+                $calculateServicePrice.text('');
             });
 
             $serviceMaterialInput.on('change',function () {
@@ -33,7 +40,9 @@ usesgraphcrt.calculate = {
             if (materialPrice && width && heigth) {
                 var calculateServiceName = $customServiceForm.data('service-name');
                 price = Math.round(materialPrice*width.replace(/,/g, ".")*heigth.replace(/,/g, "."));
-                $calculateServicePrice.text('Итоговая цена: '+price+'р.');
+                if (price) {
+                $calculateServicePrice.text('Итоговая цена: '+price+'р.');    
+                }
                 name = calculateServiceName + ' ('+materialName+ ';' +width+ 'x'+heigth+')';
                 $customServiceForm.find('#customservice-name').val(name);
                 $customServiceForm.find('#customservice-price').val(price);
