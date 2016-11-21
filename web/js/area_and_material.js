@@ -32,7 +32,7 @@ usesgraphcrt.calculate = {
         setPrice: function (materialPrice, materialName,width,heigth) {
             if (materialPrice && width && heigth) {
                 var calculateServiceName = $customServiceForm.data('service-name');
-                price = materialPrice*width*heigth;
+                price = Math.round(materialPrice*width.replace(/,/g, ".")*heigth.replace(/,/g, "."));
                 $calculateServicePrice.text('Итоговая цена: '+price+'р.');
                 name = calculateServiceName + ' ('+materialName+ ';' +width+ 'x'+heigth+')';
                 $customServiceForm.find('#customservice-name').val(name);
