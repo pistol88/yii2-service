@@ -46,6 +46,7 @@ class ReportController extends Controller
         $sessions = yii::$app->worksess->getSessions(null, $date);
         
         if($session) {
+            
             $data = yii::$app->service->getReportBySession($session);
 
             if($session) {

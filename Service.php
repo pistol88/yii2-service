@@ -124,7 +124,7 @@ class Service extends Component
 
                     $groupWorkers[] = $worker;
 
-                    if(empty($this->workerCategoryIds) | in_array($worker['category_id'], $this->workerCategoryIds)) {
+                    if($worker['pay_type'] != 'overbase' && (empty($this->workerCategoryIds) | in_array($worker['category_id'], $this->workerCategoryIds))) {
                         $workersCount++;
                     }
                 }
@@ -225,7 +225,7 @@ class Service extends Component
                 foreach($group['workers'] as $key => $worker) {
                     if($worker['persent']) {
                         //Базовый тип
-                        if($worker['pay_type'] == 'base') {
+                        if($worker['pay_type'] == 'base' | $worker['pay_type'] == 'overbase') {
                             //Исполнитель
                             if(in_array($worker['category_id'], $this->workerCategoryIds)) {
                                 $group['persent'] = $group['persent']-$worker['persent'];
@@ -251,7 +251,7 @@ class Service extends Component
                 foreach($group['workers'] as $key => $worker) {
                     //Процент для мойщиков
                     if(!$worker['persent']) {
-                        if($worker['pay_type'] == 'base' && in_array($worker['category_id'], $this->workerCategoryIds)) {
+                        if(($worker['pay_type'] == 'base' | $worker['pay_type'] == 'overbase') && in_array($worker['category_id'], $this->workerCategoryIds)) {
                             $workerSalary = $this->groupSalaryVariablity($group['base']/$group['workersCount'], $group, $session, $worker);
                             $group['workers'][$key]['salary'] = $workerSalary;
                             $salary[$worker['id']] += $workerSalary;

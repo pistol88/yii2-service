@@ -120,7 +120,10 @@ pistol88.service = {
     chooseProperty: function() {
         var category_id = $(this).find('option:selected').attr('data-category');
 
-        $('#service-ident').val($(this).val());
+        if($(this).val()) {
+            $('#service-ident').val($(this).val());
+        }
+        
         $('.service-category-'+category_id).click();
         
 		$($('#service-ident').data('field-selector')).val($(this).val());
