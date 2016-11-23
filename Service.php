@@ -17,7 +17,8 @@ class Service extends Component
     public $workers = null;
     public $promoDivision = []; //'model' => ['Скидка >' => 'процент от стоимости']
     public $splitOrderPerfome = false; // возможность исполнения заказа отдельными работниками
-
+    public $orderCustomFields = [2];
+    
     const EVENT_SALARY = 'salary';
     const EVENT_GROUP_CALCULATE = 'group_calculate';
     const EVENT_GROUP_SALARY = 'salary_group';
@@ -159,11 +160,15 @@ class Service extends Component
                 foreach($group['orders'] as $key => &$order) {
                     $elements = $order->getElementsRelation()->where(['model' => ['pistol88\service\models\CustomService', 'pistol88\service\models\Price']]);
                     if($elements->all()) {
+                        $orderModel = $order;
                         $order = ArrayHelper::toArray($order);
                         $order['elements'] = [];
                         $order['base_price'] = 0;
                         $order['to_base'] = 0;
                         $order['price'] = 0;
+                        foreach($this->orderCustomFields as $field) {
+                            $order['client_name'] .= " ".$orderModel->getField($field);
+                        }
 
                         $basePrice = 0;
                         $price = 0;

@@ -254,6 +254,11 @@
     font-size: 11px;
 }
 
+.services-list ul {
+    padding: 1px;
+    margin: 1px;
+}
+
 .report-services {
     position: relative;
     border-top: 1px solid #333;
