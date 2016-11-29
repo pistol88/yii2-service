@@ -11,7 +11,7 @@ pistol88.service = {
             
             $(window).on('scroll', function(){
                 if($('body').scrollTop() > 210) {
-                    $('.arm-right-column, .service-order').css({'top': '50px', 'height': screen.height-150});
+                    $('.arm-right-column, .service-order').css({'top': '50px', 'height': screen.height-250});
                 } else {
                     $('.arm-right-column, .service-order').css({'top': 'auto', 'height': screen.height-370});
                 }

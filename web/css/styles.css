@@ -277,6 +277,10 @@
     top: 18px;
 }
 
+.service-list {
+    min-height: 1000px;
+}
+
 .other-services {
     padding-top: 10px;
 }
