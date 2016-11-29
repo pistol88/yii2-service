@@ -105,16 +105,23 @@ $this->params['breadcrumbs'][] = $this->title;
                                     </ul>
                                 </td>
                                 <td>
-                                    <?=$order['client_name'];?>
+                                    <?php if($order['user_id']) { ?>
+                                        <a href="<?=Url::toRoute(['/client/client/view', 'id' => $order['user_id']]);?>"><?=$order['client_name'];?></a>
+                                    <?php } else { ?>
+                                        <?=$order['client_name'];?>
+                                    <?php } ?>
                                 </td>
                                 <td>
                                     <?=$order['promocode'];?> 
+                                    
                                 </td>
                                 <td>
                                     <?=$order['base_price']?> <?=$currency;?>
                                 </td>
                                 <td>
                                     <?=$order['price']?> <?=$currency;?>
+                                    <br />
+                                    <small><?=$order['payment_type_name'];?></small> 
                                 </td>
                                 <td <?php if($order['to_base'] != $order['price']) echo ' style="color: red;"'; ?>>
                                     <?=$order['to_base']?> <?=$currency;?>

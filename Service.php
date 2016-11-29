@@ -165,6 +165,12 @@ class Service extends Component
                         $order['elements'] = [];
                         $order['base_price'] = 0;
                         $order['to_base'] = 0;
+                        if($paymentType = $orderModel->paymentType) {
+                            $order['payment_type_name'] = $paymentType->name;
+                        } else {
+                            $order['payment_type_name'] = '';
+                        }
+                        
                         $order['price'] = 0;
                         foreach($this->orderCustomFields as $field) {
                             $order['client_name'] .= " ".$orderModel->getField($field);
