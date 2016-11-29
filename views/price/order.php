@@ -59,22 +59,22 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
     
     <div class="row">
         <div class="col-lg-9 col-md-8  col-sm-12 service-list">
+            <div class="row">
+                <div class="col-md-12 other-services">
+                    <?php //BuyByCode::widget();?>
+                    <small>
+                        <a href="#productsModal" data-toggle="modal" data-target="#productsModal" class="btn btn-default choice-product  ">Витрина <span class="glyphicon glyphicon-plus add-option"></span></a>
+                         <a data-toggle="modal" data-target="#custom-service" href="#custom-service" class="btn btn-default choice-service" title="Другое">Другое <i class="glyphicon glyphicon-plus"></i> </a>
+                        <a data-toggle="modal" data-target="#calculate-service" href="#calculate-service" class="btn btn-default choice-service" title="Вычисляемые услуги">Калькулятор <i class="glyphicon glyphicon-plus"></i> </a>
+                       
+                    </small>
+                </div>
+            </div>
             <?=$this->render('order-type/'.$type, ['categories' => $categories, 'services' => $services, 'complexes' => $complexes, 'prices' => $prices]);?>
         </div>
         <div class="col-lg-3 col-md-4 col-sm-12">
+            <div class="arm-right-column">
             <div class="service-order">
-                <div class="row">
-                    <div class="col-md-12 other-services">
-                        <?php //BuyByCode::widget();?>
-                        <small>
-                            <a href="#productsModal" data-toggle="modal" data-target="#productsModal" class="btn btn-default choice-product  ">Витрина <span class="glyphicon glyphicon-plus add-option"></span></a>
-                             <a data-toggle="modal" data-target="#custom-service" href="#custom-service" class="btn btn-default choice-service" title="Другое">Другое <i class="glyphicon glyphicon-plus"></i> </a>
-                            <a data-toggle="modal" data-target="#calculate-service" href="#calculate-service" class="btn btn-default choice-service" title="Вычисляемые услуги">Калькулятор <i class="glyphicon glyphicon-plus"></i> </a>
-                           
-                        </small>
-                    </div>
-                </div>
-
                 <div class="row">
                     <div class="col-md-6">
                         <h3>Чек <span class="pistol88-cart-count"><?=yii::$app->cart->count;?></span></h3>
@@ -123,74 +123,9 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                         ]);
                     ?>
                 </div>
-
-                <?php // $form = ActiveForm::begin(['options' => ['target' => 'orderSubmitter', 'class' => 'panel-group-none'], 'action' => ['/order/order/create'], 'id' => 'orderForm']); ?>
-                    <!-- <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingOne">
-                            <h4 class="panel-title">
-                                <a class="heading collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseTwo">
-                                    Клиент
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo" aria-expanded="false">
-                            <div class="panel-body">
-                                <?php // echo ChooseClient::widget(['form' => $form, 'model' => $orderModel]);?>
-                                <select class="form-control service-choose-property">
-                                    <option>Автомобиль...</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="headingTwo">
-                            <h4 class="panel-title">
-                                <a class="heading" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    Заказ
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapseTwo" class="panel-collapse" role="tabpanel" aria-labelledby="headingTwo" aria-expanded="false">
-                            <div class="row panel-body">
-                                <div class="col-lg-12">
-                                    <div style="display: none;">
-                                        <?php // echo $form->field($orderModel, 'status')->label(false)->textInput(['value' => 'new', 'type' => 'hidden', 'maxlength' => true]) ?>
-                                    </div>
-                                    <?php // echo $form->field($orderModel, 'payment_type_id')->dropDownList($paymentTypes) ?>
-                                </div>
-                                <?php /* if($fields = $orderModel->allfields) { ?>
-                                    <div class="row">
-                                        <?php foreach($fields as $fieldModel) { ?>
-                                            <div class="col-lg-12 col-xs-12">
-                                                <?php
-                                                if($widget = $fieldModel->type->widget) {
-                                                    echo $widget::widget(['form' => $form, 'fieldModel' => $fieldModel]);
-                                                }
-                                                else {
-                                                    echo $form->field(new FieldValue, 'value['.$fieldModel->id.']')->label($fieldModel->name)->textInput(['required' => ($fieldModel->required == 'yes')]);
-                                                }
-                                                ?>
-                                                <?php if($fieldModel->description) { ?>
-                                                    <p><small><?=$fieldModel->description;?></small></p>
-                                                <?php } ?>
-                                            </div>
-                                        <?php } ?>
-                                    </div>
-                                <?php } */ ?>
-                                <div class="row">
-                                    <div class="col-lg-12 col-xs-12">
-                                        <?php // echo $form->field($orderModel, 'comment')->textArea(['maxlength' => true]) ?>
-                                    </div>
-                                </div>
-                                </div>
-                        </div>
-                    </div>
-                    <div class="form-group offer">
-                        <?php // echo Html::submitButton($orderModel->isNewRecord ? Yii::t('order', 'Create order') : Yii::t('order', 'Update'), ['class' => $orderModel->isNewRecord ? 'btn btn-success' : 'btn btn-primary', 'id' => 'test']); ?>
-                    </div> -->
-
-                <?php // ActiveForm::end(); ?>
             </div>
+            </div>
+
 
         </div>
     </div>

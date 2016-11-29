@@ -5,6 +5,19 @@ $('#service-ident').focus();
 
 pistol88.service = {
     init: function() {
+        if($(document).width() > 1100) {
+            $('.arm-right-column').css({'height': screen.height-370, 'width': '300px', 'overflow-x': 'hidden', 'position': 'fixed', 'overflow': 'hidden'});
+            $('.service-order').css({'height': screen.height-310, 'width': '315px', 'overflow-y': 'scroll'});
+            
+            $(window).on('scroll', function(){
+                if($('body').scrollTop() > 210) {
+                    $('.arm-right-column, .service-order').css({'top': '50px', 'height': screen.height-150});
+                } else {
+                    $('.arm-right-column, .service-order').css({'top': 'auto', 'height': screen.height-370});
+                }
+            });
+        }
+        
         $(document).on('change', '.service-choose-property', this.chooseProperty);
         
         $(document).on('chooseUserToOrder', function(event, id) { pistol88.service.getProperties(id); })

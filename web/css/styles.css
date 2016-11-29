@@ -1,3 +1,7 @@
+.pistol88-cart-row {
+    border-bottom: 0px;
+}
+
 .service-menu {
     height: 50px;
 }
@@ -273,8 +277,15 @@
     top: 18px;
 }
 
+.other-services {
+    padding-top: 10px;
+}
+
 .other-services a {
+    margin-left: 5px;
     text-align: left;
     font-size: 17px;
     display: block;
+    width: 150px;
+    float: left;
 }
