@@ -113,6 +113,8 @@ pistol88.service = {
         $('.promo-code-discount').hide();
         $('.order-create-container form input[type=text], .order-create-container form textarea').val('');
         $('.order-create-container form').css('css', '1');
+        
+        $(document).trigger('clearServiceOrder', this);
     },
     searchClientByIdent: function(ident) {
         jQuery.post(pistol88.service.searchClientByIdentUrl, {ident: ident},
