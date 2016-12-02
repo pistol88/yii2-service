@@ -21,6 +21,7 @@ class Module extends \yii\base\Module
     public $identName = 'Номер авто';
     public $hideEmptyPrice = false;
     public $stafferModel = 'pistol88\staffer\models\Staffer'; // модель работников для назначения на исполнение заказа
+    public $paymentTypeIdsReport = [];
     public $menu = [
             [
                 'label' => 'Заказ',

@@ -236,13 +236,15 @@ $this->params['breadcrumbs'][] = $this->title;
                  ])
         ?>
 
-        <h2>Отчёт по выбранным способам оплаты</h2>
-
-        <?= \pistol88\order\widgets\ReportPaymentTypes::widget([
+        <?php if($paymentTypeReport = \pistol88\order\widgets\ReportPaymentTypes::widget([
+                'types' => $module->paymentTypeIdsReport,
                 'dateStart' => date('Y-m-d H:i:s', $session->start_timestamp),
                 'dateStop' => $session->stop_timestamp ? date('Y-m-d H:i:s', $session->stop_timestamp) : null
-                 ])
-        ?>
+             ])) { ?>
+            <h2>Отчет по способам оплаты</h2>
+            <?= $paymentTypeReport?> 
+        <?php } ?>
+
         
         <h2>Отчёт по расходам</h2>
 
