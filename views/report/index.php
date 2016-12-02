@@ -119,7 +119,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?=$order['base_price']?> <?=$currency;?>
                                 </td>
                                 <td>
-                                    <?=$order['price']?> <?=$currency;?>
+                                    <a href="<?=Url::toRoute(['/cashbox/operation/index', 'OperationSearch' => ['item_id' => $order['id'], 'model' => 'pistol88\order\models\Order']]);?>"><?=$order['price']?> <?=$currency;?></a>
                                     <br />
                                     <small><?=$order['payment_type_name'];?></small> 
                                 </td>
