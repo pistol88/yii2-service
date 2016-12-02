@@ -2,6 +2,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use yii\bootstrap\Alert;
 use yii\bootstrap\ActiveForm;
 use pistol88\cart\widgets\ElementsList;
 use pistol88\cart\widgets\CartInformer;
@@ -30,9 +31,18 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
     <div class="control row">
         <div class="col-md-9 ident">
             <?php if($ident = yii::$app->getModule('service')->mainIdent) { ?>
-                <div class="service-ident">
-                    <input type="text" name="service-ident" value="" id="service-ident" autocomplete="off" data-field-selector="<?=yii::$app->getModule('service')->mainIdentFieldSelector;?>" placeholder="<?=$ident;?>" />
-                </div>
+                <?php if($order) { ?>
+                    <?=Alert::widget([
+                        'options' => [
+                            'class' => 'alert-success',
+                        ],
+                        'body' => 'Внимание! Вы добавляете новые элементы к существующему заказа №'.$order->id,
+                    ]);?>
+                <?php } else { ?>
+                    <div class="service-ident">
+                        <input type="text" name="service-ident" value="" id="service-ident" autocomplete="off" data-field-selector="<?=yii::$app->getModule('service')->mainIdentFieldSelector;?>" placeholder="<?=$ident;?>" />
+                    </div>
+                <?php } ?>
             <?php } ?>
         </div>
         <div class="col-md-3 types">
@@ -105,23 +115,27 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                 <!-- <iframe src="<?php // echo Url::to(['/order/order/create-from-iframe']); ?>" width="335" height="800" frameborder="0"></iframe> -->
 
                 <div class="order-create-container" style="width: 279px;" id="order-creation-container">
-                    <?php if (Yii::$app->service->splitOrderPerfome) {
-                            if (isset(yii::$app->worksess->soon()->users)) {
-                                $staffers = yii::$app->worksess->soon()->getUsers();
-                                $staffers = $staffers->all();
+                    <?php if($order) { ?>
+                        <a href="<?=Url::toRoute(['/order/order/push-elements', 'id' => $order->id, 'push_cart' => true]);?>" data-method="post" class="btn btn-success">Добавить к заказу №<?=$order->id;?></a>
+                    <?php } else { ?>
+                        <?php if (Yii::$app->service->splitOrderPerfome) {
+                                if (isset(yii::$app->worksess->soon()->users)) {
+                                    $staffers = yii::$app->worksess->soon()->getUsers();
+                                    $staffers = $staffers->all();
+                                } else {
+                                    $staffers = null;
+                                }
                             } else {
                                 $staffers = null;
                             }
-                        } else {
-                            $staffers = null;
-                        }
-                    ?>
+                        ?>
 
-                    <?= \pistol88\order\widgets\OrderFormLight::widget([
-                            'useAjax' => true,
-                            'staffer' => $staffers
-                        ]);
-                    ?>
+                        <?= \pistol88\order\widgets\OrderFormLight::widget([
+                                'useAjax' => true,
+                                'staffer' => $staffers
+                            ]);
+                        ?>
+                    <?php } ?>
                 </div>
             </div>
             </div>

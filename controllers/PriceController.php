@@ -142,7 +142,7 @@ class PriceController extends Controller
         ]);
     }
 
-    public function actionOrder()
+    public function actionOrder($order_id = false)
     {
         $customServiceModel = new CustomService;
 
@@ -207,9 +207,14 @@ class PriceController extends Controller
         $this->getView()->registerJs('pistol88.service.propertyListUrl = "'.Url::toRoute(['/service/property/get-ajax-list']).'";');
         $this->getView()->registerJs('pistol88.service.searchClientByIdentUrl = "'.Url::toRoute(['/service/property/get-client-by-property']).'";');
 
-        
+        if($order_id) {
+            $order = Order::findOne($order_id);
+        } else {
+            $order = false;
+        }
 
         return $this->render('order', [
+            'order' => $order,
             'organization' => $organization,
             'organizations' => $organizations,
             'type' => $type,
