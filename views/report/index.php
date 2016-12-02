@@ -254,9 +254,11 @@ $this->params['breadcrumbs'][] = $this->title;
                  ])
         ?>
     </div>
+    
+    <?php /*
     <h2>Рабочий день</h2>
 
     <?=SessionGraph::widget(['workers' => $workers, 'control' => false, 'session' => $session, 'hoursCount' => $module->shiftDuration]);?>
-    
+    */ ?>
 <?php } ?>
 </div>
