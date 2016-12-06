@@ -18,7 +18,7 @@ class Service extends Component
     public $promoDivision = []; //'model' => ['Скидка >' => 'процент от стоимости']
     public $splitOrderPerfome = false; // возможность исполнения заказа отдельными работниками
     public $orderCustomFields = [2];
-    
+
     const EVENT_SALARY = 'salary';
     const EVENT_GROUP_CALCULATE = 'group_calculate';
     const EVENT_GROUP_SALARY = 'salary_group';
@@ -68,10 +68,10 @@ class Service extends Component
         );
 
         $this->trigger(self::EVENT_GROUP_SALARY, $salaryEvent);
-        
+
         return $salaryEvent->salary;
     }
-    
+
     public function getReportBySession($session)
     {
         $workers = $session->getUsers()->orderBy('category_id')->all();
@@ -85,8 +85,8 @@ class Service extends Component
         $data = []; //Данные по заказам
         $salary = []; //Зарплаты
         $fines = []; //Штрафы
+        $bonuses = []; // бонусы
         $baseSalary = []; //Базовая зарплата без штрафов и бонусов
-
         $sessionTotal = 0; //Сумарный оборот сегодня
 
         $prevOrderWorkers = 0;
@@ -170,7 +170,7 @@ class Service extends Component
                         } else {
                             $order['payment_type_name'] = '';
                         }
-                        
+
                         $order['price'] = 0;
                         foreach($this->orderCustomFields as $field) {
                             $order['client_name'] .= " ".$orderModel->getField($field);
@@ -250,7 +250,7 @@ class Service extends Component
                             $workerSalary = $this->groupSalaryVariablity($group['sum']*($worker['persent']/100), $group, $session, $worker);
                             $group['workers'][$key]['salary'] = $workerSalary;
                         }
-                        
+
                         $salary[$worker['id']] += $workerSalary;
                     }
                 }
@@ -282,6 +282,19 @@ class Service extends Component
             }
         }
 
+        // Премии
+        foreach($workers as $worker) {
+            $bonuses[$worker->id] = 0;
+            $bonusQuery = \Yii::$app->staffer->getStafferBonuses($worker->id);
+            $bonusQuery->andWhere(['>=', 'created', $session->start]);
+            $bonusQuery->andWhere(['<=', 'created', $session->stop]);
+            $bonusSum = $bonusQuery->sum('sum');
+            if($bonusSum > 0) {
+                $bonuses[$worker->id] = $bonusSum;
+                $salary[$worker->id] += $bonusSum;
+            }
+        }
+
         //Начисляем фиксы
         foreach($workers as $worker) {
             if($fix = $worker->fix) {
@@ -295,7 +308,7 @@ class Service extends Component
             $dataSalary[$worker->id]['staffer'] = $worker;
             $dataSalary[$worker->id]['base_salary'] = round($baseSalary[$worker['id']], 2); //Грязная ЗП
             $dataSalary[$worker->id]['fines'] = round($fines[$worker['id']], 2); //Штрафы
-            $dataSalary[$worker->id]['bonuses'] = 0; //Бонусы
+            $dataSalary[$worker->id]['bonuses'] = $bonuses[$worker['id']]; //Бонусы
 
             $workerSalary = $salary[$worker['id']]; //Чистая ЗП без изменчивости
 
