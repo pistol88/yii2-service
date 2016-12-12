@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <br style="clear: both;" />
-
+    
     <div class="row session-finder">
         <div class="col-md-6">
             <form action="" method="get">
@@ -58,7 +58,17 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 
+
 <?php if($session) { ?>
+    <div class="tabs row">
+        <div class="col-md-6">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="active"><a href="<?=Url::toRoute(['/service/report/index', 'sessionId' => $session->id]);?>">Расширенный отчет</a></li>
+                <li><a href="<?=Url::toRoute(['/service/report/mini', 'sessionId' => $session->id]);?>">Короткий отчет</a></li>
+            </ul>
+        </div>
+    </div>
+
     <div id="report-to-print">
         <h1>
             <?php if(isset($session->user)) { ?>Администратор <?=$session->user->name;?><?php } ?>

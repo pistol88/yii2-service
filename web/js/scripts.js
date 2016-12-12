@@ -215,8 +215,8 @@ pistol88.service = {
         WinPrint.document.write('<style>#printcontent input, #printcontent button, #printcontent select, .rc-handle-container { display: none; } #printcontent .modal-dialog { display: none; }</style>');
         WinPrint.document.close();
         WinPrint.focus();
-        //WinPrint.print();
-        //WinPrint.close();
+        WinPrint.print();
+        WinPrint.close();
     },
     setPayment: function() {
         if($(this).prop('checked')) {

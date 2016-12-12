@@ -35,6 +35,30 @@ class ReportController extends Controller
         ];
     }
     
+    public function actionMini($sessionId = null)
+    {
+        if($sessionId) {
+            $session = Session::findOne($sessionId);
+        } else {
+            if(!$session = yii::$app->worksess->soon()) {
+                $session = yii::$app->worksess->last();
+            }
+        }
+
+        if($session) {
+            $data = yii::$app->service->getReportBySession($session);
+        } else {
+            $data = null;
+        }
+
+        return $this->render('mini', [
+            'session' => $session,
+            'data' => $data,
+            'module' => $this->module,
+            'currency' => $this->module->currency,
+        ]);
+    }
+    
     public function actionIndex($sessionId = null)
     {
         if(!$sessionId) {
