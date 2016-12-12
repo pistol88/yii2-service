@@ -74,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <tr>
                 <td align="right">Итого:</td>
                 <th><?=$sumSalary;?></th>
-                <td></td>
+                <td><?=$sumBalance;?></td>
             </tr>
         </table>
         
