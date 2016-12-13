@@ -285,9 +285,16 @@ class Service extends Component
         // Премии
         foreach($workers as $worker) {
             $bonuses[$worker->id] = 0;
+            // при начислении зарплаты (см. ивент on stop в конфиге), помечаем премию как начисленную
             $bonusQuery = \Yii::$app->staffer->getStafferBonuses($worker->id);
-            $bonusQuery->andWhere(['>=', 'created', $session->start]);
-            $bonusQuery->andWhere(['<=', 'created', $session->stop]);
+            // TODO решить как считать. Либо собирать все
+            $bonusQuery->andWhere(['canceled' => null]); // НЕ отменённые премии
+            $bonusQuery->andWhere(['payed' => null]); // и НЕ начисленные в предыдущие зарплаты
+
+            // либо считать по времени сессии, но тогда выпадают премии начисленные не в смену сотрудника
+            // $bonusQuery->andWhere(['>=', 'created', $session->start]);
+            // $bonusQuery->andWhere(['<=', 'created', $session->stop]);
+
             $bonusSum = $bonusQuery->sum('sum');
             if($bonusSum > 0) {
                 $bonuses[$worker->id] = $bonusSum;
