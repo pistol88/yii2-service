@@ -21,7 +21,7 @@ if(!$model->parent_id) {
         <?php echo $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
     
         <?php if(yii::$app->has('organization') && $organization = yii::$app->get('organization')) { ?>
-            <?php echo $form->field($model, 'organization_id')->dropDownList(array_merge(['' => 'Нет'], ArrayHelper::map($organization->getList(), 'id', 'name'))) ?>
+            <?php echo $form->field($model, 'organization_id')->dropDownList(ArrayHelper::map($organization->getList(), 'id', 'name'), ['prompt' => 'Нет']) ?>
         <?php } ?>
 
         <?php echo $form->field($model, 'sort')->textInput(['maxlength' => true]) ?>
@@ -29,8 +29,7 @@ if(!$model->parent_id) {
         <p><small>Чем выше приоритет, тем выше элемент среди других в общем списке.</small></p>
     
         <?= $form->field($model, 'parent_id')->dropdownList($categories);?>
-    
-        
+
         <?=\pistol88\gallery\widgets\Gallery::widget(['model' => $model]); ?>
         <br />
     

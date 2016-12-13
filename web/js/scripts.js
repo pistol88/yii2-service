@@ -135,7 +135,7 @@ pistol88.service = {
     chooseProperty: function() {
         var category_id = $(this).find('option:selected').attr('data-category');
 
-        if($(this).val()) {
+        if($(this).val() && $('#service-ident').val() == '') {
             $('#service-ident').val($(this).val());
         }
         

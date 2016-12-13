@@ -13,8 +13,10 @@ EOD;
 $this->registerJs($script);
 $services = Service::find()->where("id != :id AND (parent_id = 0 OR parent_id IS NULL)", [':id' => (int)$model->id])->all();
 $services = ArrayHelper::map($services, 'id', 'name');
-$parentServices = $services;
-$parentServices[0] = 'Нет';
+$parentServices[''] = 'Нет';
+foreach($services as $id => $service) {
+    $parentServices[$id] = $service;
+}
 
 if(!$model->parent_id) {
     $model->parent_id = 0;
@@ -30,7 +32,7 @@ if(!$model->parent_id) {
     <?php echo $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <?php if(yii::$app->has('organization') && $organization = yii::$app->get('organization')) { ?>
-        <?php echo $form->field($model, 'organization_id')->dropDownList(array_merge(['' => 'Нет'], ArrayHelper::map($organization->getList(), 'id', 'name'))) ?>
+        <?php echo $form->field($model, 'organization_id')->dropDownList(ArrayHelper::map($organization->getList(), 'id', 'name'), ['prompt' => 'Нет']) ?>
     <?php } ?>
     
     <?php echo $form->field($model, 'sort')->textInput(['maxlength' => true])->hint('Чем выше приоритет, тем выше элемент среди других в общем списке.'); ?>
