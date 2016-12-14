@@ -90,6 +90,7 @@ class Service extends Component
         $sessionTotal = 0; //Сумарный оборот сегодня
 
         $prevOrderWorkers = 0;
+        $prevOrdersWorkersList = [];
         $prevGroup = false;
 
         //Формируем группы, исходя из кол-ва сотрудников
@@ -97,6 +98,7 @@ class Service extends Component
             $groupWorkers = [];
             $orderWorkers = [];
             $workersCount = 0;
+            $workersList = [];
 
             //Присваиваем сотрудников заказу
             if ($this->splitOrderPerfome && $staffersToService = $this->getStafferByServiceId($order->id)) {
@@ -127,11 +129,12 @@ class Service extends Component
 
                     if($worker['pay_type'] != 'overbase' && (empty($this->workerCategoryIds) | in_array($worker['category_id'], $this->workerCategoryIds))) {
                         $workersCount++;
+                        $workersList[] = $worker['id'];
                     }
                 }
             }
 
-            if(!$prevGroup | $prevOrderWorkers != $workersCount) {
+            if(!$prevGroup | $prevOrderWorkers != $workersCount | count(array_intersect($workersList, $prevOrdersWorkersList)) != count($workersList)) {
                 $data[$order->timestamp] = [
                     'workers' => $groupWorkers,
                     'workersCount' => $workersCount,
@@ -152,7 +155,9 @@ class Service extends Component
             }
 
             $prevOrderWorkers = $workersCount;
+            $prevOrdersWorkersList = $workersList;
         }
+        
         //Проходимся по группам, делаем расчеты ЗП
         foreach($data as &$group) {
             if($group['orders']) {
