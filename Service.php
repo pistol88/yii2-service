@@ -74,6 +74,10 @@ class Service extends Component
 
     public function getReportBySession($session)
     {
+        if($session->report) {
+            return unserialize($session->report);
+        }
+        
         $workers = $session->getUsers()->orderBy('category_id')->all();
 
         if(yii::$app->has('organization') && $organization = yii::$app->organization->get()) {
