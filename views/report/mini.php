@@ -29,19 +29,17 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div id="report-to-print">
-        <h1>
+        <h3>
             <?php if(isset($session->user)) { ?>Администратор <?=$session->user->name;?><?php } ?>
             
             <?php if(yii::$app->has('organization') && $organization = yii::$app->organization->get()) { ?>
                 (<?=$organization->name;?>)
             <?php } ?>
-        </h1>
+        </h3>
         <a href="#" class="btn btn-submit" onclick="pistol88.service.callPrint('report-to-print'); return false;" style="float: right;"><i class="glyphicon glyphicon-print"></i></a>
-        <p><strong>Смена</strong>: <?=$session->shiftName;?></p>
-        <p><strong>Старт</strong>: <?=date('d.m.Y H:i:s', $session->start_timestamp);?></p>
-        <p><strong>Стоп</strong>: <?php if($session->stop_timestamp) echo date('d.m.Y H:i:s', $session->stop_timestamp); else echo '-';?></p>
-        <p><strong>Продолжительность</strong>: <?=$session->getDuration();?></p>
-        <p><strong>Количество заказов по услугам</strong>: <?=count($data['orders']);?></p>
+        
+        <p><strong>Смена</strong>: <?=$session->shiftName;?> (<?=date('d.m.Y H:i:s', $session->start_timestamp);?> - <?php if($session->stop_timestamp) echo date('d.m.Y H:i:s', $session->stop_timestamp); else echo '...';?>), <?=$session->getDuration();?></p>
+        <p><strong>Количество заказов по услугам</strong>: <?=$data['summary']['ordersCount'];?></p>
 
         <?= \halumein\cashbox\widgets\ReportBalanceByPeriod::widget([
                 'dateStart' => date('Y-m-d H:i:s', $session->start_timestamp),
@@ -50,11 +48,11 @@ $this->params['breadcrumbs'][] = $this->title;
         ?>
         
         <h2>Зарплата</h2>
-        <table class="table">
+        <table class="table" width="100%">
             <tr>
                 <th>Сотрудник</th>
-                <th>ЗП</th>
-                <th>Выдано</th>
+                <th width="30">ЗП</th>
+                <th width="30">Выдано</th>
             </tr>
             <?php $sumSalary = 0; $sumBalance = 0;?>
             <?php foreach($data['salary'] as $workerId => $workerData) { ?>
@@ -64,8 +62,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 ?>
                 <tr>
                     <td>
-                        <p><?=$workerData['staffer']->name;?></p>
-                        <?php if($cat = $workerData['staffer']->category) { ?><p><small><?=$cat->name;?></small></p><?php } ?>
+                        <?=$workerData['staffer']->name;?> -
+                        <?php if($cat = $workerData['staffer']->category) { ?><small><?=$cat->name;?></small><?php } ?>
                     </td>
                     <td><?=$workerData['salary'];?></td>
                     <td><?=($workerData['salary']-$workerData['balance']);?></td>
@@ -83,11 +81,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 'dateStart' => date('Y-m-d H:i:s', $session->start_timestamp),
                 'dateStop' => $session->stop_timestamp ? date('Y-m-d H:i:s', $session->stop_timestamp) : null
              ])) { ?>
-            <h2>Отчет по способам оплаты</h2>
+            <h3>Отчет по способам оплаты</h3>
             <?= $paymentTypeReport?> 
         <?php } ?>
         
-        <h2>Отчёт по расходам</h2>
+        <h3>Отчёт по расходам</h3>
 
         <?= \halumein\spending\widgets\ReportSpendingsByPeriod::widget([
                 'dateStart' => date('Y-m-d H:i:s', $session->start_timestamp),

@@ -111,8 +111,6 @@ class Service extends Component
             $workersCount = 0;
             $workersList = [];
 
-            $summary['ordersCount']++;
-            
             //Присваиваем сотрудников заказу
             if ($this->splitOrderPerfome && $staffersToService = $this->getStafferByServiceId($order->id)) {
                 // так как модель workera у staffer'а может быть любой - придётся пробежаться по всем
@@ -178,6 +176,7 @@ class Service extends Component
                 foreach($group['orders'] as $key => &$order) {
                     $elements = $order->getElementsRelation()->where(['model' => ['pistol88\service\models\CustomService', 'pistol88\service\models\Price']]);
                     if($elements->all()) {
+                        $summary['ordersCount']++;
                         $orderModel = $order;
                         $order = ArrayHelper::toArray($order);
                         $order['elements'] = [];
