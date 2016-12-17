@@ -92,6 +92,13 @@ class Service extends Component
         $bonuses = []; // бонусы
         $baseSalary = []; //Базовая зарплата без штрафов и бонусов
         $sessionTotal = 0; //Сумарный оборот сегодня
+        $summary = [
+            'servicesTotal' => 0,
+            'baseServicesTotal' => 0,
+            'elementsCount' => 0,
+            'ordersCount' => 0,
+            'totalSalary' => 0,
+        ];
 
         $prevOrderWorkers = 0;
         $prevOrdersWorkersList = [];
@@ -104,6 +111,8 @@ class Service extends Component
             $workersCount = 0;
             $workersList = [];
 
+            $summary['ordersCount']++;
+            
             //Присваиваем сотрудников заказу
             if ($this->splitOrderPerfome && $staffersToService = $this->getStafferByServiceId($order->id)) {
                 // так как модель workera у staffer'а может быть любой - придётся пробежаться по всем
@@ -196,6 +205,11 @@ class Service extends Component
 
                             $basePrice += $element['base_price']*$element['count'];
                             $price += $element['price']*$element['count'];
+                            
+                            $summary['baseServicesTotal'] += $basePrice;
+                            $summary['servicesTotal'] += $price;
+                            
+                            $summary['elementsCount'] = $summary['elementsCount']+$element['count'];
                         }
 
                         $elementEvent = new Element(['cost' => $price, 'group' => $group]);
@@ -348,11 +362,13 @@ class Service extends Component
 
             $dataSalary[$worker->id]['salary'] = $workerSalary; //Чистая ЗП (со штрафами и бонусами)
 
+            $summary['totalSalary'] += $workerSalary;
+
             $paymentSum = Payment::find()->where(['session_id' => $session->id, 'worker_id' => $worker['id']])->sum('sum');
             $dataSalary[$worker->id]['balance'] = round($workerSalary-$paymentSum, 0, PHP_ROUND_HALF_UP);
         }
 
-        return ['orders' => $data, 'salary' => $dataSalary];
+        return ['orders' => $data, 'salary' => $dataSalary, 'summary' => $summary];
     }
 
     public function getWorkersList()
