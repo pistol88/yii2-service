@@ -7,7 +7,7 @@ use pistol88\cart\Cart;
 
 class Discount extends Behavior
 {
-    public $eventName = 'element_cost';
+    public $eventName = 'element_price';
     
     public function events()
     {
