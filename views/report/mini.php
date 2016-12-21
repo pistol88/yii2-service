@@ -93,6 +93,20 @@ $this->params['breadcrumbs'][] = $this->title;
                 'simple' => true,
                  ])
         ?>
+        
+        <h3>Витрина</h3>
+        <table class="table">
+            <tr>
+                <th>Сумма</th>
+                <th>Заказов</th>
+                <th>Элементов</th>
+            </tr>
+            <tr>
+                <td><?=$shopStat['total'];?> <?=$module->currency;?></td>
+                <td><?=$shopStat['count_orders'];?></td>
+                <td><?=$shopStat['count_elements'];?></td>
+            </tr>
+        </table>
     </div>
 <?php } else { ?>
     <p>Сессия не была начата.</p>

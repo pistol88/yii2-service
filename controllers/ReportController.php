@@ -51,11 +51,14 @@ class ReportController extends Controller
             $data = null;
         }
 
+        $shopStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\microshop\models\Product', $session->start, $session->stop);
+        
         return $this->render('mini', [
             'session' => $session,
             'data' => $data,
             'module' => $this->module,
             'currency' => $this->module->currency,
+            'shopStat' => $shopStat,
         ]);
     }
     
@@ -70,8 +73,9 @@ class ReportController extends Controller
         $sessions = yii::$app->worksess->getSessions(null, $date);
         
         if($session) {
-            
             $data = yii::$app->service->getReportBySession($session);
+
+            $shopStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\microshop\models\Product', $session->start, $session->stop);
 
             if($session) {
                 $date = date('Y-m-d', $session->start_timestamp);
@@ -80,6 +84,7 @@ class ReportController extends Controller
             }
             
             return $this->render('index', [
+                'shopStat' => $shopStat,
                 'data' => $data,
                 'date' => $date,
                 'session' => $session,

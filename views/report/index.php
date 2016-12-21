@@ -238,6 +238,20 @@ $this->params['breadcrumbs'][] = $this->title;
             </tr>
         </table>
         
+        <h2>Витрина</h2>
+        <table class="table">
+            <tr>
+                <th>Сумма</th>
+                <th>Заказов</th>
+                <th>Элементов</th>
+            </tr>
+            <tr>
+                <td><?=$shopStat['total'];?> <?=$module->currency;?></td>
+                <td><?=$shopStat['count_orders'];?></td>
+                <td><?=$shopStat['count_elements'];?></td>
+            </tr>
+        </table>
+        
         <h2>Отчёт по кассам</h2>
 
         <?= \halumein\cashbox\widgets\ReportBalanceByPeriod::widget([
