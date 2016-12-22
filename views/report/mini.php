@@ -9,6 +9,9 @@ $this->title = 'Отчеты по услугам';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pistol88\service\assets\BackendAsset::register($this);
+
+$incomeSum = yii::$app->cashbox->getIncomeSumByPeriod(date('Y-m-d H:i:s', $session->start_timestamp), $session->stop_timestamp ? date('Y-m-d H:i:s', $session->stop_timestamp) : date('Y-m-d H:i:s'));
+
 ?>
 <div class="report-index">
 
@@ -47,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                  ])
         ?>
         
-        <h2>Зарплата</h2>
+        <h3>Зарплата</h3>
         <table class="table" width="100%">
             <tr>
                 <th>Сотрудник</th>
@@ -75,6 +78,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td><?=$sumBalance;?></td>
             </tr>
         </table>
+        
+        <h3>Прибыль: <?=$incomeSum-$sumSalary;?></h3>
         
         <?php if($paymentTypeReport = \pistol88\order\widgets\ReportPaymentTypes::widget([
                 'types' => $module->paymentTypeIdsReport,
