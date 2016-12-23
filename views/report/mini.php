@@ -79,7 +79,7 @@ $incomeSum = yii::$app->cashbox->getIncomeSumByPeriod(date('Y-m-d H:i:s', $sessi
             </tr>
         </table>
         
-        <h3>Прибыль: <?=$incomeSum-$sumSalary;?></h3>
+        <h3><?=$module->profitFieldName;?>: <?=$incomeSum-$sumSalary;?></h3>
         
         <?php if($paymentTypeReport = \pistol88\order\widgets\ReportPaymentTypes::widget([
                 'types' => $module->paymentTypeIdsReport,
