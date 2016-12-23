@@ -18,6 +18,7 @@ class Module extends \yii\base\Module
     public $stafferProfileUrl = '/staffer/staffer/view';
     public $propertyStatuses = ['active' => 'Активно', 'unactive' => 'Неактивно'];
     public $propertyName = 'Автомобили';
+    public $profitFieldName = 'Наличные директору';
     public $identName = 'Номер авто';
     public $hideEmptyPrice = false;
     public $stafferModel = 'pistol88\staffer\models\Staffer'; // модель работников для назначения на исполнение заказа
