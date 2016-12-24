@@ -23,6 +23,7 @@ class Module extends \yii\base\Module
     public $hideEmptyPrice = false;
     public $stafferModel = 'pistol88\staffer\models\Staffer'; // модель работников для назначения на исполнение заказа
     public $paymentTypeIdsReport = [];
+    public $cashCashboxId = null;
     public $menu = [
             [
                 'label' => 'Заказ',

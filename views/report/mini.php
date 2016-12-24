@@ -10,8 +10,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 \pistol88\service\assets\BackendAsset::register($this);
 
-$incomeSum = yii::$app->cashbox->getIncomeSumByPeriod(date('Y-m-d H:i:s', $session->start_timestamp), $session->stop_timestamp ? date('Y-m-d H:i:s', $session->stop_timestamp) : date('Y-m-d H:i:s'));
+$incomeSum = yii::$app->cashbox->getIncomeSumByPeriod(date('Y-m-d H:i:s', $session->start_timestamp), $session->stop_timestamp ? date('Y-m-d H:i:s', $session->stop_timestamp) : date('Y-m-d H:i:s'), $module->cashCashboxId);
 
+$spendingSum = yii::$app->spending->getSumByPeriod(date('Y-m-d H:i:s', $session->start_timestamp), $session->stop_timestamp ? date('Y-m-d H:i:s', $session->stop_timestamp) : date('Y-m-d H:i:s'));
 ?>
 <div class="report-index">
 
@@ -79,7 +80,7 @@ $incomeSum = yii::$app->cashbox->getIncomeSumByPeriod(date('Y-m-d H:i:s', $sessi
             </tr>
         </table>
         
-        <h3><?=$module->profitFieldName;?>: <?=$incomeSum-$sumSalary;?></h3>
+        <h3><?=$module->profitFieldName;?>: <?=$incomeSum-$sumSalary-$spendingSum;?></h3>
         
         <?php if($paymentTypeReport = \pistol88\order\widgets\ReportPaymentTypes::widget([
                 'types' => $module->paymentTypeIdsReport,
