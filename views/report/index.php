@@ -9,6 +9,8 @@ $this->title = 'Отчеты по услугам';
 $this->params['breadcrumbs'][] = $this->title;
 
 \pistol88\service\assets\BackendAsset::register($this);
+
+$totalServices = 0;
 ?>
 <div class="report-index">
 
@@ -103,8 +105,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php } ?>
 
                         <?php foreach($group['orders'] as $order) { $oi++; ?>
+                            <?php 
+                            $totalServices += $order['price'];
+                            ?>
                             <tr>
-                                <td><?=$oi;?>. [<?=date('H:i', $order['timestamp']);?>] <a href="<?=Url::toRoute(['/order/order/view', 'id' => $order['id']]);?>"><i class="glyphicon glyphicon-eye-open"></i></a></td>
+                                <td><?=$oi;?>. (<?=$order['id'];?>) [<?=date('H:i', $order['timestamp']);?>] <a href="<?=Url::toRoute(['/order/order/view', 'id' => $order['id']]);?>"><i class="glyphicon glyphicon-eye-open"></i></a></td>
                                 <td>
                                     <ul>
                                         <?php
@@ -161,6 +166,21 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         <?php } ?>
+        <div class="row">
+            <div class="col-md-7">
+            
+            </div>
+            <div class="col-md-5">
+                <h3>Итого услуг: <?=$totalServices;?> <?=$module->currency;?></h3>
+                <ul>
+                    <li><?=Html::a("Заказы", ['/order/order/index', 'time_start' => $session->start, 'time_stop' => $session->stop, 'element_types' => ['pistol88\service\models\Price', 'pistol88\service\models\CustomService']]);?></li>
+                    <li><?=Html::a("Операции по кассе", ['/cashbox/operation/index', 'sort' => 'id', 'date_start' => $session->start, 'date_stop' => $session->stop, 'OperationSearch' => ['model' => 'pistol88\order\models\Order']]);?></li>
+                </ul>
+                
+            </div>
+            
+        </div>
+    
     
         <h2>Зарплата</h2>
 
@@ -238,20 +258,45 @@ $this->params['breadcrumbs'][] = $this->title;
             </tr>
         </table>
         
-        <h2>Витрина</h2>
-        <table class="table">
-            <tr>
-                <th>Сумма</th>
-                <th>Заказов</th>
-                <th>Элементов</th>
-            </tr>
-            <tr>
-                <td><?=$shopStat['total'];?> <?=$module->currency;?></td>
-                <td><?=$shopStat['count_orders'];?></td>
-                <td><?=$shopStat['count_elements'];?></td>
-            </tr>
-        </table>
-        
+        <?php if($shopOrders) { ?>
+            <?php
+            $total = 0;
+            $count = 0;
+            ?>
+            <h2>Витрина</h2>
+            <table class="table">
+                <tr>
+                    <th>Заказ</th>
+                    <th>Товар</th>
+                    <th>Клиент</th>
+                    <th>Кол-во</th>
+                    <th>Цена</th>
+                    <th>Стоимость</th>
+                </tr>
+                <?php foreach($shopOrders as $shopOrder) { ?>
+                    <?php
+                    $total += ($shopOrder['price']*$shopOrder['count']);
+                    $count += $shopOrder['count'];
+                    ?>
+                    <tr>
+                        <td>[<?=date('H:i', $shopOrder['timestamp']);?>] (<?=$shopOrder['order_id'];?>) <a href="<?=Url::toRoute(['/order/order/view', 'id' => $shopOrder['order_id']]);?>"><i class="glyphicon glyphicon-eye-open"></i></a></td>
+                        <td><?=$shopOrder['name'];?></td>
+                        <td><?=$shopOrder['client_name'];?></td>
+                        <td><?=$shopOrder['count'];?></td>
+                        <td><?=$shopOrder['price'];?> <?=$module->currency;?></td>
+                        <td><?=($shopOrder['price']*$shopOrder['count']);?> <?=$module->currency;?></td>
+                    </tr>
+                <?php } ?>
+                <tr>
+                    <th colspan="3" align="right">Итого</th>
+                    <th><?=$count;?></th>
+                    <th>-</th>
+                    <th><?=$total;?></th>
+                </tr>
+            </table>
+        <?php } ?>
+
+
         <h2>Отчёт по кассам</h2>
 
         <?= \halumein\cashbox\widgets\ReportBalanceByPeriod::widget([
