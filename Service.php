@@ -204,10 +204,7 @@ class Service extends Component
 
                             $basePrice += $element['base_price']*$element['count'];
                             $price += $element['price']*$element['count'];
-                            
-                            $summary['baseServicesTotal'] += $basePrice;
-                            $summary['servicesTotal'] += $price;
-                            
+
                             $summary['elementsCount'] = $summary['elementsCount']+$element['count'];
                         }
 
@@ -215,6 +212,9 @@ class Service extends Component
                         $this->trigger(self::EVENT_GROUP_CALCULATE, $elementEvent);
                         $price = $elementEvent->cost;
 
+                        $summary['baseServicesTotal'] += $basePrice;
+                        $summary['servicesTotal'] += $price;
+                        
                         $customToBase = false;
                         //Процент, выдааемый сотруднику в случае применения скидки
                         if($promoDivision = $this->promoDivision) {

@@ -87,32 +87,30 @@ class ReportController extends Controller
             $shopOrders = [];
             
             foreach($orders as $order) {
-                foreach($order->elements as $element) {
-                    $elements = $order->getElementsRelation()->where(['model' => ['pistol88\microshop\models\Product', 'pistol88\shop\models\Product']]);
-                        if($elements->all()) {
-                            $shopStat['count_orders'] += 1;
-                            foreach($elements->all() as $element) {
-                                $elementModel = $element->getModel();
-                                
-                                $shopStat['count_elements'] += $element->count;
-                                $shopStat['total'] += ($elementModel->getCartPrice()*$element->count);
-                                
-                                $clientName = '';
-                                
-                                foreach(yii::$app->service->orderCustomFields as $field) {
-                                    $clientName .= " ".$order->getField($field);
-                                }
-                                
-                                $shopOrders[$order->id] = [
-                                    'name' => $elementModel->getCartName(),
-                                    'price' => $elementModel->getCartPrice(),
-                                    'timestamp' => $order->timestamp,
-                                    'count' => $element->count,
-                                    'order_id' => $order->id,
-                                    'client_name' => $clientName,
-                                ];
-                            }
+                $elements = $order->getElementsRelation()->where(['model' => ['pistol88\microshop\models\Product', 'pistol88\shop\models\Product']]);
+                if($elements->all()) {
+                    $shopStat['count_orders'] += 1;
+                    foreach($elements->all() as $element) {
+                        $elementModel = $element->getModel();
+                        
+                        $shopStat['count_elements'] += $element->count;
+                        $shopStat['total'] += ($elementModel->getCartPrice()*$element->count);
+                        
+                        $clientName = '';
+                        
+                        foreach(yii::$app->service->orderCustomFields as $field) {
+                            $clientName .= " ".$order->getField($field);
                         }
+                        
+                        $shopOrders[$order->id . '_' . $element->id] = [
+                            'name' => $elementModel->getCartName(),
+                            'price' => $elementModel->getCartPrice(),
+                            'timestamp' => $order->timestamp,
+                            'count' => $element->count,
+                            'order_id' => $order->id,
+                            'client_name' => $clientName,
+                        ];
+                    }
                 }
             }
             
