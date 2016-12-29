@@ -35,6 +35,26 @@ class ReportController extends Controller
         ];
     }
     
+    public function actionPeriod($dateStart = null, $dateStop = null)
+    {
+        if(!$dateStart) {
+            $dateStart = date('Y-m-d H:i:s', (time()-(86400*30)));
+        } else {
+            $dateStart = date('Y-m-d H:i:s', strtotime($dateStart));
+        }
+        
+        if(!$dateStop) {
+            $dateStop = date('Y-m-d H:i:s');
+        } else {
+            $dateStop = date('Y-m-d H:i:s', strtotime($dateStop));
+        }
+        
+        return $this->render('period', [
+            'dateStart' => Html::encode($dateStart),
+            'dateStop' => Html::encode($dateStop),
+        ]);
+    }
+    
     public function actionMini($sessionId = null)
     {
         if($sessionId) {
