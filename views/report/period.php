@@ -86,6 +86,11 @@ $totalServices = 0;
     <div class="report" id="report-to-print">
         <h1><?=date('d.m.Y', strtotime($dateStart));?> - <?=date('d.m.Y', strtotime($dateStop));?></h1>
         <a href="#" class="btn btn-submit" onclick="pistol88.service.callPrint('report-to-print'); return false;" style="float: right;"><i class="glyphicon glyphicon-print"></i></a>
+        
+        <p>Основные услуги: <?=$serviceStat['total'];?> <?=$module->currency;?> *</p>
+        <p>Прочие услуги: <?=$customStat['total'];?> <?=$module->currency;?></p>
+        <p>Витрина: <?=$shopStat['total'];?> <?=$module->currency;?></p>
+        <p>* <small>Сумма оказанных услуг может не совпадать с денежными поступлениями. Сюда входит заказы, выполненные в долг и бесплатно.</small></p>
         <h2>Приход</h2>
         <?= \halumein\cashbox\widgets\ReportBalanceByPeriod::widget([
                 'dateStart' => $dateStart,

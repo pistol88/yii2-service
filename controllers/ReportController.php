@@ -48,8 +48,16 @@ class ReportController extends Controller
         } else {
             $dateStop = date('Y-m-d H:i:s', strtotime($dateStop));
         }
+
+        $serviceStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\service\models\Price', $dateStart, $dateStop);
+        $customStat = yii::$app->order->getStatByModelAndDatePeriod('pistol88\service\models\CustomService', $dateStart, $dateStop);
+        $shopStat = yii::$app->order->getStatByModelAndDatePeriod(['pistol88\microshop\models\Product', 'pistol88\shop\models\Product'], $dateStart, $dateStop);
         
         return $this->render('period', [
+            'module' => $this->module,
+            'serviceStat' => $serviceStat,
+            'customStat' => $customStat,
+            'shopStat' => $shopStat,
             'dateStart' => Html::encode($dateStart),
             'dateStop' => Html::encode($dateStop),
         ]);
