@@ -98,7 +98,7 @@ class ReportController extends Controller
             $session = Session::findOne($sessionId);
         }
         
-        $sessions = yii::$app->worksess->getSessions(null, $date);
+        
         
         if($session) {
             $data = yii::$app->service->getReportBySession($session);
@@ -110,6 +110,8 @@ class ReportController extends Controller
             } else {
                 $date = date('Y-m-d');
             }
+            
+            $sessions = yii::$app->worksess->getSessions(null, $date);
             
             $orders = yii::$app->order->getOrdersByDatePeriod($session->start, $session->stop);
             $shopOrders = [];
@@ -154,8 +156,11 @@ class ReportController extends Controller
                 'currency' => $this->module->currency,
             ]);
         } else {
+            $date = date('Y-m-d');
+            $sessions = yii::$app->worksess->getSessions(null, $date);
             return $this->render('index', [
                 'sessions' => $sessions,
+                'date' => $date,
                 'session' => false,
                 'module' => $this->module,
             ]);

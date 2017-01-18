@@ -32,16 +32,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td>K<?=$complex->id;?></td>
                     <td><strong>Комплекс «<?=$complex->name;?>»</strong></td>
                     <?php foreach($categories as $category) { ?>
-                        <?php $price = $prices[$complex::className()][$category->id][$complex->id]; ?>
+                        <?php $price = @$prices[$complex::className()][$category->id][$complex->id]; ?>
                         <td>
 
                             <?php if($childs = $category->childs) { ?>
                                 <?php foreach($childs as $child) { ?>
-                                    <?php $price = $prices[$complex::className()][$child->id][$complex->id]; ?>
+                                    <?php @$price = $prices[$complex::className()][$child->id][$complex->id]; ?>
                                     <div class="child">
                                         <div><i><?=$child->name;?>:</i></div>
-                                        <input style="width: 70%;" type="text" name="price[<?=$child->id;?>][<?=$complex::className();?>][<?=$complex->id;?>]" value="<?=$price->price;?>" />
-                                        <?php if($price->id) { ?>
+                                        <input style="width: 70%;" type="text" name="price[<?=$child->id;?>][<?=$complex::className();?>][<?=$complex->id;?>]" value="<?php if($price) echo $price->price;?>" />
+                                        <?php if($price) { ?>
                                             <a href="<?=Url::toRoute(['update', 'id' => $price->id]);?>"><i class="glyphicon glyphicon-pencil"></i></a>
                                         <?php } ?>
                                     </div>
@@ -61,15 +61,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td><?=$service->id;?></td>
                     <td><?=$service->name;?></td>
                     <?php foreach($categories as $category) { ?>
-                        <?php $price = $prices[$service::className()][$category->id][$service->id]; ?>
+                        <?php $price = @$prices[$service::className()][$category->id][$service->id]; ?>
                         <td>
                             <?php if($childs = $category->childs) { ?>
                                 <?php foreach($childs as $child) { ?>
-                                    <?php $price = $prices[$service::className()][$child->id][$service->id]; ?>
+                                    <?php $price = @$prices[$service::className()][$child->id][$service->id]; ?>
                                     <div class="child">
                                         <div><i><?=$child->name;?>:</i></div>
-                                        <input style="width: 70%;" type="text" name="price[<?=$child->id;?>][<?=$service::className();?>][<?=$service->id;?>]" value="<?=$price->price;?>" />
-                                        <?php if($price->id) { ?>
+                                        <input style="width: 70%;" type="text" name="price[<?=$child->id;?>][<?=$service::className();?>][<?=$service->id;?>]" value="<?php if($price) echo $price->price;?>" />
+                                        <?php if($price) { ?>
                                             <a href="<?=Url::toRoute(['update', 'id' => $price->id]);?>"><i class="glyphicon glyphicon-pencil"></i></a>
                                         <?php } ?>
                                     </div>
