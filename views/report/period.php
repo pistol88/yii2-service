@@ -91,7 +91,9 @@ $totalServices = 0;
         <p>Прочие услуги: <?=$customStat['total'];?> <?=$module->currency;?></p>
         <p>Витрина: <?=$shopStat['total'];?> <?=$module->currency;?></p>
         <p>* <small>Сумма оказанных услуг может не совпадать с денежными поступлениями. Сюда входит заказы, выполненные в долг и бесплатно.</small></p>
-        <h2>Приход</h2>
+        
+        <h2>Движения денежных средств</h2>
+        
         <?= \halumein\cashbox\widgets\ReportBalanceByPeriod::widget([
                 'dateStart' => $dateStart,
                 'dateStop' => $dateStop
@@ -102,7 +104,7 @@ $totalServices = 0;
         <table class="table">
             <tr>
                 <th>Наименование</th>
-                <th>Приход</th>
+                <th>Расход</th>
                 <th>Примечание</th>
             </tr>
             <?php foreach(yii::$app->spending->getCategories() as $category) { ?>

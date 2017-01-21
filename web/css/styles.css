@@ -116,6 +116,17 @@
     height: auto;
 }
 
+.service-order .certificate .certificate-enter {
+    margin-top: 4px;
+    width: 119px;
+    margin-bottom: 4px;
+}
+
+.service-order .certificate .certificate-enter input, .service-order .certificate .certificate-enter button {
+    padding: 3px;
+    height: auto;
+}
+
 .service_tocart_point {
     width: 20px;
     height: 20px;
