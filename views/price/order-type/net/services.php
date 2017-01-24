@@ -49,9 +49,9 @@ use pistol88\cart\widgets\ChangeCount;
                         <?php if(yii::$app->getModule('service')->hideEmptyPrice && $price->price <= 0) { ?>
                         
                         <?php } else { ?>
-                            <div class="col-md-4 col-sm-6 col-lg-3 price" <?php if(!empty($price->description)) echo ' title="'.$price->description.'"'; ?>>
+                            <div class="col-md-4 col-sm-6 col-lg-3 price" <?php /* if(!empty($price->description)) echo ' title="'.$price->description.'"'; */ ?>>
                                 <div class="row">
-                                    <input class="service-price"  <?php if(!empty($price->description)) echo ' style="border: 1px solid yellow;"'; ?> data-base-price="<?=$price->price;?>" type="text" name="text" value="<?=$price->price;?>" />
+                                    <input class="service-price"  <?php /* if(!empty($price->description)) echo ' style="border: 1px solid yellow;"'; */ ?> data-base-price="<?=$price->price;?>" type="text" name="text" value="<?=$price->price;?>" />
                                         <strong><?=$service->name;?></strong>
                                         <?php if($price) { ?>
                                             <?= BuyButton::widget([
