@@ -15,7 +15,8 @@ class Price extends \yii\db\ActiveRecord implements \pistol88\cart\interfaces\Ca
         return [
             [['service_id', 'category_id', 'service_type'], 'required'],
             [['service_id', 'category_id'], 'integer'],
-            [['service_type', 'description'], 'string'],
+            [['service_type'], 'string'],
+            [['description'], 'string','max' => 40],
             [['price'], 'number'],
         ];
     }
