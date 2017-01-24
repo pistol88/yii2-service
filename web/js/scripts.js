@@ -111,9 +111,11 @@ pistol88.service = {
         $('#order-payment_type_id').val(1);
         $('.promo-code-enter input[type=text]').val('');
         $('.promo-code-discount').hide();
+        $('.certificate-enter input[type=text]').val('');
+        $('.certificate-discount').hide();
         $('.order-create-container form input[type=text], .order-create-container form textarea').val('');
         $('.order-create-container form').css('css', '1');
-        
+
         $(document).trigger('clearServiceOrder', this);
     },
     searchClientByIdent: function(ident) {
