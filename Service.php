@@ -287,6 +287,9 @@ class Service extends Component
                         if(($worker['pay_type'] == 'base' | $worker['pay_type'] == 'overbase') && in_array($worker['category_id'], $this->workerCategoryIds)) {
                             $workerSalary = $this->groupSalaryVariablity($group['base']/$group['workersCount'], $group, $session, $worker);
                             $group['workers'][$key]['salary'] = $workerSalary;
+                            if(!isset($salary[$worker['id']])) {
+                                $salary[$worker['id']] = 0;
+                            }
                             $salary[$worker['id']] += $workerSalary;
                         }
                     }
@@ -327,16 +330,30 @@ class Service extends Component
         //Начисляем фиксы
         foreach($workers as $worker) {
             if($fix = $worker->fix) {
-                $salary[$worker->id] += $fix;
+                @$salary[$worker->id] += $fix;
             }
         }
 
         $dataSalary = [];
         foreach($workers as $worker) {
+            if(!isset($dataSalary[$worker->id])) {
+                $dataSalary[$worker->id] = [];
+            }
             $dataSalary[$worker->id] = [];
             $dataSalary[$worker->id]['staffer'] = $worker;
-            $dataSalary[$worker->id]['base_salary'] = round($baseSalary[$worker['id']], 2); //Грязная ЗП
-            $dataSalary[$worker->id]['fines'] = round($fines[$worker['id']], 2); //Штрафы
+            
+            if(isset($baseSalary[$worker['id']])) {
+                $dataSalary[$worker->id]['base_salary'] = round($baseSalary[$worker['id']], 2); //Грязная ЗП
+            } else {
+                $dataSalary[$worker->id]['base_salary'] = 0;
+            }
+            
+            if(isset($fines[$worker->id])) {
+                $dataSalary[$worker->id]['fines'] = round($fines[$worker['id']], 2); //Штрафы
+            } else {
+                $dataSalary[$worker->id]['fines'] = 0;
+            }
+            
             $dataSalary[$worker->id]['bonuses'] = $bonuses[$worker['id']]; //Бонусы
 
             $workerSalary = $salary[$worker['id']]; //Чистая ЗП без изменчивости
