@@ -198,11 +198,17 @@ $totalServices = 0;
             </tr>
             <?php $sumBonuses = 0; $sumFines = 0; $sumSalary = 0; $sumBalance = 0;?>
             <?php foreach($data['salary'] as $workerId => $workerData) { ?>
+
                 <?php
-                $sumSalary += $workerData['salary'];
-                $sumBalance += $workerData['balance'];
-                $sumBonuses += $workerData['bonuses'];
-                $sumFines += $workerData['fines'];
+                    $workerPayments = Yii::$app->staffer->getStafferPaymentsBySession($workerId, $session->id);
+                    $workerPaymentsSum = $workerPayments->sum('sum');
+                 ?>
+
+                <?php
+                    $sumSalary += $workerData['salary'];
+                    $sumBalance += $workerData['salary'] - $workerPaymentsSum;
+                    $sumBonuses += $workerData['bonuses'];
+                    $sumFines += $workerData['fines'];
                 ?>
                 <tr>
                     <td>
@@ -236,12 +242,14 @@ $totalServices = 0;
                     <td><?=$workerData['fines'];?></td>
                     <td><?=$workerData['bonuses'];?></td>
                     <td><?=$workerData['salary'];?></td>
-                    <td><?=$workerData['balance'];?></td>
                     <td>
-                        <?php if($workerData['balance'] > 0) { ?>
+                        <?=round(($workerData['salary'] - $workerPaymentsSum), 0, PHP_ROUND_HALF_DOWN);?>
+                    </td>
+                    <td>
+                        <?php if(round(($workerData['salary'] - $workerPaymentsSum), 0, PHP_ROUND_HALF_DOWN) > 0) { ?>
                             <?= \pistol88\staffer\widgets\AddPayment::widget([
                                 'staffer' => $workerData['staffer'],
-                                'paymentSum' => round($workerData['balance'], 0, PHP_ROUND_HALF_DOWN),
+                                'paymentSum' => round(($workerData['salary'] - $workerPaymentsSum), 0, PHP_ROUND_HALF_DOWN),
                                 'sessionId' => $session->id
                             ]); ?>
                         <?php } ?>
