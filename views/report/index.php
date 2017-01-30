@@ -195,6 +195,9 @@ $totalServices = 0;
                 <th>Чистые</th>
                 <th>К выплате</th>
                 <th>Выплата</th>
+                <?php if($session->stop) { ?>
+                    <th>&nbsp;</th>
+                <?php } ?>
             </tr>
             <?php $sumBonuses = 0; $sumFines = 0; $sumSalary = 0; $sumBalance = 0;?>
             <?php foreach($data['salary'] as $workerId => $workerData) { ?>
@@ -238,7 +241,7 @@ $totalServices = 0;
                         ?>
                     </td>
                     <td><?=$workerData['base_salary'];?></td>
-                    <td><?php if($fix = $workerData['staffer']->fix) echo $fix; else echo '-';?></td>
+                    <td><?php if(isset($workerData['fix']) && $workerData['fix']) echo $workerData['fix']; elseif($fix = $workerData['staffer']->fix) echo $fix; else echo '-';?></td>
                     <td><?=$workerData['fines'];?></td>
                     <td><?=$workerData['bonuses'];?></td>
                     <td><?=$workerData['salary'];?></td>
@@ -254,6 +257,11 @@ $totalServices = 0;
                             ]); ?>
                         <?php } ?>
                     </td>
+                    <?php if($session->stop) { ?>
+                        <td>
+                            <a href="<?=Url::toRoute(['/staffer/salary/update', 'sessionId' => $session->id, 'stafferId' => $workerId]);?>" class="glyphicon glyphicon-pencil"></a>
+                        </td>
+                    <?php } ?>
                 </tr>
             <?php } ?>
             <tr>
