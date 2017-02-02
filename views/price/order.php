@@ -134,11 +134,18 @@ $this->registerJs("pistol88.createorder.updateCartUrl = '".Url::toRoute(['tools/
                             }
                         ?>
 
-                        <?= \pistol88\order\widgets\OrderFormLight::widget([
-                                'useAjax' => true,
-                                'staffer' => $staffers
-                            ]);
-                        ?>
+
+                        <?php
+                            if (Yii::$app->getModule('service')->customOrderFormWidget) {
+                                $widget = Yii::$app->getModule('service')->customOrderFormWidget;
+                                echo $widget['className']::widget($widget['settings']);
+                            } else {
+                                echo \pistol88\order\widgets\OrderFormLight::widget([
+                                        'useAjax' => true,
+                                        'staffer' => $staffers
+                                    ]);
+                            }
+                         ?>
                     <?php } ?>
                 </div>
             </div>

@@ -24,6 +24,8 @@ class Module extends \yii\base\Module
     public $stafferModel = 'pistol88\staffer\models\Staffer'; // модель работников для назначения на исполнение заказа
     public $paymentTypeIdsReport = [];
     public $cashCashboxId = null;
+    public $customOrderFormWidget = false; // ['className' => ... , 'settings' => [...]]
+
     public $menu = [
             [
                 'label' => 'Заказ',
@@ -54,7 +56,7 @@ class Module extends \yii\base\Module
                 'url' => ['/service/complex/index'],
             ],
         ];
-	
+
     public function init()
     {
         parent::init();
