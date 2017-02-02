@@ -23,6 +23,7 @@ class Service extends Component
     const EVENT_SALARY = 'salary';
     const EVENT_GROUP_CALCULATE = 'group_calculate';
     const EVENT_GROUP_SALARY = 'salary_group';
+    const EVENT_BASE_COST_CALCULATE = 'base_cost_calculate';
 
     public function getCalculateWidgets()
     {

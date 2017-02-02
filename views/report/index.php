@@ -127,8 +127,11 @@ $totalServices = 0;
                                     <?php } ?>
                                 </td>
                                 <td>
-                                    <?=$order['promocode'];?> 
-                                    
+                                    <?= Html::tag('div', $order['promocode'], ['style' => 'color: orange;']); ?>
+                                    <?php if (yii::$app->has('certificate')) {
+                                        $certificate = yii::$app->certificate->getCertificateByOrderId($order['id']);
+                                    } ?>
+                                    <?= ($certificate) ? Html::tag('div', $certificate->code, ['style' => 'color: green;']) : '' ?>
                                 </td>
                                 <td>
                                     <?=$order['base_price']?> <?=$currency;?>
