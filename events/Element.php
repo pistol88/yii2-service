@@ -7,4 +7,6 @@ class Element extends Event
 {
     public $group;
     public $cost;
+    public $element;
+    public $order;
 }

@@ -23,7 +23,7 @@ class Service extends Component
     const EVENT_SALARY = 'salary';
     const EVENT_GROUP_CALCULATE = 'group_calculate';
     const EVENT_GROUP_SALARY = 'salary_group';
-    const EVENT_BASE_COST_CALCULATE = 'base_cost_calculate';
+    const EVENT_CALCULATE_TO_BASE_PRICE = 'calculate_to_base_price';
 
     public function getCalculateWidgets()
     {
@@ -46,7 +46,7 @@ class Service extends Component
         $model->service_model = $serviceModel;
         $model->datetime = date('Y-m-d H:i:s');
 
-        if($sessionId) {
+        if ($sessionId) {
             $model->session_id = $sessionId;
         }
 
@@ -77,12 +77,12 @@ class Service extends Component
     public function getReportBySession($session)
     {
 
-        if($session->report) {
+        if ($session->report) {
             $return = unserialize($session->report);
         } else {
             $workers = $session->getUsers()->orderBy('category_id')->all();
 
-            if(yii::$app->has('organization') && $organization = yii::$app->organization->get()) {
+            if (yii::$app->has('organization') && $organization = yii::$app->organization->get()) {
                 $orders = yii::$app->order->setOrganization($organization->id)->getOrdersByDatePeriod($session->start, $session->stop);
             } else {
                 $orders = yii::$app->order->getOrdersByDatePeriod($session->start, $session->stop);
@@ -107,7 +107,7 @@ class Service extends Component
             $prevGroup = false;
 
             //Формируем группы, исходя из кол-ва сотрудников
-            foreach($orders as $order) {
+            foreach ($orders as $order) {
                 $groupWorkers = [];
                 $orderWorkers = [];
                 $workersCount = 0;
@@ -119,44 +119,44 @@ class Service extends Component
                     foreach ($staffersToService as $key => $staffer) {
                         $stafferModel = $staffer->staffer_model;
                         $stafferModel = new $stafferModel();
-                        $worker =  $stafferModel::findOne($staffer->staffer_id);
+                        $worker = $stafferModel::findOne($staffer->staffer_id);
                         $orderWorkers[] = $worker;
                     }
                 } else {
                     $orderWorkers = $workers;
                 }
 
-                foreach($orderWorkers as $worker) {
-                    if($worker->hasWork($order->timestamp)) {
-                        if($worker->category) {
+                foreach ($orderWorkers as $worker) {
+                    if ($worker->hasWork($order->timestamp)) {
+                        if ($worker->category) {
                             $workerCategoryName = $worker->category->name;
                         } else {
                             $workerCategoryName = '';
                         }
 
-                        $worker =  ArrayHelper::toArray($worker);
+                        $worker = ArrayHelper::toArray($worker);
                         $worker['categoryName'] = $workerCategoryName;
                         $worker['salary'] = 0;
 
                         $groupWorkers[] = $worker;
 
-                        if($worker['pay_type'] != 'overbase' && (empty($this->workerCategoryIds) | in_array($worker['category_id'], $this->workerCategoryIds))) {
+                        if ($worker['pay_type'] != 'overbase' && (empty($this->workerCategoryIds) | in_array($worker['category_id'], $this->workerCategoryIds))) {
                             $workersCount++;
                             $workersList[] = $worker['id'];
                         }
                     }
                 }
 
-                if(!$prevGroup | $prevOrderWorkers != $workersCount | count(array_intersect($workersList, $prevOrdersWorkersList)) != count($workersList)) {
+                if (!$prevGroup | $prevOrderWorkers != $workersCount | count(array_intersect($workersList, $prevOrdersWorkersList)) != count($workersList)) {
                     $data[$order->timestamp] = [
                         'workers' => $groupWorkers,
                         'workersCount' => $workersCount,
                         'orders' => [$order],
                     ];
 
-                    if(!$prevGroup) {
+                    if (!$prevGroup) {
                         $data[$order->timestamp]['name'] = $workersCount;
-                    } elseif($prevOrderWorkers > $workersCount) {
+                    } elseif ($prevOrderWorkers > $workersCount) {
                         $data[$order->timestamp]['name'] = '+1';
                     } else {
                         $data[$order->timestamp]['name'] = '-1';
@@ -170,63 +170,63 @@ class Service extends Component
                 $prevOrderWorkers = $workersCount;
                 $prevOrdersWorkersList = $workersList;
             }
-            
+
             //Проходимся по группам, делаем расчеты ЗП
-            foreach($data as &$group) {
-                if($group['orders']) {
+            foreach ($data as &$group) {
+                if ($group['orders']) {
                     $group['sum'] = 0;
-                    foreach($group['orders'] as $key => &$order) {
+                    foreach ($group['orders'] as $key => &$order) {
                         $elements = $order->getElementsRelation()->where(['model' => ['pistol88\service\models\CustomService', 'pistol88\service\models\Price']]);
-                        if($elements->all()) {
+                        if ($elements->all()) {
                             $summary['ordersCount']++;
                             $orderModel = $order;
                             $order = ArrayHelper::toArray($order);
                             $order['elements'] = [];
                             $order['base_price'] = 0;
                             $order['to_base'] = 0;
-                            if($paymentType = $orderModel->paymentType) {
+                            if ($paymentType = $orderModel->paymentType) {
                                 $order['payment_type_name'] = $paymentType->name;
                             } else {
                                 $order['payment_type_name'] = '';
                             }
 
                             $order['price'] = 0;
-                            foreach($this->orderCustomFields as $field) {
-                                $order['client_name'] .= " ".$orderModel->getField($field);
+                            foreach ($this->orderCustomFields as $field) {
+                                $order['client_name'] .= " " . $orderModel->getField($field);
                             }
 
                             $basePrice = 0;
                             $price = 0;
 
-                            foreach($elements->all() as $element) {
+                            foreach ($elements->all() as $element) {
                                 $serviceName = $element->getModel()->name;
                                 $element = ArrayHelper::toArray($element);
                                 $element['serviceName'] = $serviceName;
                                 $order['elements'][] = $element;
 
-                                $basePrice += $element['base_price']*$element['count'];
-                                $price += $element['price']*$element['count'];
+                                $basePrice += $element['base_price'] * $element['count'];
+                                $price += $element['price'] * $element['count'];
 
-                                $summary['elementsCount'] = $summary['elementsCount']+$element['count'];
+                                $summary['elementsCount'] = $summary['elementsCount'] + $element['count'];
                             }
 
-                            $elementEvent = new Element(['cost' => $price, 'group' => $group]);
+                            $elementEvent = new Element(['cost' => $price, 'order' => $order, 'group' => $group]);
                             $this->trigger(self::EVENT_GROUP_CALCULATE, $elementEvent);
                             $price = $elementEvent->cost;
 
                             $summary['baseServicesTotal'] += $basePrice;
                             $summary['servicesTotal'] += $price;
-                            
+
                             $customToBase = false;
                             //Процент, выдааемый сотруднику в случае применения скидки
-                            if($promoDivision = $this->promoDivision) {
-                                $dif = $basePrice-$price;
-                                if($dif > 0) {
-                                    $promoPersent = ($dif*100)/$basePrice;
-                                    foreach($promoDivision as $model => $params) {
-                                        foreach($params as $k => $v) {
-                                            if($promoPersent >= $k) {
-                                                $customToBase = $basePrice*($v/100);
+                            if ($promoDivision = $this->promoDivision) {
+                                $dif = $basePrice - $price;
+                                if ($dif > 0) {
+                                    $promoPersent = ($dif * 100) / $basePrice;
+                                    foreach ($promoDivision as $model => $params) {
+                                        foreach ($params as $k => $v) {
+                                            if ($promoPersent >= $k) {
+                                                $customToBase = $basePrice * ($v / 100);
                                                 break;
                                             }
                                         }
@@ -234,8 +234,15 @@ class Service extends Component
                                 }
                             }
 
-                            if(!$customToBase) {
+                            $variabilityToBase = 0;
+                            $elementEvent = new Element(['cost' => $price, 'order' => $order, 'group' => $group]);
+                            $this->trigger(self::EVENT_CALCULATE_TO_BASE_PRICE, $elementEvent);
+                            $variabilityToBase += $elementEvent->cost;
+
+                            if (!$customToBase || $variabilityToBase == $price) {
                                 $order['to_base'] += $price;
+                            } elseif ($variabilityToBase != $price) {
+                                $order['to_base'] += $variabilityToBase;
                             } else {
                                 $elementEvent = new Element(['cost' => $customToBase, 'group' => $group]);
                                 $this->trigger(self::EVENT_GROUP_CALCULATE, $elementEvent);
@@ -254,42 +261,41 @@ class Service extends Component
 
                     //Назначаем процент и базу
                     $group['persent'] = $this->getWorkerPersent($group);
-                    $group['base'] = $group['sum']*($group['persent']/100);
+                    $group['base'] = $group['sum'] * ($group['persent'] / 100);
 
                     //Начисляем ЗП сотрудникам с индивидуальным процентом
-                    foreach($group['workers'] as $key => $worker) {
-                        if($worker['persent']) {
+                    foreach ($group['workers'] as $key => $worker) {
+                        if ($worker['persent']) {
                             //Базовый тип
-                            if($worker['pay_type'] == 'base' | $worker['pay_type'] == 'overbase') {
+                            if ($worker['pay_type'] == 'base' | $worker['pay_type'] == 'overbase') {
                                 //Исполнитель
-                                if(in_array($worker['category_id'], $this->workerCategoryIds)) {
-                                    $group['persent'] = $group['persent']-$worker['persent'];
+                                if (in_array($worker['category_id'], $this->workerCategoryIds)) {
+                                    $group['persent'] = $group['persent'] - $worker['persent'];
                                     $group['workersCount']--;
                                 }
-                                $workerSalary = $this->groupSalaryVariablity($group['sum']*($worker['persent']/100), $group, $session, $worker);
+                                $workerSalary = $this->groupSalaryVariablity($group['sum'] * ($worker['persent'] / 100), $group, $session, $worker);
                                 $group['workers'][$key]['salary'] = $workerSalary;
-                            }
-                            //С выручки
+                            } //С выручки
                             else {
-                                $workerSalary = $this->groupSalaryVariablity($group['sum']*($worker['persent']/100), $group, $session, $worker);
+                                $workerSalary = $this->groupSalaryVariablity($group['sum'] * ($worker['persent'] / 100), $group, $session, $worker);
                                 $group['workers'][$key]['salary'] = $workerSalary;
                             }
 
-                            $salary[$worker['id']] += $workerSalary;
+                            @              $salary[$worker['id']] += $workerSalary;
                         }
                     }
 
                     //Перерасчитываем базу
-                    $group['base'] = $group['sum']*($group['persent']/100);
+                    $group['base'] = $group['sum'] * ($group['persent'] / 100);
 
                     //Начисляем ЗП обычным сотрудникам
-                    foreach($group['workers'] as $key => $worker) {
+                    foreach ($group['workers'] as $key => $worker) {
                         //Процент для мойщиков
-                        if(!$worker['persent']) {
-                            if(($worker['pay_type'] == 'base' | $worker['pay_type'] == 'overbase') && in_array($worker['category_id'], $this->workerCategoryIds)) {
-                                $workerSalary = $this->groupSalaryVariablity($group['base']/$group['workersCount'], $group, $session, $worker);
+                        if (!$worker['persent']) {
+                            if (($worker['pay_type'] == 'base' | $worker['pay_type'] == 'overbase') && in_array($worker['category_id'], $this->workerCategoryIds)) {
+                                $workerSalary = $this->groupSalaryVariablity($group['base'] / $group['workersCount'], $group, $session, $worker);
                                 $group['workers'][$key]['salary'] = $workerSalary;
-                                if(!isset($salary[$worker['id']])) {
+                                if (!isset($salary[$worker['id']])) {
                                     $salary[$worker['id']] = 0;
                                 }
                                 $salary[$worker['id']] += $workerSalary;
@@ -302,15 +308,15 @@ class Service extends Component
             $baseSalary = $salary;
 
             //Вычитаем штрафы
-            foreach($workers as $worker) {
-                if($fineSum = $worker->getFinesByDatePeriod($session->start, $session->stop)->sum('sum')) {
+            foreach ($workers as $worker) {
+                if ($fineSum = $worker->getFinesByDatePeriod($session->start, $session->stop)->sum('sum')) {
                     $fines[$worker->id] = $fineSum;
                     $salary[$worker->id] -= $fineSum;
                 }
             }
 
             // Премии
-            foreach($workers as $worker) {
+            foreach ($workers as $worker) {
                 $bonuses[$worker->id] = 0;
                 // при начислении зарплаты (см. ивент on stop в конфиге), помечаем премию как начисленную
                 $bonusQuery = \Yii::$app->staffer->getStafferBonuses($worker->id);
@@ -323,41 +329,41 @@ class Service extends Component
                 // $bonusQuery->andWhere(['<=', 'created', $session->stop]);
 
                 $bonusSum = $bonusQuery->sum('sum');
-                if($bonusSum > 0) {
+                if ($bonusSum > 0) {
                     $bonuses[$worker->id] = $bonusSum;
                     $salary[$worker->id] += $bonusSum;
                 }
             }
 
             //Начисляем фиксы
-            foreach($workers as $worker) {
-                if($fix = $worker->fix) {
+            foreach ($workers as $worker) {
+                if ($fix = $worker->fix) {
                     @$salary[$worker->id] += $fix;
                 }
             }
 
             $dataSalary = [];
-            foreach($workers as $worker) {
-                if(!isset($dataSalary[$worker->id])) {
+            foreach ($workers as $worker) {
+                if (!isset($dataSalary[$worker->id])) {
                     $dataSalary[$worker->id] = [];
                 }
                 $dataSalary[$worker->id] = [];
                 $dataSalary[$worker->id]['staffer'] = $worker;
-                
-                if(isset($baseSalary[$worker['id']])) {
+
+                if (isset($baseSalary[$worker['id']])) {
                     $dataSalary[$worker->id]['base_salary'] = round($baseSalary[$worker['id']], 2); //Грязная ЗП
                 } else {
                     $dataSalary[$worker->id]['base_salary'] = 0;
                 }
-                
-                if(isset($fines[$worker->id])) {
+
+                if (isset($fines[$worker->id])) {
                     $dataSalary[$worker->id]['fines'] = round($fines[$worker['id']], 2); //Штрафы
                 } else {
                     $dataSalary[$worker->id]['fines'] = 0;
                 }
-                
+
                 $dataSalary[$worker->id]['fix'] = $worker['fix'];
-                
+
                 $dataSalary[$worker->id]['bonuses'] = $bonuses[$worker['id']]; //Бонусы
 
                 $workerSalary = $salary[$worker['id']]; //Чистая ЗП без изменчивости
@@ -385,15 +391,15 @@ class Service extends Component
                 $summary['totalSalary'] += $workerSalary;
 
                 $paymentSum = Payment::find()->where(['session_id' => $session->id, 'worker_id' => $worker['id']])->sum('sum');
-                $dataSalary[$worker->id]['balance'] = round($workerSalary-$paymentSum, 0, PHP_ROUND_HALF_UP);
+                $dataSalary[$worker->id]['balance'] = round($workerSalary - $paymentSum, 0, PHP_ROUND_HALF_UP);
             }
 
             $return = ['orders' => $data, 'salary' => $dataSalary, 'summary' => $summary];
         }
-        
-        foreach($return['salary'] as $key => $staffer) {
+
+        foreach ($return['salary'] as $key => $staffer) {
             $salaryData = SalaryModel::find()->where(['worker_id' => $staffer['staffer']->id, 'session_id' => $session->id])->one();
-            if($salaryData) {
+            if ($salaryData) {
                 $return['salary'][$key]['salary'] = $salaryData->salary;
                 $return['salary'][$key]['base_salary'] = $salaryData->charged;
                 $return['salary'][$key]['fines'] = $salaryData->fines;
@@ -407,7 +413,7 @@ class Service extends Component
 
     public function getWorkersList()
     {
-        if(is_callable($this->workers)) {
+        if (is_callable($this->workers)) {
             $values = $this->workers;
 
             return $values();
@@ -418,9 +424,9 @@ class Service extends Component
 
     public function getWorkerPersent($session)
     {
-        if ( is_callable($this->workerPersent)) {
+        if (is_callable($this->workerPersent)) {
             $workerPercent = $this->workerPersent;
-            return  $workerPercent($session);
+            return $workerPercent($session);
         } else {
             return $this->workerPersent;
         }
