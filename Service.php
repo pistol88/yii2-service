@@ -239,7 +239,7 @@ class Service extends Component
                             $this->trigger(self::EVENT_CALCULATE_TO_BASE_PRICE, $elementEvent);
                             $variabilityToBase += $elementEvent->cost;
 
-                            if (!$customToBase || $variabilityToBase == $price) {
+                            if (!$customToBase && $variabilityToBase == $price) {
                                 $order['to_base'] += $price;
                             } elseif ($variabilityToBase != $price) {
                                 $order['to_base'] += $variabilityToBase;
