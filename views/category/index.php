@@ -10,7 +10,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 \pistol88\service\assets\BackendAsset::register($this);
 
-$categories = Category::find()->where("id != :id AND (parent_id = 0 OR parent_id IS NULL)", [':id' => (int)$model->id])->all();
+$categories = Category::find()->where("(parent_id = 0 OR parent_id IS NULL)")->all();
 $categories = ArrayHelper::map($categories, 'id', 'name');
 
 if(yii::$app->has('organization')) {
