@@ -366,7 +366,11 @@ class Service extends Component
 
                 $dataSalary[$worker->id]['bonuses'] = $bonuses[$worker['id']]; //Бонусы
 
-                $workerSalary = $salary[$worker['id']]; //Чистая ЗП без изменчивости
+                if(isset($salary[$worker['id']])) {
+                    $workerSalary = $salary[$worker['id']]; //Чистая ЗП без изменчивости
+                } else {
+                    $workerSalary = 0;
+                }
 
                 //Добавляем изменчивости
                 $salaryEvent = new Salary(
