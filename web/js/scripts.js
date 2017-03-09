@@ -293,7 +293,7 @@ pistol88.service = {
         $(this).data('price', $(this).siblings('input').val());
         $(this).siblings('input').val($(this).siblings('input').data('base-price'));
         
-        return true;
+        return false;
 
         var x = e.pageX;
         
