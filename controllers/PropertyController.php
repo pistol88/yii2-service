@@ -3,6 +3,7 @@ namespace pistol88\service\controllers;
 
 use yii;
 use pistol88\service\models\Property;
+use pistol88\client\models\Client;
 use pistol88\service\models\property\PropertySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -149,6 +150,11 @@ class PropertyController extends Controller
         $property = Property::find()->where(['name' => $ident])->one();
         
         if($client = $property->client) {
+            $json = [
+                'result' => 'success',
+                'client_id' => $client->id,
+            ];
+        } elseif($client = Client::find()->where(['name' => $ident])->one()) {
             $json = [
                 'result' => 'success',
                 'client_id' => $client->id,
